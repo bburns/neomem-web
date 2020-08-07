@@ -50,3 +50,15 @@ The backend can connect to multiple data sources, which would also be supported 
 
 - select text in notes, promote to item
 - move text and items easily with alt-m commands
+
+
+## Business Plan
+
+- start simple - document and table views only, personal db backend for wiki usage - open source on github, but set up paid hosting plans [why? would only make sense if could collaborate with people]
+- setup plugin marketplace - ui and data sources - free or paid plugins
+
+
+## Marketing
+
+- launch on product hunt, hacker news, reddit
+- have limited invites
