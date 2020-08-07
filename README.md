@@ -1,30 +1,32 @@
 # Neomem
 
-A document/database information manager
+A document/database information manager / personal wiki
 
 
 ## About
 
-Spreadsheets are good for tabular information, not free-form notes - while documents are good for free-form notes, not tabular information. 
+Spreadsheets are good for tabular information, while documents are good for free-form notes. Would like something that combines both, and makes it easy to switch between them - have different views of the same information. 
 
-Need something that combines both, and makes it easy to switch between them - have different views of the same information. 
-
-For instance, tasks can have short properties like name, timeframe, order, estimate, actual - while also having a free-form notes area.They can be viewed in a table, or switch to a document view to edit the notes with headers. 
+For instance, tasks can have short properties like name, timeframe, order, estimate, actual, which fit well in a table - while also having a free-form notes. So tasks could be viewed in a table, or a document view to edit the notes with headers. 
 
 Tables and documents could be sorted, filtered, and grouped as needed. 
 
-Other views would be possible for the same underlying information - outline, chart, map, calendar, kanban, etc. Multiple views could be visible at the same time. 
+Other views would be possible for the same underlying information - outline, chart, map, calendar, kanban. Multiple views could be visible at the same time. 
 
 A console view would allow traversal, querying, and manipulation of items in a text console. 
+
+All views would be developed as plugins for a base user interface.
+
+The backend can connect to multiple data sources, which would also be supported through plugins. 
 
 
 ## Goals
 
 - document, table, and outline views of same information
-- all views are plugins - document, table, outline, map, calendar, kanban, chart, console, etc
+- all views are plugins - document, table, outline, map, calendar, kanban, chart, console
 - plugin ecosystem for views and data sources - free/paid
-- open source, with free/paid hosting plans
-- console view allows text commands via JavaScript or other languages
+- open source, with free to paid hosting plans
+- console view allows text commands via JavaScript, SQL, or other languages
 
 
 ## Use Cases
@@ -38,7 +40,7 @@ A console view would allow traversal, querying, and manipulation of items in a t
 
 ## Implementation
 
-- react frontend
+- react frontend ui with view plugins
 - graphql api with plugins for different data sources
 - native data stored to a document db? postgres?
 - cloud db as another datasource - host certain objects online to publish or share with others
