@@ -1,6 +1,6 @@
 # Neomem
 
-An information manager
+A flexible information manager - a cross between a spreadsheet and document editor
 
 
 ## About
