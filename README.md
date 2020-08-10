@@ -59,6 +59,7 @@ Other views are possible for the same underlying information - chart, map, calen
 - set up paid hosting plans - store data in the cloud to access from multiple locations with secure backup
 - set up plugin marketplace for views and data sources - free/paid plugins
 - code will be open source on github
+- github sponsors could provide some funding also
 
 
 ## Marketing
