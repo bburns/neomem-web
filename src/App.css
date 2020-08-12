@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+}
+
+.app-header {
+  background: black;
+  color: #ccc;
+  font-size: 24px;
+}
+
+.app-header img {
+  height: 24px;
+}

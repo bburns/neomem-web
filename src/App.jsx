@@ -1,8 +1,9 @@
 import React from 'react';
-// import './App.css';
+import './App.css';
 import { ReactTabulator } from 'react-tabulator'
 // import 'react-tabulator/lib/styles.css'
 import 'react-tabulator/css/tabulator.css'
+import logo from './assets/logo256.png'
 
 
 const columns = [
@@ -24,9 +25,9 @@ var data = [
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        Neomem
+    <div className="app">
+      <header className="app-header">
+        <img src={logo} /> Neomem
       </header>
       <div>
       <ReactTabulator
