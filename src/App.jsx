@@ -55,14 +55,15 @@ function App() {
           // const row = { name: record.get('n').name, when: record.get('n').when}
           // rows.push(row)
           // const row = {}
-          let row = {}
+          // let row = {}
           // record.forEach((value, key) => {row[key] = value; console.log(key, value)})
-          record.forEach((value, key) => {
-            // row[key] = value; console.log(key, value)
-            if (key==='n') {
-              row = value.properties
-            }
-          })
+          // record.forEach((value, key) => {
+          //   // row[key] = value; console.log(key, value)
+          //   if (key==='n') {
+          //     row = value.properties
+          //   }
+          // })
+          const row = record.get('n').properties
           rows.push(row)
         })
       })
