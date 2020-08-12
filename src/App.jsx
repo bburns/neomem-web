@@ -19,6 +19,8 @@ const session = driver.session({ defaultAccessMode: neo4j.session.READ })
 console.log(driver, session)
 
 const columns = [
+  { title: "Project", field: "project", width: 150 },
+  { title: "Type", field: "type", width: 150 },
   { title: "Name", field: "name", width: 200 },
   { title: "When", field: "when", width: 80 },
   // { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
@@ -39,7 +41,8 @@ const columns = [
 // const query = "MATCH (n) RETURN n.name"
 // const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name"
 // const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name, t.when"
-const query = "MATCH (n)-[]-(p:project {name:'neomem'}) RETURN n"
+// const query = "MATCH (n)-[]-(p:project {name:'neomem'}) RETURN n"
+const query = "MATCH (n) RETURN n"
 
 function App() {
   const [data, setData] = React.useState([])
@@ -79,7 +82,8 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <img src={logo} alt="logo" /> Neomem
+        <img src={logo} alt="logo" /> 
+        <span>Neomem</span>
       </header>
       <div>
       <ReactTabulator

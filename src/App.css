@@ -1,12 +1,15 @@
 body {
   margin: 0;
-  font-family: 'Futura Std Light', futura, sans-serif;
+  font-family: sans-serif;
 }
 
 .app-header {
   background: black;
   color: #ccc;
   font-size: 24px;
+  font-family: 'Futura Std Light', futura, sans-serif;
+  display: flex;
+  align-items: center;
 }
 
 .app-header img {
