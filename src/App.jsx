@@ -18,10 +18,9 @@ const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
 const session = driver.session({ defaultAccessMode: neo4j.session.READ })
 console.log(driver, session)
 
-const query = "MATCH (n) RETURN n.name"
-
 const columns = [
-  { title: "Name", field: "name", width: 150 },
+  { title: "Name", field: "name", width: 200 },
+  { title: "When", field: "when", width: 80 },
   // { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
   // { title: "Favourite Color", field: "col" },
   // { title: "Date Of Birth", field: "dob", hozAlign: "center" },
@@ -37,6 +36,11 @@ const columns = [
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
 // ];
 
+// const query = "MATCH (n) RETURN n.name"
+// const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name"
+// const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name, t.when"
+const query = "MATCH (n)-[]-(p:project {name:'neomem'}) RETURN n"
+
 function App() {
   const [data, setData] = React.useState([])
   React.useEffect(() => {
@@ -45,7 +49,20 @@ function App() {
       .run(query)
       .then(result => {
         result.records.forEach(record => {
-          const row = { name: record.get('n.name')}
+          console.log(record)
+          // const row = { name: record.get('t.name')}
+          // const row = { name: record.get('t.name'), when: record.get('t.when')}
+          // const row = { name: record.get('n').name, when: record.get('n').when}
+          // rows.push(row)
+          // const row = {}
+          let row = {}
+          // record.forEach((value, key) => {row[key] = value; console.log(key, value)})
+          record.forEach((value, key) => {
+            // row[key] = value; console.log(key, value)
+            if (key==='n') {
+              row = value.properties
+            }
+          })
           rows.push(row)
         })
       })
