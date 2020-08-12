@@ -51,6 +51,7 @@ Other views are possible for the same underlying information - chart, map, calen
 
 - select text in notes, promote to item(s)
 - move text and items easily to other items with alt-m commands
+- clipboard monitor - paste contents when it changes
 
 
 ## Business Plan
@@ -66,3 +67,4 @@ Other views are possible for the same underlying information - chart, map, calen
 
 - have limited invites
 - launch on product hunt, hacker news, reddit
+

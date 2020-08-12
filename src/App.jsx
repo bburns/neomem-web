@@ -4,6 +4,7 @@ import { ReactTabulator } from 'react-tabulator'
 // import 'react-tabulator/lib/styles.css'
 import 'react-tabulator/css/tabulator.css'
 
+
 const columns = [
   { title: "Name", field: "name", width: 150 },
   { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
