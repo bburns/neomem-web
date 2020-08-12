@@ -4,6 +4,16 @@ import { ReactTabulator } from 'react-tabulator'
 // import 'react-tabulator/lib/styles.css'
 import 'react-tabulator/css/tabulator.css'
 import logo from './assets/logo256.png'
+import neo4j from 'neo4j-driver'
+
+
+// do simple query, get all the nodes, display in a table
+
+const uri = 'neo4j://localhost'
+const user = process.env.REACT_APP_NEO4J_USER
+const password = process.env.REACT_APP_NEO4J_PASSWORD
+const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
+const session = driver.session()
 
 
 const columns = [

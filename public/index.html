@@ -24,7 +24,16 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Neomem</title>
+
+
+    <!-- This will make a global neo4j object available, where you can create a driver instance with neo4j.driver -->
+    <!-- unpkg CDN non-minified -->
+    <!-- <script src="https://unpkg.com/neo4j-driver"></script> -->
+    <!-- unpkg CDN minified for production use, version X.Y.Z -->
+    <!-- <script src="https://unpkg.com/neo4j-driver@X.Y.Z/lib/browser/neo4j-web.min.js"></script> -->
+
   </head>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
@@ -39,4 +48,5 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+
 </html>
