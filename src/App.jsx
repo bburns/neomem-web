@@ -19,9 +19,9 @@ const session = driver.session({ defaultAccessMode: neo4j.session.READ })
 console.log(driver, session)
 
 const columns = [
-  { title: "Project", field: "project", width: 150 },
-  { title: "Type", field: "type", width: 150 },
-  { title: "Name", field: "name", width: 200 },
+  { title: "Project", field: "project", width: 120 },
+  { title: "Type", field: "type", width: 120 },
+  { title: "Name", field: "name", width: 300 },
   { title: "When", field: "when", width: 80 },
   // { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
   // { title: "Favourite Color", field: "col" },
