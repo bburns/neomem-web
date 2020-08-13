@@ -42,7 +42,7 @@ const columns = [
 // const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name"
 // const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name, t.when"
 // const query = "MATCH (n)-[]-(p:project {name:'neomem'}) RETURN n"
-const query = "MATCH (n) RETURN n"
+const query = "MATCH (n) RETURN n, labels(n)"
 
 function App() {
   const [data, setData] = React.useState([])
@@ -67,6 +67,9 @@ function App() {
           //   }
           // })
           const row = record.get('n').properties
+          const labels = record.get('labels(n)')
+          console.log(labels)
+          row.type = labels.join(', ')
           rows.push(row)
         })
       })
