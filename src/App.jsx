@@ -7,8 +7,7 @@ import logo from './assets/logo256.png'
 import neo4j from 'neo4j-driver'
 
 
-// do simple query, get all the nodes, display in a table
-
+// get neo4j driver
 const uri = 'neo4j://localhost'
 // const uri = 'neo4j://35.225.192.145' // gcp vm neo4j instance
 // const uri = 'neo4j://35.225.192.145:7473' // gcp vm neo4j instance
@@ -17,65 +16,67 @@ const password = process.env.REACT_APP_NEO4J_PASSWORD
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
 console.log(driver)
 
-const columns = [
-  { title: "Project", field: "project", width: 120 },
-  { title: "Type", field: "type", width: 120 },
-  { title: "Name", field: "name", width: 300 },
-  { title: "When", field: "when", width: 80 },
-  { title: "Author", field: "author", width: 120 },
-  // { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
-  // { title: "Favourite Color", field: "col" },
-  // { title: "Date Of Birth", field: "dob", hozAlign: "center" },
-  // { title: "Rating", field: "rating", hozAlign: "center", formatter: "star" },
-  // { title: "Passed?", field: "passed", hozAlign: "center", formatter: "tickCross" }
-];
 
+const facets = {
+  personal: {
+    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) WITH n, labels(n) as type RETURN n {.*, type}",
+    cols: "type,name,when",
+  },
+  neomem: {
+    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) WITH n, labels(n) as type RETURN n {.*, type}",
+    cols: "type,name,when",
+  },
+  books: {
+    query: "MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
+    cols: "type,author,when,name",
+  },
+  timeframe: {
+    query: "MATCH (n)-[r:PROJECT]->(m) WHERE EXISTS (n.when) WITH n, labels(n) as type, collect(m.name) as project RETURN n {.*, type, project}",
+    cols: "type,project,name,when",
+  },
+}
+
+const colDefs = {
+  project: { title: "Project", width: 120 },
+  type: { title: "Type", width: 120 },
+  name: { title: "Name", width: 300 },
+  when: { title: "When", width: 80 },
+  author: { title: "Author", width: 120 },
+}
+Object.keys(colDefs).forEach(key => colDefs[key].field = key)
+
+
+// const columns = [
+//   { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
+//   { title: "Favourite Color", field: "col" },
+//   { title: "Date Of Birth", field: "dob", hozAlign: "center" },
+//   { title: "Rating", field: "rating", hozAlign: "center", formatter: "star" },
+//   { title: "Passed?", field: "passed", hozAlign: "center", formatter: "tickCross" }
+// ]
 // var data = [
 //   {id:1, name:"Oli Bob", age:"12", col:"red", dob:""},
 //   {id:2, name:"Mary May", age:"1", col:"blue", dob:"14/05/1982"},
 //   {id:3, name:"Christine Lobowski", age:"42", col:"green", dob:"22/05/1982"},
 //   {id:4, name:"Brendon Philips", age:"125", col:"orange", dob:"01/08/1980"},
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
-// ];
-
-// const query = "MATCH (n) RETURN n.name"
-// const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name"
-// const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name, t.when"
-// const query = "MATCH (n)-[]-(p:project {name:'neomem'}) RETURN n"
-// const query = "MATCH (n) RETURN n, labels(n)"
+// ]
 
 function App() {
   const [focus, setFocus] = React.useState("personal")
   const [query, setQuery] = React.useState("")
   const [data, setData] = React.useState([])
+  const [columns, setColumns] = React.useState([])
   React.useEffect(() => {
     if (!query) return
     const rows = []
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
+    //. do async await
     session
       .run(query)
       .then(result => {
         result.records.forEach(record => {
-          console.log(record)
-          // const row = { name: record.get('t.name')}
-          // const row = { name: record.get('t.name'), when: record.get('t.when')}
-          // const row = { name: record.get('n').name, when: record.get('n').when}
-          // rows.push(row)
-          // const row = {}
-          // let row = {}
-          // record.forEach((value, key) => {row[key] = value; console.log(key, value)})
-          // record.forEach((value, key) => {
-          //   // row[key] = value; console.log(key, value)
-          //   if (key==='n') {
-          //     row = value.properties
-          //   }
-          // })
-          // const row = record.get('n').properties
-          // const labels = record.get('labels(n)')
-          // console.log(labels)
-          // row.type = labels.join(', ')
           const row = record.get('n')
-          //. include these in query somehow?
+          //. include these in query somehow? or base on field type being array?
           row.type = row.type && row.type.join(', ')
           row.author = row.author && row.author.join(', ')
           rows.push(row)
@@ -91,23 +92,14 @@ function App() {
   }, [query])
 
   React.useEffect(() => {
-    const focusQueries = {
-      personal: 
-      // "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) RETURN n, labels(n)",
-      "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) WITH n, labels(n) as type RETURN n {.*, type}",
-      neomem: 
-      // "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) RETURN n, labels(n)",
-      "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) WITH n, labels(n) as type RETURN n {.*, type}",
-      books:
-      // "MATCH (n) WHERE n:Book OR n:Author RETURN n, labels(n)",
-      "MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
-      timeframe:
-      // "MATCH (n) WHERE EXISTS (n.when) RETURN n, labels(n)",
-      // "MATCH (n) WHERE EXISTS (n.when) WITH n, labels(n) as type RETURN n {.*, type}",
-      "MATCH (n)-[r:PROJECT]->(m) WHERE EXISTS (n.when) WITH n, labels(n) as type, collect(m.name) as project RETURN n {.*, type, project}",
-    }
-    const query = focusQueries[focus]
+    const facetObj = facets[focus]
+    const { query, cols } = facetObj
     setQuery(query)
+    if (cols) {
+      const colNames = cols.split(',')
+      const columns = colNames.map(colName => colDefs[colName])
+      setColumns(columns)
+    }
   }, [focus])
 
   function changeFocus(e) {
@@ -122,16 +114,16 @@ function App() {
           <img src={logo} alt="logo" /> 
           <span>Neomem</span>
         </span>
-        <div>
-          Focus:&nbsp;
+        <div className="app-header-focus">
+          <span>Facet:&nbsp;</span>
           <select name="focus" id="focus" value={focus} onChange={changeFocus}>
             <option value="books">Books</option>
             <option value="personal">Personal</option>
             <option value="neomem">Neomem</option>
             <option value="timeframe">Timeframe</option>
           </select>
-          <div className="query">&nbsp;Query: {query}</div>
         </div>
+        <div className="app-header-query">{query}</div>
       </div>
       <div className="app-contents">
         <ReactTabulator
