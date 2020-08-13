@@ -15,8 +15,7 @@ const uri = 'neo4j://localhost'
 const user = process.env.REACT_APP_NEO4J_USER
 const password = process.env.REACT_APP_NEO4J_PASSWORD
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
-const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-console.log(driver, session)
+console.log(driver)
 
 const columns = [
   { title: "Project", field: "project", width: 120 },
@@ -42,12 +41,16 @@ const columns = [
 // const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name"
 // const query = "MATCH (t:task)-[]->(p:project {name: 'neomem'}) RETURN t.name, t.when"
 // const query = "MATCH (n)-[]-(p:project {name:'neomem'}) RETURN n"
-const query = "MATCH (n) RETURN n, labels(n)"
+// const query = "MATCH (n) RETURN n, labels(n)"
 
 function App() {
+  const [focus, setFocus] = React.useState("personal")
+  const [query, setQuery] = React.useState("")
   const [data, setData] = React.useState([])
   React.useEffect(() => {
+    if (!query) return
     const rows = []
+    const session = driver.session({ defaultAccessMode: neo4j.session.READ })
     session
       .run(query)
       .then(result => {
@@ -80,7 +83,27 @@ function App() {
         session.close()
         setData(rows)
       })
-  }, [])
+  }, [query])
+
+  React.useEffect(() => {
+    const focusQueries = {
+      personal: 
+        "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) RETURN n, labels(n)",
+      neomem: 
+        "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) RETURN n, labels(n)",
+      books:
+        "MATCH (n) RETURN n, labels(n)",
+      timeframe:
+        "MATCH (n) WHERE EXISTS (n.when) RETURN n, labels(n)",
+    }
+    const query = focusQueries[focus]
+    setQuery(query)
+  }, [focus])
+
+  function changeFocus(e) {
+    const focus = e.currentTarget.value
+    setFocus(focus)
+  }
 
   return (
     <div className="app">
@@ -89,12 +112,21 @@ function App() {
         <span>Neomem</span>
       </header>
       <div>
-      <ReactTabulator
-        data={data}
-        columns={columns}
-        tooltips={true}
-        layout={"fitData"}
-      />
+        <div>
+          Focus:&nbsp;
+          <select name="focus" id="focus" value={focus} onChange={changeFocus}>
+            <option value="books">Books</option>
+            <option value="personal">Personal</option>
+            <option value="neomem">Neomem</option>
+            <option value="timeframe">Timeframe</option>
+          </select>
+        </div>
+        <ReactTabulator
+          data={data}
+          columns={columns}
+          tooltips={true}
+          layout={"fitData"}
+        />
       </div>
     </div>
   )
