@@ -1,13 +1,13 @@
 # Neomem
 
-A flexible information manager - a cross between a spreadsheet and document editor
+An information manager - a cross between a spreadsheet and document editor
 
 
 ## About
 
 Spreadsheets are good for tabular information, while documents are good for free-form notes and outlines. Neomem makes it easy to switch between the two, allowing different views of the same information. 
 
-For instance, tasks can have short properties like name, timeframe, order, estimate, which fit well in a table - while also having longer properties like notes. Switching between table and document views allows you to focus on one or the other as needed.
+For example, tasks can have short properties like name, timeframe, order, estimate, which fit well in a table - while also having longer properties like notes. Switching between table and document views allows you to focus on one or the other as needed.
 
 Data can be sorted, filtered, and grouped as required. 
 
@@ -18,16 +18,16 @@ Other views are possible for the same underlying information - chart, map, calen
 
 ## Goals
 
-- ui that gets out of the way, takes up little screen real estate, leaves room for editing
+- ui that gets out of the way, takes up little screen space, leaves room for editing
 - document, table, and outline views of same information
-- all views are plugins - document, table, outline, map, calendar, kanban, chart, graph, console
+- all views are plugins - document, table, outline, map, calendar, kanban, chart, graph, timeline, console
+- open source, with paid hosting plans
 - plugin ecosystem for views and data sources - free/paid
-- open source, with free to paid hosting plans
 
 
 ## Use Cases
 
-- task manager - projects, tasks, goals, timeframe, order, estimate, actual, recurring tasks - switch between table, document, kanban, calendar views
+- task manager - projects, tasks, goals, timeframe, order, estimate, actual, recurring tasks - switch between table, document, kanban, calendar, timeline views
 - art travel planner - location (continent/country/state/city/museum), artist, date, name, rating, source, size, images - switch between table, map views
 - screenplay/outline editor - acts, scenes, characters, locations - switch between table view, outline view, document view
 - biographical timelines - subject, event, date, age, location - switch between table, document, map views

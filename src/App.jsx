@@ -8,18 +8,19 @@ import neo4j from 'neo4j-driver'
 
 
 // get neo4j driver
-const uri = 'neo4j://localhost'
-// const uri = 'neo4j://35.225.192.145' // gcp vm neo4j instance
-// const uri = 'neo4j://35.225.192.145:7473' // gcp vm neo4j instance
+
+const uri = process.env.REACT_APP_NEO4J_URI
 const user = process.env.REACT_APP_NEO4J_USER
 const password = process.env.REACT_APP_NEO4J_PASSWORD
+
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
-console.log(driver)
 
 
+//. put these into db also eventually
 const facetObjs = {
   personal: {
-    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) WITH n, labels(n) as type RETURN n {.*, type}",
+    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) WITH n, labels(n) as type RETURN n {.*, type}",
+    params: { projectName: 'personal' },
     cols: "type,name,when",
   },
   neomem: {
@@ -40,6 +41,7 @@ const facetObjs = {
   },
 }
 
+//. put into db eventually
 const colDefs = {
   project: { title: "Project", width: 120 },
   type: { title: "Type", width: 120 },
@@ -50,6 +52,7 @@ const colDefs = {
 Object.keys(colDefs).forEach(key => colDefs[key].field = key)
 
 
+// avail table column types - cool
 // const columns = [
 //   { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
 //   { title: "Favourite Color", field: "col" },
@@ -70,6 +73,7 @@ function App() {
 
   const [facet, setFacet] = React.useState("personal")
   const [query, setQuery] = React.useState("")
+  const [params, setParams] = React.useState({})
   const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
 
@@ -77,9 +81,9 @@ function App() {
     if (!query) return
     const rows = []
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-    //. do async await
+    //. do async await?
     session
-      .run(query)
+      .run(query, params)
       .then(result => {
         result.records.forEach(record => {
           const row = record.get('n')
@@ -98,12 +102,13 @@ function App() {
         session.close()
         setData(rows)
       })
-  }, [query])
+  }, [query, params])
 
   React.useEffect(() => {
     const facetObj = facetObjs[facet]
-    const { query, cols } = facetObj
+    const { query, params, cols } = facetObj
     setQuery(query)
+    setParams(params)
     const colNames = cols.split(',')
     const columns = colNames.map(colName => colDefs[colName])
     setColumns(columns)
