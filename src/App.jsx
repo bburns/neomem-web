@@ -103,7 +103,8 @@ function App() {
       "MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
       timeframe:
       // "MATCH (n) WHERE EXISTS (n.when) RETURN n, labels(n)",
-      "MATCH (n) WHERE EXISTS (n.when) WITH n, labels(n) as type RETURN n {.*, type}",
+      // "MATCH (n) WHERE EXISTS (n.when) WITH n, labels(n) as type RETURN n {.*, type}",
+      "MATCH (n)-[r:PROJECT]->(m) WHERE EXISTS (n.when) WITH n, labels(n) as type, collect(m.name) as project RETURN n {.*, type, project}",
     }
     const query = focusQueries[focus]
     setQuery(query)
@@ -116,11 +117,11 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <img src={logo} alt="logo" /> 
-        <span>Neomem</span>
-      </header>
-      <div>
+      <div className="app-header">
+        <span className="app-header-logo">
+          <img src={logo} alt="logo" /> 
+          <span>Neomem</span>
+        </span>
         <div>
           Focus:&nbsp;
           <select name="focus" id="focus" value={focus} onChange={changeFocus}>
@@ -129,8 +130,10 @@ function App() {
             <option value="neomem">Neomem</option>
             <option value="timeframe">Timeframe</option>
           </select>
-          <span className="query">&nbsp;Query: {query}</span>
+          <div className="query">&nbsp;Query: {query}</div>
         </div>
+      </div>
+      <div className="app-contents">
         <ReactTabulator
           data={data}
           columns={columns}
