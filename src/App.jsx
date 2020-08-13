@@ -26,8 +26,12 @@ const facetObjs = {
     query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) WITH n, labels(n) as type RETURN n {.*, type}",
     cols: "type,name,when",
   },
+  tallieo: {
+    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'tallieo'}) WITH n, labels(n) as type RETURN n {.*, type}",
+    cols: "type,name,when",
+  },
   books: {
-    query: "MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
+    query: "MATCH (n) WHERE (n:Book) or (n:Author) OPTIONAL MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
     cols: "type,author,name",
   },
   timeframe: {
@@ -120,7 +124,7 @@ function App() {
         <div className="app-header-facet">
           <span>Facet:&nbsp;</span>
           <select name="facet" id="facet" value={facet} onChange={changeFocus}>
-            {Object.keys(facetObjs).map(facet => <option value={facet}>{facet}</option>)}
+            {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
           </select>
         </div>
         <div className="app-header-query">{query}</div>
