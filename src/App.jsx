@@ -8,13 +8,10 @@ import neo4j from 'neo4j-driver'
 
 
 // get neo4j driver
-
 const uri = process.env.REACT_APP_NEO4J_URI
 const user = process.env.REACT_APP_NEO4J_USER
 const password = process.env.REACT_APP_NEO4J_PASSWORD
-
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
-
 
 //. put these into db also eventually
 
@@ -22,33 +19,42 @@ const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
 const projectQuery = `
 MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-WITH n, labels(n) as type, collect(t.name) as timeframe
-RETURN n {.*, type, timeframe}
+WITH n, labels(n) as type, collect(t.name) as timeframe, collect(m.name) as project
+RETURN n {.*, type, timeframe, project}
 `
+const projectCols = "project,type,name,timeframe,description"
 
 const facetObjs = {
   personal: {
     query: projectQuery,
     params: { projectName: 'personal' },
-    cols: "type,name,when,timeframe",
+    cols: projectCols,
   },
   neomem: {
     query: projectQuery,
     params: { projectName: 'neomem' },
-    cols: "type,name,when,timeframe",
+    cols: projectCols,
   },
   tallieo: {
     query: projectQuery,
     params: { projectName: 'tallieo' },
-    cols: "type,name,when,timeframe",
+    cols: projectCols,
   },
   books: {
-    query: "MATCH (n) WHERE (n:Book) or (n:Author) OPTIONAL MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
+    query: `
+    MATCH (n) 
+    WHERE (n:Book) or (n:Author) 
+    OPTIONAL MATCH (n)-[r:AUTHOR]->(m) 
+    WITH n, collect(m.name) as author, labels(n) as type 
+    RETURN n { .*, type, author }`,
     cols: "type,author,name",
   },
   timeframe: {
-    query: "MATCH (n)-[r:PROJECT]->(m) WHERE EXISTS (n.when) WITH n, labels(n) as type, collect(m.name) as project RETURN n {.*, type, project}",
-    cols: "type,project,name,when",
+    query: `
+    MATCH (n)-[r:PROJECT]->(m), (n)-[:TIMEFRAME]->(t) 
+    WITH n, labels(n) AS type, collect(m.name) AS project , collect(t.name) AS timeframe
+    RETURN n {.*, type, project, timeframe}`,
+    cols: "type,project,name,timeframe",
   },
 }
 
@@ -57,8 +63,9 @@ const colDefs = {
   project: { title: "Project", width: 120 },
   type: { title: "Type", width: 120 },
   name: { title: "Name", width: 300 },
-  when: { title: "When", width: 80 },
-  timeframe: { title: "Timeframe", width: 80 },
+  description: { title: "Description", width: 400 },
+  // when: { title: "When", width: 80 },
+  timeframe: { title: "Timeframe", width: 120 },
   author: { title: "Author", width: 150 },
 }
 Object.keys(colDefs).forEach(key => colDefs[key].field = key)

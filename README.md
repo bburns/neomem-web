@@ -18,7 +18,7 @@ Other views are possible for the same underlying information - chart, map, calen
 
 ## Goals
 
-- ui that gets out of the way, takes up little screen space, leaves room for editing
+- clutter-free ui that gets out of the way, takes up little screen space, leaves room for editing
 - document, table, and outline views of same information
 - all views are plugins - document, table, outline, map, calendar, kanban, chart, graph, timeline, console
 - open source, with paid hosting plans
