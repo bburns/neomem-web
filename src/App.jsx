@@ -92,7 +92,7 @@ function App() {
       neomem: 
         "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) RETURN n, labels(n)",
       books:
-        "MATCH (n) RETURN n, labels(n)",
+        "MATCH (n) WHERE n:Book OR n:Author RETURN n, labels(n)",
       timeframe:
         "MATCH (n) WHERE EXISTS (n.when) RETURN n, labels(n)",
     }
@@ -120,6 +120,7 @@ function App() {
             <option value="neomem">Neomem</option>
             <option value="timeframe">Timeframe</option>
           </select>
+          <span className="query">&nbsp;Query: {query}</span>
         </div>
         <ReactTabulator
           data={data}
