@@ -22,6 +22,7 @@ const columns = [
   { title: "Type", field: "type", width: 120 },
   { title: "Name", field: "name", width: 300 },
   { title: "When", field: "when", width: 80 },
+  { title: "Author", field: "author", width: 120 },
   // { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
   // { title: "Favourite Color", field: "col" },
   // { title: "Date Of Birth", field: "dob", hozAlign: "center" },
@@ -69,10 +70,14 @@ function App() {
           //     row = value.properties
           //   }
           // })
-          const row = record.get('n').properties
-          const labels = record.get('labels(n)')
-          console.log(labels)
-          row.type = labels.join(', ')
+          // const row = record.get('n').properties
+          // const labels = record.get('labels(n)')
+          // console.log(labels)
+          // row.type = labels.join(', ')
+          const row = record.get('n')
+          //. include these in query somehow?
+          row.type = row.type && row.type.join(', ')
+          row.author = row.author && row.author.join(', ')
           rows.push(row)
         })
       })
@@ -88,13 +93,17 @@ function App() {
   React.useEffect(() => {
     const focusQueries = {
       personal: 
-        "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) RETURN n, labels(n)",
+      // "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) RETURN n, labels(n)",
+      "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) WITH n, labels(n) as type RETURN n {.*, type}",
       neomem: 
-        "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) RETURN n, labels(n)",
+      // "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) RETURN n, labels(n)",
+      "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) WITH n, labels(n) as type RETURN n {.*, type}",
       books:
-        "MATCH (n) WHERE n:Book OR n:Author RETURN n, labels(n)",
+      // "MATCH (n) WHERE n:Book OR n:Author RETURN n, labels(n)",
+      "MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
       timeframe:
-        "MATCH (n) WHERE EXISTS (n.when) RETURN n, labels(n)",
+      // "MATCH (n) WHERE EXISTS (n.when) RETURN n, labels(n)",
+      "MATCH (n) WHERE EXISTS (n.when) WITH n, labels(n) as type RETURN n {.*, type}",
     }
     const query = focusQueries[focus]
     setQuery(query)
