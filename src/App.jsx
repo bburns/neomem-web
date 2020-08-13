@@ -79,9 +79,11 @@ function App() {
       .then(result => {
         result.records.forEach(record => {
           const row = record.get('n')
-          //. include these in query somehow? or base on field type being array?
-          row.type = row.type && row.type.join(', ')
-          row.author = row.author && row.author.join(', ')
+          Object.keys(row).forEach(key => {
+            if (Array.isArray(row[key])) {
+              row[key] = row[key].join(', ')
+            }
+          })
           rows.push(row)
         })
       })
@@ -98,11 +100,9 @@ function App() {
     const facetObj = facetObjs[facet]
     const { query, cols } = facetObj
     setQuery(query)
-    // if (cols) {
-      const colNames = cols.split(',')
-      const columns = colNames.map(colName => colDefs[colName])
-      setColumns(columns)
-    // }
+    const colNames = cols.split(',')
+    const columns = colNames.map(colName => colDefs[colName])
+    setColumns(columns)
   }, [facet])
 
   function changeFocus(e) {
