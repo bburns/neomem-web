@@ -17,7 +17,7 @@ const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
 console.log(driver)
 
 
-const facets = {
+const facetObjs = {
   personal: {
     query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'personal'}) WITH n, labels(n) as type RETURN n {.*, type}",
     cols: "type,name,when",
@@ -28,7 +28,7 @@ const facets = {
   },
   books: {
     query: "MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
-    cols: "type,author,when,name",
+    cols: "type,author,name",
   },
   timeframe: {
     query: "MATCH (n)-[r:PROJECT]->(m) WHERE EXISTS (n.when) WITH n, labels(n) as type, collect(m.name) as project RETURN n {.*, type, project}",
@@ -41,7 +41,7 @@ const colDefs = {
   type: { title: "Type", width: 120 },
   name: { title: "Name", width: 300 },
   when: { title: "When", width: 80 },
-  author: { title: "Author", width: 120 },
+  author: { title: "Author", width: 150 },
 }
 Object.keys(colDefs).forEach(key => colDefs[key].field = key)
 
@@ -61,11 +61,14 @@ Object.keys(colDefs).forEach(key => colDefs[key].field = key)
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
 // ]
 
+
 function App() {
-  const [focus, setFocus] = React.useState("personal")
+
+  const [facet, setFacet] = React.useState("personal")
   const [query, setQuery] = React.useState("")
   const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
+
   React.useEffect(() => {
     if (!query) return
     const rows = []
@@ -92,19 +95,19 @@ function App() {
   }, [query])
 
   React.useEffect(() => {
-    const facetObj = facets[focus]
+    const facetObj = facetObjs[facet]
     const { query, cols } = facetObj
     setQuery(query)
-    if (cols) {
+    // if (cols) {
       const colNames = cols.split(',')
       const columns = colNames.map(colName => colDefs[colName])
       setColumns(columns)
-    }
-  }, [focus])
+    // }
+  }, [facet])
 
   function changeFocus(e) {
-    const focus = e.currentTarget.value
-    setFocus(focus)
+    const facet = e.currentTarget.value
+    setFacet(facet)
   }
 
   return (
@@ -114,13 +117,10 @@ function App() {
           <img src={logo} alt="logo" /> 
           <span>Neomem</span>
         </span>
-        <div className="app-header-focus">
+        <div className="app-header-facet">
           <span>Facet:&nbsp;</span>
-          <select name="focus" id="focus" value={focus} onChange={changeFocus}>
-            <option value="books">Books</option>
-            <option value="personal">Personal</option>
-            <option value="neomem">Neomem</option>
-            <option value="timeframe">Timeframe</option>
+          <select name="facet" id="facet" value={facet} onChange={changeFocus}>
+            {Object.keys(facetObjs).map(facet => <option value={facet}>{facet}</option>)}
           </select>
         </div>
         <div className="app-header-query">{query}</div>
