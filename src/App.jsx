@@ -17,19 +17,30 @@ const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
 
 
 //. put these into db also eventually
+
+// const projectQuery = "MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) WITH n, labels(n) as type RETURN n {.*, type}"
+const projectQuery = `
+MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
+OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+WITH n, labels(n) as type, collect(t.name) as timeframe
+RETURN n {.*, type, timeframe}
+`
+
 const facetObjs = {
   personal: {
-    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) WITH n, labels(n) as type RETURN n {.*, type}",
+    query: projectQuery,
     params: { projectName: 'personal' },
-    cols: "type,name,when",
+    cols: "type,name,when,timeframe",
   },
   neomem: {
-    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'neomem'}) WITH n, labels(n) as type RETURN n {.*, type}",
-    cols: "type,name,when",
+    query: projectQuery,
+    params: { projectName: 'neomem' },
+    cols: "type,name,when,timeframe",
   },
   tallieo: {
-    query: "MATCH (n)-[r:PROJECT]->(m:Project {name:'tallieo'}) WITH n, labels(n) as type RETURN n {.*, type}",
-    cols: "type,name,when",
+    query: projectQuery,
+    params: { projectName: 'tallieo' },
+    cols: "type,name,when,timeframe",
   },
   books: {
     query: "MATCH (n) WHERE (n:Book) or (n:Author) OPTIONAL MATCH (n)-[r:AUTHOR]->(m) WITH n, collect(m.name) as author, labels(n) as type RETURN n { .*, type, author }",
@@ -47,6 +58,7 @@ const colDefs = {
   type: { title: "Type", width: 120 },
   name: { title: "Name", width: 300 },
   when: { title: "When", width: 80 },
+  timeframe: { title: "Timeframe", width: 80 },
   author: { title: "Author", width: 150 },
 }
 Object.keys(colDefs).forEach(key => colDefs[key].field = key)
@@ -83,7 +95,7 @@ function App() {
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
     //. do async await?
     session
-      .run(query, params)
+      .run(query, params || {})
       .then(result => {
         result.records.forEach(record => {
           const row = record.get('n')
