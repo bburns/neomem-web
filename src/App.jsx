@@ -146,6 +146,8 @@ function App() {
     console.log(cell)
     const col = cell.getColumn()
     console.log(col)
+    const field = col.getField()
+    console.log(field)
     const colDef = col.getDefinition()
     console.log(colDef)
     const row = cell.getRow()
@@ -156,7 +158,8 @@ function App() {
     console.log(id)
     const value = cell.getValue()
     console.log(value)
-    const query = `MATCH (t) WHERE id(t)=$id SET t.description = $value`
+    // const query = `MATCH (t) WHERE id(t)=$id SET t.description = $value`
+    const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
     const params = { id, value }
     const session = driver.session()
     session.run(query, params)
