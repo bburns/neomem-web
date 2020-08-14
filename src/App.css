@@ -35,7 +35,7 @@ select {
 }
 .app-header-query {
   padding: 4px 0;
-  font-size: 0.9em;
+  font-size: 14px;
   background: #333;
   color: #999;
 }

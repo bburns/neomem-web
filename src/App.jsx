@@ -126,12 +126,14 @@ Object.keys(colDefs).forEach(key => {
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
 // ]
 
+const emptyRow = {}
+
 
 function App() {
 
   const [facet, setFacet] = React.useState("projects")
   const [query, setQuery] = React.useState("")
-  const [data, setData] = React.useState([])
+  const [rows, setRows] = React.useState([])
   const [columns, setColumns] = React.useState([])
 
   React.useEffect(() => {
@@ -157,10 +159,9 @@ function App() {
         })
         rows.push(row)
       })
-      const emptyRow = {}
       rows.push(emptyRow)
       session.close()
-      setData(rows)
+      setRows(rows)
     })()
   }, [facet])
 
@@ -217,6 +218,8 @@ function App() {
       const result = await session.run(query, params)
       console.log(result)
       //. update new row contents and add another blank row
+      // rows.push(emptyRow)
+      // setRows(rows)
     }
     session.close()
   }
@@ -237,12 +240,12 @@ function App() {
             {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
           </select>
         </div>
-        <div className="app-header-query">{query}</div>
+        <div className="app-header-query">Query: {query}</div>
       </div>
       
       <div className="app-contents">
         <ReactTabulator
-          data={data}
+          data={rows}
           columns={columns}
           tooltips={false}
           layout={"fitData"}
