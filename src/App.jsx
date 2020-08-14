@@ -215,11 +215,14 @@ function App() {
 
   return (
     <div className="app">
+      
       <div className="app-header">
+        
         <span className="app-header-logo">
           <img src={logo} alt="logo" /> 
           <span>Neomem</span>
         </span>
+
         <div className="app-header-facet">
           <span>Facet:&nbsp;</span>
           <select name="facet" id="facet" value={facet} onChange={changeFocus}>
@@ -228,6 +231,7 @@ function App() {
         </div>
         <div className="app-header-query">{query}</div>
       </div>
+      
       <div className="app-contents">
         <ReactTabulator
           data={data}

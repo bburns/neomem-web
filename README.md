@@ -1,6 +1,8 @@
 # Neomem
 
-An information manager - a cross between a spreadsheet and document editor
+<!-- An information manager - a cross between a spreadsheet and document editor -->
+
+A graph database editor
 
 
 ## About
