@@ -31,13 +31,13 @@ WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 const genericQuery = `
-MATCH (n:[label]) 
+MATCH (n:#label#) 
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 const genericCols = "id,type,name,description"
 const genericAddQuery = `
-CREATE (n:[label])
+CREATE (n:#label#)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
@@ -84,6 +84,16 @@ const facetObjs = {
   },
 }
 
+function substituteQueryParams(query, params) {
+  for (const key of Object.keys(params)) {
+    const value = params[key]
+    query = query.replace('#' + key + '#', value)
+  }  
+  return query
+}
+
+
+
 //. put into db eventually
 const colDefs = {
   id: { width: 50 },
@@ -127,7 +137,8 @@ function App() {
   React.useEffect(() => {
     (async () => {
       const facetObj = facetObjs[facet]
-      const { query, params, cols } = facetObj
+      let { query, params, cols } = facetObj
+      query = substituteQueryParams(query, params)
       setQuery(query)
       const colNames = cols.split(',')
       const columns = colNames.map(colName => colDefs[colName])
@@ -190,8 +201,9 @@ function App() {
     if (editor==='input') {
       if (!id) {
         const facetObj = facetObjs[facet]
-        const query = facetObj.addQuery
+        let query = facetObj.addQuery
         const params = facetObj.params || {}
+        query = substituteQueryParams(query, params)
         const result = await session.run(query, params)
         console.log(result)
         const record = result.records[0]
