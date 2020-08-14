@@ -186,6 +186,7 @@ function App() {
     const data = row.getData()
     let id = data.id
     const value = cell.getValue()
+    const editor = colDef.editor
     console.log(col)
     console.log(field)
     console.log(colDef)
@@ -193,23 +194,26 @@ function App() {
     console.log(data)
     console.log(id)
     console.log(value)
+    console.log(editor)
     const session = driver.session()
-    if (!id) {
-      const facetObj = facetObjs[facet]
-      const query = facetObj.addQuery
-      const params = {}
+    if (editor==='input') {
+      if (!id) {
+        const facetObj = facetObjs[facet]
+        const query = facetObj.addQuery
+        const params = {}
+        const result = await session.run(query, params)
+        console.log(result)
+        const record = result.records[0]
+        console.log(record)
+        const row = record.get('n')
+        console.log(row)
+        id = row.id
+      }
+      const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
+      const params = { id, value }
       const result = await session.run(query, params)
       console.log(result)
-      const record = result.records[0]
-      console.log(record)
-      const row = record.get('n')
-      console.log(row)
-      id = row.id
     }
-    const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
-    const params = { id, value }
-    const result = await session.run(query, params)
-    console.log(result)
     session.close()
   }
 
