@@ -33,3 +33,12 @@ body {
   background: #333;
   color: #999;
 }
+
+
+/* //. override defaults here? */
+.tabulator {
+  font-size: 13px !important;
+}
+.tabulator-row.tabulator-selectable:hover {
+  background: #e2e2e2 !important;
+}

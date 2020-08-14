@@ -41,6 +41,13 @@ const facetObjs = {
     params: { projectName: 'tallieo' },
     cols: projectCols,
   },
+  projects: {
+    query: `
+    MATCH (n:Project) 
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }`,
+    cols: "id,type,name,description",
+  },
   books: {
     query: `
     MATCH (n) 
