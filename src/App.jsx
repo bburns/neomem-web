@@ -21,7 +21,7 @@ const projectQuery = `
 MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 WITH n, labels(n) as type, collect(t.name) as timeframe, collect(m.name) as project, id(n) as id
-RETURN n {.*, type, timeframe, project, id }
+RETURN n { .*, type, timeframe, project, id }
 `
 const projectCols = "id,project,type,name,timeframe,description"
 
@@ -30,6 +30,12 @@ const facetObjs = {
     query: projectQuery,
     params: { projectName: 'personal' },
     cols: projectCols,
+    addQuery: `
+    MATCH (m:Project {name:'personal'})
+    CREATE (n:Task)-[:PROJECT]->(m)
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `
   },
   neomem: {
     query: projectQuery,
@@ -158,30 +164,40 @@ function App() {
     setFacet(facet)
   }
 
-  function cellEdited(cell) {
+  async function cellEdited(cell) {
     console.log(cell)
     const col = cell.getColumn()
-    console.log(col)
     const field = col.getField()
-    console.log(field)
     const colDef = col.getDefinition()
-    console.log(colDef)
     const row = cell.getRow()
-    console.log(row)
     const data = row.getData()
-    console.log(data)
-    const id = data.id
-    console.log(id)
+    let id = data.id
     const value = cell.getValue()
+    console.log(col)
+    console.log(field)
+    console.log(colDef)
+    console.log(row)
+    console.log(data)
+    console.log(id)
     console.log(value)
-    // const query = `MATCH (t) WHERE id(t)=$id SET t.description = $value`
+    const session = driver.session()
+    if (!id) {
+      const facetObj = facetObjs[facet]
+      const query = facetObj.addQuery
+      const params = {}
+      const result = await session.run(query, params)
+      console.log(result)
+      const record = result.records[0]
+      console.log(record)
+      const row = record.get('n')
+      console.log(row)
+      id = row.id
+    }
     const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
     const params = { id, value }
-    const session = driver.session()
-    session.run(query, params)
-      .then(result => console.log(result))
-      .catch(error => console.error(error))
-      .then(() => session.close())
+    const result = await session.run(query, params)
+    console.log(result)
+    session.close()
   }
 
   return (
