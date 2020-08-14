@@ -1,8 +1,8 @@
 import React from 'react'
-import './App.css'
 import { ReactTabulator } from 'react-tabulator'
 // import 'react-tabulator/lib/styles.css'
 import 'react-tabulator/css/tabulator.css'
+import './App.css'
 import logo from './assets/logo256.png'
 import neo4j from 'neo4j-driver'
 
@@ -81,7 +81,7 @@ const facetObjs = {
     OPTIONAL MATCH (n)-[r:AUTHOR]->(m) 
     WITH n, collect(m.name) as author, labels(n) as type, id(n) as id
     RETURN n { .*, type, author, id }`,
-    cols: "id,type,author,name",
+    cols: "id,type,author,name,description",
   },
   timeframe: {
     query: `
@@ -213,6 +213,7 @@ function App() {
       const params = { id, value }
       const result = await session.run(query, params)
       console.log(result)
+      //. update new row contents and add another blank row
     }
     session.close()
   }
