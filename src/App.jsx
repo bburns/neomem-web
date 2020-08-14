@@ -24,55 +24,47 @@ WITH n, labels(n) as type, collect(t.name) as timeframe, collect(m.name) as proj
 RETURN n { .*, type, timeframe, project, id }
 `
 const projectCols = "id,project,type,name,timeframe,description"
+const projectAddQuery = `
+MATCH (m:Project {name:$projectName})
+CREATE (n:Task)-[:PROJECT]->(m)
+WITH n, labels(n) as type, id(n) as id
+RETURN n { .*, type, id }
+`
+const genericQuery = `
+MATCH (n:[label]) 
+WITH n, labels(n) as type, id(n) as id
+RETURN n { .*, type, id }
+`
+const genericCols = "id,type,name,description"
+const genericAddQuery = `
+CREATE (n:[label])
+WITH n, labels(n) as type, id(n) as id
+RETURN n { .*, type, id }
+`
 
 const facetObjs = {
-  personal: {
-    query: projectQuery,
-    params: { projectName: 'personal' },
-    cols: projectCols,
-    addQuery: `
-    MATCH (m:Project {name:'personal'})
-    CREATE (n:Task)-[:PROJECT]->(m)
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
-    `
-  },
   facets: {
-    query: `
-    MATCH (n:Facet) 
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
-    `,
-    cols: "id,type,name,description",
-    addQuery: `
-    CREATE (n:Facet)
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
-    `,
-  },
-  neomem: {
-    query: projectQuery,
-    params: { projectName: 'neomem' },
-    cols: projectCols,
-  },
-  tallieo: {
-    query: projectQuery,
-    params: { projectName: 'tallieo' },
-    cols: projectCols,
+    params: { label: 'Facet' },
+    query: genericQuery,
+    cols: genericCols,
+    addQuery: genericAddQuery,
   },
   projects: {
-    query: `
-    MATCH (n:Project) 
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }`,
-    cols: "id,type,name,description",
+    params: { label: 'Project' },
+    query: genericQuery,
+    cols: genericCols,
+    addQuery: genericAddQuery,
   },
+  personal: { params: { projectName: 'personal' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  neomem: { params: { projectName: 'neomem' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  tallieo: { params: { projectName: 'tallieo' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  facemate: { params: { projectName: 'facemate' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  ccs: { params: { projectName: 'ccs' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
   people: {
-    query: `
-    MATCH (n:Person) 
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }`,
-    cols: "id,type,name,description",
+    params: { label: 'Person' },
+    query: genericQuery,
+    cols: genericCols,
+    addQuery: genericAddQuery,
   },
   books: {
     query: `
@@ -127,50 +119,49 @@ Object.keys(colDefs).forEach(key => {
 
 function App() {
 
-  const [facet, setFacet] = React.useState("personal")
+  const [facet, setFacet] = React.useState("projects")
   const [query, setQuery] = React.useState("")
-  const [params, setParams] = React.useState({})
   const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
 
   React.useEffect(() => {
-    if (!query) return
-    const rows = []
-    const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-    //. do async await?
-    session
-      .run(query, params || {})
-      .then(result => {
-        result.records.forEach(record => {
-          const row = record.get('n')
-          Object.keys(row).forEach(key => {
-            if (Array.isArray(row[key])) {
-              row[key] = row[key].join(', ')
-            }
-          })
-          rows.push(row)
+    (async () => {
+      const facetObj = facetObjs[facet]
+      const { query, params, cols } = facetObj
+      setQuery(query)
+      const colNames = cols.split(',')
+      const columns = colNames.map(colName => colDefs[colName])
+      setColumns(columns)
+      if (!query) return
+      console.log(query, params)
+      const rows = []
+      const session = driver.session({ defaultAccessMode: neo4j.session.READ })
+      const result = await session.run(query, params || {})
+      result.records.forEach(record => {
+        const row = record.get('n')
+        Object.keys(row).forEach(key => {
+          if (Array.isArray(row[key])) {
+            row[key] = row[key].join(', ')
+          }
         })
-        const emptyRow = {}
-        rows.push(emptyRow)
+        rows.push(row)
       })
-      .catch(error => {
-        console.error(error)
-      })
-      .then(() => {
-        session.close()
-        setData(rows)
-      })
-  }, [query, params])
-
-  React.useEffect(() => {
-    const facetObj = facetObjs[facet]
-    const { query, params, cols } = facetObj
-    setQuery(query)
-    setParams(params)
-    const colNames = cols.split(',')
-    const columns = colNames.map(colName => colDefs[colName])
-    setColumns(columns)
+      const emptyRow = {}
+      rows.push(emptyRow)
+      session.close()
+      setData(rows)
+    })()
   }, [facet])
+
+  // React.useEffect(() => {
+  //   const facetObj = facetObjs[facet]
+  //   const { query, params, cols } = facetObj
+  //   setQuery(query)
+  //   setParams(params)
+  //   const colNames = cols.split(',')
+  //   const columns = colNames.map(colName => colDefs[colName])
+  //   setColumns(columns)
+  // }, [facet])
 
   function changeFocus(e) {
     const facet = e.currentTarget.value
@@ -200,7 +191,7 @@ function App() {
       if (!id) {
         const facetObj = facetObjs[facet]
         const query = facetObj.addQuery
-        const params = {}
+        const params = facetObj.params || {}
         const result = await session.run(query, params)
         console.log(result)
         const record = result.records[0]
