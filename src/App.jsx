@@ -48,6 +48,13 @@ const facetObjs = {
     RETURN n { .*, type, id }`,
     cols: "id,type,name,description",
   },
+  people: {
+    query: `
+    MATCH (n:Person) 
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }`,
+    cols: "id,type,name,description",
+  },
   books: {
     query: `
     MATCH (n) 
@@ -69,12 +76,12 @@ const facetObjs = {
 //. put into db eventually
 const colDefs = {
   id: { width: 50 },
-  project: { width: 120 },
-  type: { width: 120 },
-  timeframe: { width: 120 },
-  author: { width: 150 },
-  name: { width: 300, editor: 'input' },
-  description: { width: 400, editor: 'input' },
+  project: { width: 100 },
+  type: { width: 100 },
+  timeframe: { width: 100 },
+  author: { width: 100 },
+  name: { width: 250, editor: 'input' },
+  description: { width: 350, editor: 'input' },
 }
 Object.keys(colDefs).forEach(key => {
   colDefs[key].field = key
@@ -124,6 +131,8 @@ function App() {
           })
           rows.push(row)
         })
+        const emptyRow = {}
+        rows.push(emptyRow)
       })
       .catch(error => {
         console.error(error)
