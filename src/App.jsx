@@ -11,11 +11,12 @@ import neo4j from 'neo4j-driver'
 const uri = process.env.REACT_APP_NEO4J_URI
 const user = process.env.REACT_APP_NEO4J_USER
 const password = process.env.REACT_APP_NEO4J_PASSWORD
-const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
+// note: neo4j stores 64-bit ints, js only goes up to 53-bits (9e16)
+// see https://github.com/neo4j/neo4j-javascript-driver#enabling-native-numbers
+const driver = neo4j.driver(uri, neo4j.auth.basic(user, password), { disableLosslessIntegers: true })
 
 //. put these into db also eventually
 
-// const projectQuery = "MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) WITH n, labels(n) as type RETURN n {.*, type}"
 const projectQuery = `
 MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
@@ -54,7 +55,7 @@ const facetObjs = {
     MATCH (n)-[r:PROJECT]->(m), (n)-[:TIMEFRAME]->(t) 
     WITH n, labels(n) AS type, collect(m.name) AS project , collect(t.name) AS timeframe, id(n) as id
     RETURN n {.*, type, project, timeframe, id }`,
-    cols: "id,type,project,name,timeframe",
+    cols: "id,type,project,name,timeframe,description",
   },
 }
 
@@ -63,10 +64,10 @@ const colDefs = {
   id: { width: 50 },
   project: { width: 120 },
   type: { width: 120 },
-  name: { width: 300 },
-  description: { width: 400 },
   timeframe: { width: 120 },
   author: { width: 150 },
+  name: { width: 300, editor: 'input' },
+  description: { width: 400, editor: 'input' },
 }
 Object.keys(colDefs).forEach(key => {
   colDefs[key].field = key
@@ -141,6 +142,29 @@ function App() {
     setFacet(facet)
   }
 
+  function cellEdited(cell) {
+    console.log(cell)
+    const col = cell.getColumn()
+    console.log(col)
+    const colDef = col.getDefinition()
+    console.log(colDef)
+    const row = cell.getRow()
+    console.log(row)
+    const data = row.getData()
+    console.log(data)
+    const id = data.id
+    console.log(id)
+    const value = cell.getValue()
+    console.log(value)
+    const query = `MATCH (t) WHERE id(t)=$id SET t.description = $value`
+    const params = { id, value }
+    const session = driver.session()
+    session.run(query, params)
+      .then(result => console.log(result))
+      .catch(error => console.error(error))
+      .then(() => session.close())
+  }
+
   return (
     <div className="app">
       <div className="app-header">
@@ -160,8 +184,11 @@ function App() {
         <ReactTabulator
           data={data}
           columns={columns}
-          tooltips={true}
+          tooltips={false}
           layout={"fitData"}
+          cellEdited={cellEdited}
+          // dataEdited={newData => console.log('dataEdited', newData)}
+          // footerElement={<span>Footer</span>}
         />
       </div>
     </div>
