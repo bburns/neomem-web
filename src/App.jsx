@@ -37,6 +37,19 @@ const facetObjs = {
     RETURN n { .*, type, id }
     `
   },
+  facets: {
+    query: `
+    MATCH (n:Facet) 
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `,
+    cols: "id,type,name,description",
+    addQuery: `
+    CREATE (n:Facet)
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `,
+  },
   neomem: {
     query: projectQuery,
     params: { projectName: 'neomem' },

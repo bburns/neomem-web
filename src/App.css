@@ -10,6 +10,7 @@ body {
 }
 
 .app-header {
+  padding: 4px 0;
   background: black;
   color: #ccc;
   /* display: flex; */
@@ -25,20 +26,36 @@ body {
   height: 24px;
   margin-right: 4px;
 }
-.app-header-focus {
+.app-header-facet {
+  padding: 5px 0;
   background: #333;
 }
 .app-header-query {
+  padding: 4px 0;
   font-size: 0.9em;
   background: #333;
   color: #999;
 }
+
+.facet {
+  font-size: 1em;
+}
+
 
 
 /* //. override defaults here. better way? */
 .tabulator {
   font-size: 13px !important;
 }
+.tabulator-row {
+  border-bottom: 1px solid #ddd;
+}
+.tabulator-row .tabulator-cell {
+  border-right: 1px solid #ddd !important;
+}
+.tabulator-row.tabulator-row-even {
+  background: none !important;
+}
 .tabulator-row.tabulator-selectable:hover {
-  background: #e2e2e2 !important;
+  background: #f2f2f2 !important;
 }
