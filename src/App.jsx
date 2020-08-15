@@ -76,6 +76,7 @@ const facetObjs = {
     cols: "id,type,author,name,description",
   },
   timeframe: {
+    //. include items without a project also
     query: `
     MATCH (n)-[r:PROJECT]->(m), (n)-[:TIMEFRAME]->(t) 
     WITH n, labels(n) AS type, collect(m.name) AS project , collect(t.name) AS timeframe, id(n) as id
@@ -97,18 +98,28 @@ function substituteQueryParams(query, params) {
 //. put into db eventually
 const colDefs = {
   id: { width: 50 },
-  project: { width: 100 },
-  type: { width: 100 },
-  timeframe: { width: 100, editor:"select", editorParams:{
-    "month":"month",
-    "week":"week",
-    "today":"today",
-    "now":"now",
-    "done":"done",
-  }},
-  author: { width: 100 },
   name: { width: 250, editor: 'input' },
   description: { width: 350, editor: 'input' },
+  //. singleselect
+  project: { width: 100 },
+  //. multiselect? single?
+  type: { width: 100, editor: "select", editorParams: cell => {
+    // // create a options list of all values from another column in the table
+    // var rows = table.getRows()
+    // var values = {}
+    // rows.forEach(row => {
+    //     var data = row.getData()
+    //     values[data.fullname] = data.fullname
+    // })
+    // return { values }
+    // const values = getLabels()
+  }},
+  //. singleselect - get values from db - how?
+  timeframe: { width: 100, editor: "select", editorParams: {
+    values: "year,quarter,month,week,today,now,done".split(','),
+  }},
+  //.
+  author: { width: 100, editor: "select", editorParams: {}, multiselect: true },
 }
 Object.keys(colDefs).forEach(key => {
   colDefs[key].field = key
@@ -146,7 +157,7 @@ function App() {
   React.useEffect(() => {
     (async () => {
       const facetObj = facetObjs[facet]
-      let { query, params, cols } = facetObj
+      let { query, params={}, cols } = facetObj
       query = substituteQueryParams(query, params)
       setQuery(query)
       const colNames = cols.split(',')
