@@ -127,7 +127,7 @@ const colDefs = {
   
   //. multiselect? single?
   type: { width: 100, editor: "select", editorParams: { 
-    values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(','),
+    values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(',').sort(),
   }},
   // cell => {
   //   console.log(cell)
@@ -152,7 +152,9 @@ const colDefs = {
   author: { width: 100, editor: "select", editorParams: {
     values: "tolkien,pkdick,tanithlee".split(','),
   }, multiselect: true },
+
 }
+
 Object.keys(colDefs).forEach(key => {
   colDefs[key].field = key
   colDefs[key].title = key 
@@ -223,14 +225,14 @@ function App() {
   async function cellEdited(cell) {
     console.log(cell)
     const col = cell.getColumn()
-    const field = col.getField()
+    const field = col.getField() // eg 'timeframe'
     const colDef = col.getDefinition()
     const row = cell.getRow()
     const data = row.getData()
     let id = data.id
-    const value = cell.getValue()
-    const oldvalue = cell.getOldValue()
-    const editor = colDef.editor
+    const value = cell.getValue() // eg 'week'
+    const oldvalue = cell.getOldValue() // eg 'month'
+    const editor = colDef.editor // eg 'input', 'select'
     console.log(col)
     console.log(field)
     console.log(colDef)
@@ -270,7 +272,8 @@ function App() {
       const result = await session.run(query, params)
       console.log(result)
     }
-    else if (editor==='select') {
+
+    else if (editor==='select' && field==='timeframe') {
 
       // drop any existing timeframe
       const query1 = `
@@ -291,6 +294,32 @@ function App() {
       const result2 = await session.run(query2, params)
       console.log(result2)
     }
+
+    else if (editor==='select' && field==='type') {
+
+      // drop existing label
+      let query1 = `
+      MATCH (t)
+      WHERE id(t)=$id 
+      REMOVE t:#oldvalue#
+      `
+      const params = { id, value, oldvalue }
+      query1 = substituteQueryParams(query1, params)
+      const result1 = await session.run(query1, params)
+      console.log(result1)
+
+      // add new label
+      let query2 = `
+      MATCH (t)
+      WHERE id(t)=$id 
+      SET t:#value#
+      `
+      query2 = substituteQueryParams(query2, params)
+      const result2 = await session.run(query2, params)
+      console.log(result2)
+
+    }
+
     session.close()
   }
 
