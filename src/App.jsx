@@ -232,11 +232,7 @@ function App() {
   }
 
   async function cellEdited(cell) {
-  // async function cellEdited(cell, facet) {
     console.log(cell)
-    // console.log(facet)
-    console.log(facetRef.current)
-    // return
     const facet = facetRef.current
     console.log(facet)
 
@@ -374,8 +370,7 @@ function App() {
           columns={columns}
           tooltips={false}
           layout={"fitData"}
-          // cellEdited={cellEdited}
-          cellEdited={cell => cellEdited.bind(null, cell)()}
+          cellEdited={cellEdited}
           // dataEdited={newData => console.log('dataEdited', newData)}
           // footerElement={<span>Footer</span>}
         />
