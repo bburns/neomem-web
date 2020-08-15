@@ -179,8 +179,7 @@ Object.keys(colDefs).forEach(key => {
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
 // ]
 
-// const emptyRow = { id: 'empty' }
-const emptyRow = {}
+const emptyRow = { id:0 }
 
 // let facet = 'projects'
 
@@ -274,7 +273,6 @@ function App() {
         console.log('row', row)
         //. update new row contents
         // setRows(rows)
-        // table.updateData([row])
         table.addRow(row) // works, but
         id = row.id
       }
@@ -288,7 +286,9 @@ function App() {
       console.log(result)
       const row = { id, [field]: value }
       table.updateData([row])
-  }
+      table.updateData([{ id:0,  [field]: undefined }])
+      //. now move empty row to the end again - how?
+    }
 
     else if (editor==='select' && field==='timeframe') {
 
