@@ -238,15 +238,25 @@ function App() {
       console.log(result)
     }
     else if (editor==='select') {
-      const query = `
-      MATCH (t)-[r]-(u:Timeframe {name: $oldvalue}), (v:Timeframe {name: $value}) 
+
+      // drop any existing timeframe
+      const query1 = `
+      MATCH (t)-[r]-(u:Timeframe {name: $oldvalue})
       WHERE id(t)=$id 
       DELETE r
-      CREATE (t)-[:TIMEFRAME]->(v)
       `
       const params = { id, value, oldvalue }
-      const result = await session.run(query, params)
-      console.log(result)
+      const result1 = await session.run(query1, params)
+      console.log(result1)
+
+      // add new timeframe
+      const query2 = `
+      MATCH (t), (u:Timeframe {name: $value}) 
+      WHERE id(t)=$id 
+      CREATE (t)-[:TIMEFRAME]->(u)
+      `
+      const result2 = await session.run(query2, params)
+      console.log(result2)
     }
     session.close()
   }
