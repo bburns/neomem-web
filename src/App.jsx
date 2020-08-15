@@ -271,9 +271,9 @@ function App() {
         console.log(record)
         const row = record.get('n')
         console.log('row', row)
-        //. update new row contents
-        // setRows(rows)
-        table.addRow(row) // works, but
+        table.updateData([{ id:0,  [field]: undefined }])
+        table.deleteRow(0)
+        table.addRow(row)
         id = row.id
       }
       const query = `
@@ -286,8 +286,7 @@ function App() {
       console.log(result)
       const row = { id, [field]: value }
       table.updateData([row])
-      table.updateData([{ id:0,  [field]: undefined }])
-      //. now move empty row to the end again - how?
+      table.addRow(emptyRow)
     }
 
     else if (editor==='select' && field==='timeframe') {
