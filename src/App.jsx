@@ -123,7 +123,9 @@ const colDefs = {
   description: { width: 350, editor: 'input' },
   
   //. singleselect
-  project: { width: 100 },
+  project: { width: 100, editorParams: { 
+    values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager,".split(',').sort(),
+  } },
   
   //. multiselect? single?
   type: { width: 100, editor: "select", editorParams: { 
@@ -187,6 +189,7 @@ function App() {
   const [query, setQuery] = React.useState("")
   const [rows, setRows] = React.useState([])
   const [columns, setColumns] = React.useState([])
+  const tableRef = React.useRef(null)
 
   React.useEffect(() => {
     (async () => {
@@ -265,6 +268,9 @@ function App() {
         //. add another blank row
         // rows.push(emptyRow)
         // setRows(rows)
+        console.log(tableRef.current)
+        console.log(tableRef.current.table)
+        tableRef.current.table.updateData(row)
         id = row.id
       }
       const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
@@ -275,7 +281,7 @@ function App() {
 
     else if (editor==='select' && field==='timeframe') {
 
-      // drop any existing timeframe
+      // drop any existing relation
       const query1 = `
       MATCH (t)-[r]-(u:Timeframe {name: $oldvalue})
       WHERE id(t)=$id 
@@ -285,7 +291,7 @@ function App() {
       const result1 = await session.run(query1, params)
       console.log(result1)
 
-      // add new timeframe
+      // add new relation
       const query2 = `
       MATCH (t), (u:Timeframe {name: $value}) 
       WHERE id(t)=$id 
@@ -344,6 +350,7 @@ function App() {
       
       <div className="app-contents">
         <ReactTabulator
+          ref={tableRef}
           data={rows}
           columns={columns}
           tooltips={false}
