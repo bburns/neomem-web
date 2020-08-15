@@ -230,6 +230,7 @@ function App() {
 
   async function cellEdited(cell) {
     console.log(cell)
+    // console.log(facet)
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
     const colDef = col.getDefinition()
@@ -363,6 +364,7 @@ function App() {
           tooltips={false}
           layout={"fitData"}
           cellEdited={cellEdited}
+          // cellEdited={cell => cellEdited(cell, facet)}
           // dataEdited={newData => console.log('dataEdited', newData)}
           // footerElement={<span>Footer</span>}
         />
