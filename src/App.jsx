@@ -182,18 +182,20 @@ Object.keys(colDefs).forEach(key => {
 // const emptyRow = { id: 'empty' }
 const emptyRow = {}
 
+// let facet = 'projects'
 
 function App() {
 
   const [facet, setFacet] = React.useState("projects")
-  // const [facetObj, setFacetObj] = React.useState({})
-  const [query, setQuery] = React.useState("")
+  const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
+  const facetRef = React.useRef(facet)
 
   React.useEffect(() => {
-    (async () => {
+    facetRef.current = facet
+    ;(async () => {
       const facetObj = facetObjs[facet]
       // setFacetObj(facetObj)
       let { query, params={}, cols } = facetObj
@@ -226,11 +228,18 @@ function App() {
     const facet = e.currentTarget.value
     setFacet(facet)
     // setFacet(() => facet)
+    // facet = e.currentTarget.value
   }
 
   async function cellEdited(cell) {
+  // async function cellEdited(cell, facet) {
     console.log(cell)
     // console.log(facet)
+    console.log(facetRef.current)
+    // return
+    const facet = facetRef.current
+    console.log(facet)
+
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
     const colDef = col.getDefinition()
@@ -337,6 +346,8 @@ function App() {
     session.close()
   }
 
+  console.log(facet)
+
   return (
     <div className="app">
       
@@ -363,8 +374,8 @@ function App() {
           columns={columns}
           tooltips={false}
           layout={"fitData"}
-          cellEdited={cellEdited}
-          // cellEdited={cell => cellEdited(cell, facet)}
+          // cellEdited={cellEdited}
+          cellEdited={cell => cellEdited.bind(null, cell)()}
           // dataEdited={newData => console.log('dataEdited', newData)}
           // footerElement={<span>Footer</span>}
         />
