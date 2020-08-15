@@ -15,6 +15,27 @@ const password = process.env.REACT_APP_NEO4J_PASSWORD
 // see https://github.com/neo4j/neo4j-javascript-driver#enabling-native-numbers
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password), { disableLosslessIntegers: true })
 
+
+// ;(async function() {
+//   const session = driver.session()
+//   const query = "call db.labels()"
+//   const results = await session.run(query)
+//   console.log(results)
+//   const foo = results.records.map(record => record.get('label')).sort()
+//   console.log(foo)
+//   session.close()
+// })()
+
+async function getTypes() {
+  const session = driver.session()
+  const query = "call db.labels()"
+  const results = await session.run(query)
+  session.close()
+  const types = results.records.map(record => record.get('label')).sort()
+  return types
+}
+
+
 //. put these into db also eventually
 
 const projectQuery = `
@@ -95,31 +116,42 @@ function substituteQueryParams(query, params) {
 
 
 
-//. put into db eventually
+//. put coldefs into db eventually
 const colDefs = {
   id: { width: 50 },
   name: { width: 250, editor: 'input' },
   description: { width: 350, editor: 'input' },
+  
   //. singleselect
   project: { width: 100 },
+  
   //. multiselect? single?
-  type: { width: 100, editor: "select", editorParams: cell => {
-    // // create a options list of all values from another column in the table
-    // var rows = table.getRows()
-    // var values = {}
-    // rows.forEach(row => {
-    //     var data = row.getData()
-    //     values[data.fullname] = data.fullname
-    // })
-    // return { values }
-    // const values = getLabels()
+  type: { width: 100, editor: "select", editorParams: { 
+    values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(','),
   }},
+  // cell => {
+  //   console.log(cell)
+  //   // // create a options list of all values from another column in the table
+  //   // var rows = table.getRows()
+  //   // var values = {}
+  //   // rows.forEach(row => {
+  //   //     var data = row.getData()
+  //   //     values[data.fullname] = data.fullname
+  //   // })
+  //   // return { values }
+  //   // const values = getLabels()
+  //   return { values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(',') }
+  // }},
+  
   //. singleselect - get values from db - how?
   timeframe: { width: 100, editor: "select", editorParams: {
     values: "year,quarter,month,week,today,now,done".split(','),
   }},
+  
   //.
-  author: { width: 100, editor: "select", editorParams: {}, multiselect: true },
+  author: { width: 100, editor: "select", editorParams: {
+    values: "tolkien,pkdick,tanithlee".split(','),
+  }, multiselect: true },
 }
 Object.keys(colDefs).forEach(key => {
   colDefs[key].field = key
@@ -182,16 +214,6 @@ function App() {
       setRows(rows)
     })()
   }, [facet])
-
-  // React.useEffect(() => {
-  //   const facetObj = facetObjs[facet]
-  //   const { query, params, cols } = facetObj
-  //   setQuery(query)
-  //   setParams(params)
-  //   const colNames = cols.split(',')
-  //   const columns = colNames.map(colName => colDefs[colName])
-  //   setColumns(columns)
-  // }, [facet])
 
   function changeFocus(e) {
     const facet = e.currentTarget.value
