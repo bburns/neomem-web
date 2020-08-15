@@ -186,6 +186,7 @@ const emptyRow = {}
 function App() {
 
   const [facet, setFacet] = React.useState("projects")
+  // const [facetObj, setFacetObj] = React.useState({})
   const [query, setQuery] = React.useState("")
   const [rows, setRows] = React.useState([])
   const [columns, setColumns] = React.useState([])
@@ -194,6 +195,7 @@ function App() {
   React.useEffect(() => {
     (async () => {
       const facetObj = facetObjs[facet]
+      // setFacetObj(facetObj)
       let { query, params={}, cols } = facetObj
       query = substituteQueryParams(query, params)
       setQuery(query)
@@ -220,9 +222,10 @@ function App() {
     })()
   }, [facet])
 
-  function changeFocus(e) {
+  function changeFacet(e) {
     const facet = e.currentTarget.value
     setFacet(facet)
+    // setFacet(() => facet)
   }
 
   async function cellEdited(cell) {
@@ -247,16 +250,20 @@ function App() {
     const session = driver.session()
     if (editor==='input') {
       if (!id) {
+        //.. why is facet 'projects' when on 'personal' facet?
         const facetObj = facetObjs[facet]
+        console.log(facet, facetObj)
         let query = facetObj.addQuery
         const params = facetObj.params || {}
+        console.log(query)
         query = substituteQueryParams(query, params)
+        console.log('run', query, params)
         const result = await session.run(query, params)
         console.log(result)
         const record = result.records[0]
         console.log(record)
         const row = record.get('n')
-        console.log(row)
+        console.log('row', row)
         //. update new row contents 
         // const i = rows.findIndex(row => row.id === id)
         // if (i !== -1) {
@@ -270,7 +277,7 @@ function App() {
         // setRows(rows)
         console.log(tableRef.current)
         console.log(tableRef.current.table)
-        tableRef.current.table.updateData(row)
+        tableRef.current.table.updateData([row])
         id = row.id
       }
       const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
@@ -341,7 +348,7 @@ function App() {
 
         <div className="app-header-facet">
           <span>Facet:&nbsp;</span>
-          <select name="facet" id="facet" value={facet} onChange={changeFocus}>
+          <select name="facet" id="facet" value={facet} onChange={changeFacet}>
             {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
           </select>
         </div>
