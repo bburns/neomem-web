@@ -99,7 +99,13 @@ const colDefs = {
   id: { width: 50 },
   project: { width: 100 },
   type: { width: 100 },
-  timeframe: { width: 100 },
+  timeframe: { width: 100, editor:"select", editorParams:{
+    "month":"month",
+    "week":"week",
+    "today":"today",
+    "now":"now",
+    "done":"done",
+  }},
   author: { width: 100 },
   name: { width: 250, editor: 'input' },
   description: { width: 350, editor: 'input' },
@@ -126,6 +132,7 @@ Object.keys(colDefs).forEach(key => {
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
 // ]
 
+// const emptyRow = { id: 'empty' }
 const emptyRow = {}
 
 
@@ -189,6 +196,7 @@ function App() {
     const data = row.getData()
     let id = data.id
     const value = cell.getValue()
+    const oldvalue = cell.getOldValue()
     const editor = colDef.editor
     console.log(col)
     console.log(field)
@@ -211,15 +219,34 @@ function App() {
         console.log(record)
         const row = record.get('n')
         console.log(row)
+        //. update new row contents 
+        // const i = rows.findIndex(row => row.id === id)
+        // if (i !== -1) {
+        //   rows[i][key] = value
+        //   setRows(rows)
+        // }
+        // rows[rows.length - 1] = row
+        // setRows(rows)
+        //. add another blank row
+        // rows.push(emptyRow)
+        // setRows(rows)
         id = row.id
       }
       const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
       const params = { id, value }
       const result = await session.run(query, params)
       console.log(result)
-      //. update new row contents and add another blank row
-      // rows.push(emptyRow)
-      // setRows(rows)
+    }
+    else if (editor==='select') {
+      const query = `
+      MATCH (t)-[r]-(u:Timeframe {name: $oldvalue}), (v:Timeframe {name: $value}) 
+      WHERE id(t)=$id 
+      DELETE r
+      CREATE (t)-[:TIMEFRAME]->(v)
+      `
+      const params = { id, value, oldvalue }
+      const result = await session.run(query, params)
+      console.log(result)
     }
     session.close()
   }
