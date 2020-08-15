@@ -236,6 +236,10 @@ function App() {
     const facet = facetRef.current
     console.log(facet)
 
+    console.log(tableRef.current)
+    console.log(tableRef.current.table)
+    const table = tableRef.current.table
+    
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
     const colDef = col.getDefinition()
@@ -256,9 +260,7 @@ function App() {
     const session = driver.session()
     if (editor==='input') {
       if (!id) {
-        //.. why is facet 'projects' when on 'personal' facet?
         const facetObj = facetObjs[facet]
-        console.log(facet, facetObj)
         let query = facetObj.addQuery
         const params = facetObj.params || {}
         console.log(query)
@@ -270,27 +272,23 @@ function App() {
         console.log(record)
         const row = record.get('n')
         console.log('row', row)
-        //. update new row contents 
-        // const i = rows.findIndex(row => row.id === id)
-        // if (i !== -1) {
-        //   rows[i][key] = value
-        //   setRows(rows)
-        // }
-        // rows[rows.length - 1] = row
+        //. update new row contents
         // setRows(rows)
-        //. add another blank row
-        // rows.push(emptyRow)
-        // setRows(rows)
-        console.log(tableRef.current)
-        console.log(tableRef.current.table)
-        tableRef.current.table.updateData([row])
+        // table.updateData([row])
+        table.addRow(row) // works, but
         id = row.id
       }
-      const query = `MATCH (t) WHERE id(t)=$id SET t.${field}=$value`
+      const query = `
+      MATCH (n) 
+      WHERE id(n)=$id 
+      SET n.${field}=$value
+      `
       const params = { id, value }
       const result = await session.run(query, params)
       console.log(result)
-    }
+      const row = { id, [field]: value }
+      table.updateData([row])
+  }
 
     else if (editor==='select' && field==='timeframe') {
 
