@@ -24,7 +24,7 @@ body {
 }
 
 .app-header {
-  padding: 4px 0;
+  padding: 4px 2px;
   background: black;
   color: #ccc;
   /* display: flex; */
@@ -35,14 +35,22 @@ body {
 .app-header-logo {
   font-size: 24px;
   font-family: 'Futura Std Light', futura, sans-serif;
+  margin-bottom: 4px;
 }
 .app-header-logo img {
   height: 24px;
   margin-right: 4px;
 }
-.app-header-facet {
-  padding: 5px 0;
-  background: #333;
+.app-controls {
+  padding: 4px 2px;
+  font-size: 0.9em;
+  background: #111;
+}
+.app-controls-groupby {
+  margin-left: 8px;
+}
+.app-controls-view {
+  margin-left: 8px;
 }
 select {
   font-size: 1em;
@@ -67,12 +75,13 @@ select {
 }
 .tabulator-row {
   border-bottom: 1px solid #ddd;
+  background: none;
 }
 .tabulator-row .tabulator-cell {
   border-right: 1px solid #ddd !important;
 }
 .tabulator-row.tabulator-row-even {
-  background: none !important;
+  background: none;
 }
 .tabulator-row.tabulator-selectable:hover {
   background: #f2f2f2 !important;
@@ -83,6 +92,9 @@ select {
   height: 1.7em !important;
 }
 
+.tabulator-row.tabulator-group {
+  background: #d6dbf1;
+}
 .tabulator-row.tabulator-group span {
   color: gray;
 }

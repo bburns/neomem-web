@@ -153,7 +153,7 @@ const colDefs = {
   
   //. multiselect? single?
   type: { width: 100, editor: "select", editorParams: { 
-    values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(',').sort(),
+    values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View".split(',').sort(),
   }},
   
   //. singleselect - get values from db - how?
@@ -201,6 +201,7 @@ function App() {
 
   const [facet, setFacet] = React.useState("projects")
   const [groupBy, setGroupBy] = React.useState("")
+  const [view, setView] = React.useState("table")
   const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
   const [columns, setColumns] = React.useState([])
@@ -250,6 +251,11 @@ function App() {
     table.setGroupBy(groupBy)
   }
 
+  function changeView(e) {
+    const view = e.currentTarget.value
+    setView(view)
+  }
+
   async function cellEdited(cell) {
     console.log(cell)
     const facet = facetRef.current
@@ -278,7 +284,7 @@ function App() {
     console.log(editor)
     const session = driver.session()
     if (editor==='input') {
-      if (!id) {
+      if (id===0) {
         const facetObj = facetObjs[facet]
         let query = facetObj.addQuery
         const params = facetObj.params || {}
@@ -294,6 +300,7 @@ function App() {
         table.updateData([{ id:0,  [field]: undefined }])
         table.deleteRow(0)
         table.addRow(row)
+        table.addRow(emptyRow)
         id = row.id
       }
       const query = `
@@ -306,7 +313,6 @@ function App() {
       console.log(result)
       const row = { id, [field]: value }
       table.updateData([row])
-      table.addRow(emptyRow)
     }
 
     else if (editor==='select' && field==='timeframe') {
@@ -369,26 +375,35 @@ function App() {
           <span>Neomem</span>
         </div>
 
-        <div className="app-header-facet">
-          <span>Facet:&nbsp;</span>
-          <select name="facet" id="facet" value={facet} onChange={changeFacet}>
-            {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
-          </select>
+        <div className="app-controls">
+          <span className="app-controls-facet">
+            <span>Facet:&nbsp;</span>
+            <select name="facet" id="facet" value={facet} onChange={changeFacet}>
+              {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
+            </select>
+          </span>
+          <span className="app-controls-groupby">
+            <span>Group:&nbsp;</span>
+            <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
+              {/* {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)} */}
+              <option value="">(none)</option>
+              <option value="type">type</option>
+              <option value="timeframe">timeframe</option>
+              <option value="project">project</option>
+              <option value="client">client</option>
+            </select>
+          </span>
+          <span className="app-controls-view">
+            <span>View:&nbsp;</span>
+            <select name="view" id="view" value={view} onChange={changeView}>
+              <option value="table">table</option>
+              <option value="document">document</option>
+              <option value="outline">outline</option>
+            </select>
+          </span>
         </div>
 
-        <div className="app-header-query">Query: {query}</div>
-
-        <div className="app-header-groupby">
-          <span>Group by:&nbsp;</span>
-          <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
-            {/* {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)} */}
-            <option value="">(none)</option>
-            <option value="type">type</option>
-            <option value="timeframe">timeframe</option>
-            <option value="project">project</option>
-            <option value="client">client</option>
-          </select>
-        </div>
+        {/* <div className="app-header-query">Query: {query}</div> */}
 
       </div>
       
