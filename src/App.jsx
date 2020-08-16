@@ -38,10 +38,23 @@ async function getTypes() {
 
 //. put these into db also eventually
 
+const projectsQuery = `
+MATCH (n:Project) 
+OPTIONAL MATCH (n)-[:CLIENT]->(c)
+WITH n, labels(n) as type, id(n) as id,
+collect(c.name) as client
+RETURN n { .*, type, id, client }
+`
+const projectsCols = "id,type,name,description,client"
+const projectsAddQuery = `
+`
+
 const projectQuery = `
 MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-WITH n, labels(n) as type, collect(t.name) as timeframe, collect(m.name) as project, id(n) as id
+WITH n, labels(n) as type, collect(t.name) as timeframe, 
+collect(m.name) as project, 
+id(n) as id
 RETURN n { .*, type, timeframe, project, id }
 `
 const projectCols = "id,project,type,name,timeframe,description"
@@ -51,6 +64,7 @@ CREATE (n:Task)-[:PROJECT]->(m)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
+
 const genericQuery = `
 MATCH (n:#label#) 
 WITH n, labels(n) as type, id(n) as id
@@ -70,11 +84,21 @@ const facetObjs = {
     cols: genericCols,
     addQuery: genericAddQuery,
   },
-  projects: {
-    params: { label: 'Project' },
-    query: genericQuery,
+  all: {
+    params: {},
+    query: `
+    MATCH (n) 
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `,
     cols: genericCols,
     addQuery: genericAddQuery,
+  },
+  projects: {
+    params: {},
+    query: projectsQuery,
+    cols: projectsCols,
+    addQuery: projectsAddQuery,
   },
   personal: { params: { projectName: 'personal' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
   neomem: { params: { projectName: 'neomem' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
@@ -124,8 +148,8 @@ const colDefs = {
   
   //. singleselect
   project: { width: 100, editorParams: { 
-    values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager,".split(',').sort(),
-  } },
+    values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager".split(',').sort(),
+  }},
   
   //. multiselect? single?
   type: { width: 100, editor: "select", editorParams: { 
@@ -135,6 +159,11 @@ const colDefs = {
   //. singleselect - get values from db - how?
   timeframe: { width: 100, editor: "select", editorParams: {
     values: "year,quarter,month,week,today,now,done".split(','),
+  }},
+  
+  //. singleselect
+  client: { width: 100, editor: "select", editorParams: { 
+    values: "me,MRIIOT".split(',').sort(),
   }},
   
   //.
