@@ -131,19 +131,6 @@ const colDefs = {
   type: { width: 100, editor: "select", editorParams: { 
     values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(',').sort(),
   }},
-  // cell => {
-  //   console.log(cell)
-  //   // // create a options list of all values from another column in the table
-  //   // var rows = table.getRows()
-  //   // var values = {}
-  //   // rows.forEach(row => {
-  //   //     var data = row.getData()
-  //   //     values[data.fullname] = data.fullname
-  //   // })
-  //   // return { values }
-  //   // const values = getLabels()
-  //   return { values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note".split(',') }
-  // }},
   
   //. singleselect - get values from db - how?
   timeframe: { width: 100, editor: "select", editorParams: {
@@ -180,8 +167,6 @@ Object.keys(colDefs).forEach(key => {
 // ]
 
 const emptyRow = { id:0 }
-
-// let facet = 'projects'
 
 function App() {
 
@@ -226,8 +211,6 @@ function App() {
   function changeFacet(e) {
     const facet = e.currentTarget.value
     setFacet(facet)
-    // setFacet(() => facet)
-    // facet = e.currentTarget.value
   }
 
   async function cellEdited(cell) {
@@ -346,10 +329,10 @@ function App() {
       
       <div className="app-header">
         
-        <span className="app-header-logo">
+        <div className="app-header-logo">
           <img src={logo} alt="logo" /> 
           <span>Neomem</span>
-        </span>
+        </div>
 
         <div className="app-header-facet">
           <span>Facet:&nbsp;</span>
