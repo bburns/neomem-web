@@ -200,6 +200,7 @@ const emptyRow = { id:0 }
 function App() {
 
   const [facet, setFacet] = React.useState("projects")
+  const [groupBy, setGroupBy] = React.useState("")
   const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
   const [columns, setColumns] = React.useState([])
@@ -240,6 +241,13 @@ function App() {
   function changeFacet(e) {
     const facet = e.currentTarget.value
     setFacet(facet)
+  }
+
+  function changeGroupBy(e) {
+    const groupBy = e.currentTarget.value
+    setGroupBy(groupBy)
+    const table = tableRef.current.table
+    table.setGroupBy(groupBy)
   }
 
   async function cellEdited(cell) {
@@ -351,8 +359,6 @@ function App() {
     session.close()
   }
 
-  console.log(facet)
-
   return (
     <div className="app">
       
@@ -369,7 +375,21 @@ function App() {
             {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
           </select>
         </div>
+
         <div className="app-header-query">Query: {query}</div>
+
+        <div className="app-header-groupby">
+          <span>Group by:&nbsp;</span>
+          <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
+            {/* {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)} */}
+            <option value="">(none)</option>
+            <option value="type">type</option>
+            <option value="timeframe">timeframe</option>
+            <option value="project">project</option>
+            <option value="client">client</option>
+          </select>
+        </div>
+
       </div>
       
       <div className="app-contents">
@@ -377,7 +397,7 @@ function App() {
           ref={tableRef}
           data={rows}
           columns={columns}
-          options={{groupBy:'type'}}
+          options={{groupBy}}
           tooltips={false}
           layout={"fitData"}
           cellEdited={cellEdited}
