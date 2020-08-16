@@ -377,6 +377,7 @@ function App() {
           ref={tableRef}
           data={rows}
           columns={columns}
+          options={{groupBy:'type'}}
           tooltips={false}
           layout={"fitData"}
           cellEdited={cellEdited}

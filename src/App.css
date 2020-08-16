@@ -82,3 +82,7 @@ select {
   padding: 0px 4px;
   height: 1.7em !important;
 }
+
+.tabulator-row.tabulator-group span {
+  color: gray;
+}
