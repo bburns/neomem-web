@@ -104,6 +104,17 @@ const facetObjs = {
     RETURN n {.*, type, project, timeframe, id }`,
     cols: "id,type,project,name,timeframe,description",
   },
+  story: {
+    params: {},
+    query: `
+    MATCH (p:Project {name: 'blt'}) 
+    MATCH (n)-[r*0..2]->(p) 
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `,
+    cols: "id,type,name,description",
+    // addQuery: genericAddQuery,
+  },
 }
 
 function substituteQueryParams(query, params) {
@@ -127,8 +138,8 @@ export default function App() {
   const [view, setView] = React.useState("table")
   // const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
-  const [columns, setColumns] = React.useState([])
-  const tableRef = React.useRef(null)
+  // const [columns, setColumns] = React.useState([])
+  // const tableRef = React.useRef(null)
   const facetRef = React.useRef(facet) //. better way?
 
   React.useEffect(() => {

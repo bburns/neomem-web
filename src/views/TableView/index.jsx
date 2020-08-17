@@ -46,6 +46,8 @@ const colDefs = {
     values: "tolkien,pkdick,tanithlee".split(','),
   }, multiselect: true },
 
+  related: { width: 100 },
+
 }
 
 Object.keys(colDefs).forEach(key => {
