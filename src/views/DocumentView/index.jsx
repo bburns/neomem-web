@@ -1,4 +1,5 @@
 import React from 'react'
+// import Editor from 'rich-markdown-editor'
 import './styles.css'
 
 
@@ -11,7 +12,10 @@ export default function DocumentView({ rows, groupBy }) {
         return (
           <div key={row.id} className="document-section">
             <div className="document-header">{row.type}: {row.name}</div>
-            <div className="document-notes">{row.description}</div>
+            {/* <div className="document-header">{row.type}: <input type="text" defaultValue={row.name} /></div> */}
+            {/* <div className="document-notes">{row.description}</div> */}
+            {/* <Editor defaultValue={row.description} /> */}
+            <input className="document-notes" type="textarea" defaultValue={row.description} />
           </div>
         )
       })}

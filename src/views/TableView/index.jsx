@@ -17,7 +17,7 @@ function substituteQueryParams(query, params) {
 
 //. put coldefs into db eventually
 const colDefs = {
-  id: { width: 50 },
+  id: { width: 50, visible:false },
   name: { width: 250, editor: 'input' },
   description: { width: 350, editor: 'input' },
   
