@@ -9,6 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "lodash": "^4.17.20",
     "neo4j-driver": "^4.1.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",

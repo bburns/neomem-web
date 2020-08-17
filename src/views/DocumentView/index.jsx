@@ -1,11 +1,16 @@
 import React from 'react'
 // import Editor from 'rich-markdown-editor'
+import _ from 'lodash'
 import './styles.css'
 
 
 //. group rows by groupBy field, display with larger header
 
 export default function DocumentView({ rows, groupBy }) {
+  // React.useEffect(() => {
+  //   const groups = _.
+
+  // }, [rows])
   return (
     <div className="document-view">
       {rows.map(row => {
