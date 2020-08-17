@@ -6,6 +6,18 @@
 .document-section {
   margin-bottom: 1em;
 }
+
+.document-group {
+  margin-bottom: 1em;
+}
+.document-group-header {
+  font-size: 1.3em;
+  font-weight: bold;
+  padding: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid gray;
+}
+
 .document-header {
   width: 100%;
   /* background: #ddd; */

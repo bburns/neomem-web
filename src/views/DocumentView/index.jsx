@@ -7,21 +7,30 @@ import './styles.css'
 //. group rows by groupBy field, display with larger header
 
 export default function DocumentView({ rows, groupBy }) {
-  // React.useEffect(() => {
-  //   const groups = _.
+  
+  const [groups, setGroups] = React.useState({})
+  
+  React.useEffect(() => {
+    const groups = _.groupBy(rows, row => row[groupBy])
+    setGroups(groups)
+    console.log(groups)
+  }, [rows, groupBy])
 
-  // }, [rows])
   return (
     <div className="document-view">
-      {rows.map(row => {
+      {Object.keys(groups).map(group => {
         return (
-          <div key={row.id} className="document-section">
-            <div className="document-header">{row.type}: {row.name}</div>
-            {/* <div className="document-header">{row.type}: <input type="text" defaultValue={row.name} /></div> */}
-            {/* <div className="document-notes">{row.description}</div> */}
-            {/* <Editor defaultValue={row.description} /> */}
-            {/* <input className="document-notes" type="textarea" defaultValue={row.description} /> */}
-            <textarea className="document-notes" defaultValue={row.description} />
+          <div className="document-group">
+            <div className="document-group-header">{groupBy}: {group}</div>
+            {groups[group].map(row => {
+              return (
+                <div key={row.id} className="document-section">
+                  <div className="document-header">{row.type}: {row.name}</div>
+                  {/* <Editor defaultValue={row.description} /> */}
+                  <textarea className="document-notes" defaultValue={row.description} />
+                </div>
+              )
+            })}
           </div>
         )
       })}
