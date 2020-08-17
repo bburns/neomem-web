@@ -73,7 +73,7 @@ Object.keys(colDefs).forEach(key => {
 const emptyRow = { id:0 }
 
 
-export default function TableView({ rows, groupBy, facetObj, datasource }) {
+export default function TableView({ visible, rows, groupBy, facetObj, datasource }) {
 
   const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
@@ -198,7 +198,7 @@ export default function TableView({ rows, groupBy, facetObj, datasource }) {
   }
 
   return (
-    <div className="table-view">
+    <div className={"table-view" + (visible ? '' : ' hidden')}>
       <ReactTabulator
         ref={tableRef}
         data={data}

@@ -221,17 +221,21 @@ export default function App() {
       </div>
       
       <div className="app-contents">
-        <TableView 
-          rows={rows}
-          groupBy={groupBy}
-          facetObj={facetObj} // for columns, addquery, params - //. better way?
-          datasource={datasource}
-        />
-        <DocumentView 
-          rows={rows}
-          groupBy={groupBy}
-          datasource={datasource}
-        />
+        {/* {view==="table" && */}
+          <TableView
+            visible={view==='table'}
+            rows={rows}
+            groupBy={groupBy}
+            facetObj={facetObj} // for columns, addquery, params - //. better way?
+            datasource={datasource}
+          />
+          {/* } */}
+        {view==="document" &&
+          <DocumentView 
+            rows={rows}
+            groupBy={groupBy}
+            datasource={datasource}
+          />}
       </div>
     </div>
   )

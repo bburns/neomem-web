@@ -7,7 +7,7 @@ export default function DocumentView({ rows, groupBy }) {
     <div className="document-view">
       {rows.map(row => {
         return (
-          <div>
+          <div key={row.id}>
             <div>{row.name}</div>
             <div>{row.description}</div>
           </div>
