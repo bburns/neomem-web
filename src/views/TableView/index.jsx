@@ -73,61 +73,27 @@ Object.keys(colDefs).forEach(key => {
 const emptyRow = { id:0 }
 
 
-function TableView({ data, options, columns }) {
+export default function TableView({ rows, groupBy, facetObj, datasource }) {
 
-  const [facet, setFacet] = React.useState("projects")
-  const [groupBy, setGroupBy] = React.useState("")
-  const [view, setView] = React.useState("table")
-  const [query, setQuery] = React.useState("") // used to display query to user
-  const [rows, setRows] = React.useState([])
+  const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
-  const facetRef = React.useRef(facet)
 
   React.useEffect(() => {
+    const data = [...rows, emptyRow]
+    setData(data)
+  }, [rows])
 
-  }, [data])
-
-  // React.useEffect(() => {
-  //   facetRef.current = facet
-  //   ;(async () => {
-  //     const facetObj = facetObjs[facet]
-  //     // setFacetObj(facetObj)
-  //     let { query, params={}, cols } = facetObj
-  //     query = substituteQueryParams(query, params)
-  //     setQuery(query)
-  //     const colNames = cols.split(',')
-  //     const columns = colNames.map(colName => colDefs[colName])
-  //     setColumns(columns)
-  //     if (!query) return
-  //     console.log(query, params)
-  //     const rows = []
-  //     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-  //     const result = await session.run(query, params || {})
-  //     result.records.forEach(record => {
-  //       const row = record.get('n')
-  //       Object.keys(row).forEach(key => {
-  //         if (Array.isArray(row[key])) {
-  //           row[key] = row[key].join(', ')
-  //         }
-  //       })
-  //       rows.push(row)
-  //     })
-  //     rows.push(emptyRow)
-  //     session.close()
-  //     setRows(rows)
-  //   })()
-  // }, [facet])
+  React.useEffect(() => {
+    const cols = facetObj.cols || 'name'
+    const colNames = cols.split(',')
+    const columns = colNames.map(colName => colDefs[colName])
+    setColumns(columns)
+  }, [facetObj])
 
   async function cellEdited(cell) {
     console.log(cell)
-    const facet = facetRef.current
-    console.log(facet)
-
-    console.log(tableRef.current)
-    console.log(tableRef.current.table)
-    const table = tableRef.current.table
-    
+    const table = tableRef.current.table    
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
     const colDef = col.getDefinition()
@@ -145,14 +111,17 @@ function TableView({ data, options, columns }) {
     console.log(id)
     console.log(value)
     console.log(editor)
-    const session = driver.session()
+
+    // const session = driver.session()
+    const session = datasource.getSession()
+    
     if (editor==='input') {
       if (id===0) {
-        const facetObj = facetObjs[facet]
-        let query = facetObj.addQuery
+        // const facetObj = facetObjs[facet]
+        const queryTemplate = facetObj.addQuery
         const params = facetObj.params || {}
-        console.log(query)
-        query = substituteQueryParams(query, params)
+        console.log(queryTemplate)
+        const query = substituteQueryParams(queryTemplate, params)
         console.log('run', query, params)
         const result = await session.run(query, params)
         console.log(result)
@@ -232,7 +201,7 @@ function TableView({ data, options, columns }) {
     <div className="table-view">
       <ReactTabulator
         ref={tableRef}
-        data={rows}
+        data={data}
         columns={columns}
         options={{groupBy}}
         tooltips={false}
@@ -244,5 +213,3 @@ function TableView({ data, options, columns }) {
     </div>
   )
 }
-
-export default TableView

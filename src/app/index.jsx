@@ -1,10 +1,12 @@
 import React from 'react'
 import neo4jDatasource from '../datasources/neo4jDatasource'
-// import TableView from '../views/TableView'
+import TableView from '../views/TableView'
 import DocumentView from '../views/DocumentView'
 import logo from '../assets/logo256.png'
 import './styles.css'
 
+
+const datasource = neo4jDatasource
 
 //. these will need to get translated from generic datastructs into
 // those specific to each datasource
@@ -120,6 +122,7 @@ const emptyRow = { id:0 }
 export default function App() {
 
   const [facet, setFacet] = React.useState("projects")
+  const [facetObj, setFacetObj] = React.useState({})
   const [groupBy, setGroupBy] = React.useState("")
   const [view, setView] = React.useState("table")
   // const [query, setQuery] = React.useState("") // used to display query to user
@@ -131,20 +134,20 @@ export default function App() {
   React.useEffect(() => {
     facetRef.current = facet
     ;(async () => {
-      const facetObj = facetObjs[facet]
-      let { query, params={}, cols } = facetObj
-      query = substituteQueryParams(query, params)
-      // setQuery(query)
 
-      // const colNames = cols.split(',')
-      // const columns = colNames.map(colName => colDefs[colName])
-      // setColumns(columns)
+      const facetObj = facetObjs[facet]
+      setFacetObj(facetObj)
+
+      const queryTemplate = facetObj.query
+      const params = facetObj.params || {}
+      const query = substituteQueryParams(queryTemplate, params)
+      // setQuery(query)
 
       if (!query) return
       console.log(query, params)
       const rows = []
       // const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-      const session = neo4jDatasource.getSession()
+      const session = datasource.getSession(true)
       const result = await session.run(query, params)
       result.records.forEach(record => {
         const row = record.get('n')
@@ -218,19 +221,16 @@ export default function App() {
       </div>
       
       <div className="app-contents">
-        {/* <TableView 
-          data={rows}
-          options={{groupBy}}
-          columns={columns}
-          // tooltips={false}
-          // layout={"fitData"}
-          // cellEdited={cellEdited}
-          // // dataEdited={newData => console.log('dataEdited', newData)}
-          // // footerElement={<span>Footer</span>}
-        /> */}
+        <TableView 
+          rows={rows}
+          groupBy={groupBy}
+          facetObj={facetObj} // for columns, addquery, params - //. better way?
+          datasource={datasource}
+        />
         <DocumentView 
           rows={rows}
           groupBy={groupBy}
+          datasource={datasource}
         />
       </div>
     </div>
