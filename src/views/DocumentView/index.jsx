@@ -21,7 +21,7 @@ export default function DocumentView({ rows, groupBy }) {
       {Object.keys(groups).map(group => {
         return (
           <div className="document-group">
-            <div className="document-group-header">{groupBy}: {group}</div>
+            {groupBy && <div className="document-group-header">{group || "(None)"}</div>}
             {groups[group].map(row => {
               return (
                 <div key={row.id} className="document-section">
