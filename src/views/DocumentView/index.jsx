@@ -15,7 +15,8 @@ export default function DocumentView({ rows, groupBy }) {
             {/* <div className="document-header">{row.type}: <input type="text" defaultValue={row.name} /></div> */}
             {/* <div className="document-notes">{row.description}</div> */}
             {/* <Editor defaultValue={row.description} /> */}
-            <input className="document-notes" type="textarea" defaultValue={row.description} />
+            {/* <input className="document-notes" type="textarea" defaultValue={row.description} /> */}
+            <textarea className="document-notes" defaultValue={row.description} />
           </div>
         )
       })}
