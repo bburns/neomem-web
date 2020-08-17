@@ -228,7 +228,10 @@ export default function App() {
           // // dataEdited={newData => console.log('dataEdited', newData)}
           // // footerElement={<span>Footer</span>}
         /> */}
-        <DocumentView />
+        <DocumentView 
+          rows={rows}
+          groupBy={groupBy}
+        />
       </div>
     </div>
   )
