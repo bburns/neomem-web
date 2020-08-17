@@ -158,7 +158,7 @@ export default function App() {
         })
         rows.push(row)
       })
-      rows.push(emptyRow)
+      // rows.push(emptyRow)
       session.close()
       setRows(rows)
     })()
@@ -172,8 +172,6 @@ export default function App() {
   function changeGroupBy(e) {
     const groupBy = e.currentTarget.value
     setGroupBy(groupBy)
-    const table = tableRef.current.table
-    table.setGroupBy(groupBy)
   }
 
   function changeView(e) {
@@ -221,7 +219,7 @@ export default function App() {
       </div>
       
       <div className="app-contents">
-        {/* {view==="table" && */}
+        {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
           <TableView
             visible={view==='table'}
             rows={rows}

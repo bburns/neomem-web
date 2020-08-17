@@ -91,6 +91,11 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     setColumns(columns)
   }, [facetObj])
 
+  React.useEffect(() => {
+    const table = tableRef.current.table
+    table.setGroupBy(groupBy)
+  }, [groupBy])
+
   async function cellEdited(cell) {
     console.log(cell)
     const table = tableRef.current.table    

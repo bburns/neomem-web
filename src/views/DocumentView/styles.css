@@ -1,0 +1,19 @@
+.document-view {
+  padding: 1em;
+  font-size: 15px;
+}
+
+.document-section {
+  margin-bottom: 1em;
+}
+.document-header {
+  /* background: #ddd; */
+  /* padding: 0.5em; */
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  font-weight: bold;
+}
+.document-notes {
+  /* padding: 0.5em; */
+}
+
