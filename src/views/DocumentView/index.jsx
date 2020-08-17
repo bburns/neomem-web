@@ -20,11 +20,11 @@ export default function DocumentView({ rows, groupBy }) {
     <div className="document-view">
       {Object.keys(groups).map(group => {
         return (
-          <div className="document-group">
+          <div className="document-group" key={group || "(None)"}>
             {groupBy && <div className="document-group-header">{group || "(None)"}</div>}
             {groups[group].map(row => {
               return (
-                <div key={row.id} className="document-section">
+                <div className="document-section" key={row.id}>
                   <div className="document-header">{row.type}: {row.name}</div>
                   {/* <Editor defaultValue={row.description} /> */}
                   <textarea className="document-notes" defaultValue={row.description} />
