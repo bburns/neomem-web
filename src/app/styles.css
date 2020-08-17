@@ -53,6 +53,12 @@ body {
 .app-controls-groupby {
   margin-left: 8px;
 }
+.app-controls-filter {
+  margin-left: 8px;
+}
+.app-controls-sort {
+  margin-left: 8px;
+}
 .app-controls-view {
   margin-left: 8px;
 }

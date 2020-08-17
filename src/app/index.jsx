@@ -134,12 +134,12 @@ export default function App() {
 
   const [facet, setFacet] = React.useState("projects")
   const [facetObj, setFacetObj] = React.useState({})
+  const [filter, setFilter] = React.useState("")
   const [groupBy, setGroupBy] = React.useState("")
+  const [sort, setSort] = React.useState("")
   const [view, setView] = React.useState("table")
   // const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
-  // const [columns, setColumns] = React.useState([])
-  // const tableRef = React.useRef(null)
   const facetRef = React.useRef(facet) //. better way?
 
   React.useEffect(() => {
@@ -153,8 +153,8 @@ export default function App() {
       const params = facetObj.params || {}
       const query = substituteQueryParams(queryTemplate, params)
       // setQuery(query)
-
       if (!query) return
+
       console.log(query, params)
       const rows = []
       // const session = driver.session({ defaultAccessMode: neo4j.session.READ })
@@ -162,6 +162,7 @@ export default function App() {
       const result = await session.run(query, params)
       result.records.forEach(record => {
         const row = record.get('n')
+        // join any array fields into a comma-separated string
         Object.keys(row).forEach(key => {
           if (Array.isArray(row[key])) {
             row[key] = row[key].join(', ')
@@ -169,7 +170,6 @@ export default function App() {
         })
         rows.push(row)
       })
-      // rows.push(emptyRow)
       session.close()
       setRows(rows)
     })()
@@ -180,9 +180,19 @@ export default function App() {
     setFacet(facet)
   }
 
+  function changeFilter(e) {
+    const filter = e.currentTarget.value
+    setFilter(filter)
+  }
+
   function changeGroupBy(e) {
     const groupBy = e.currentTarget.value
     setGroupBy(groupBy)
+  }
+
+  function changeSort(e) {
+    const sort = e.currentTarget.value
+    setSort(sort)
   }
 
   function changeView(e) {
@@ -201,12 +211,21 @@ export default function App() {
         </div>
 
         <div className="app-controls">
+
           <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
             <select name="facet" id="facet" value={facet} onChange={changeFacet}>
               {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
             </select>
           </span>
+
+          <span className="app-controls-filter">
+            <span>Filter:&nbsp;</span>
+            <select name="filter" id="filter" value={filter} onChange={changeFilter}>
+              <option value="">(none)</option>
+            </select>
+          </span>
+
           <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
             <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
@@ -217,7 +236,15 @@ export default function App() {
               <option value="client">client</option>
             </select>
           </span>
-          <span className="app-controls-view">
+
+          <span className="app-controls-sort">
+            <span>Sort:&nbsp;</span>
+            <select name="sort" id="sort" value={sort} onChange={changeSort}>
+              <option value="">(none)</option>
+            </select>
+          </span>
+
+          <span className="app-controls-sort">
             <span>View:&nbsp;</span>
             <select name="view" id="view" value={view} onChange={changeView}>
               <option value="table">table</option>
@@ -225,6 +252,7 @@ export default function App() {
               <option value="outline">outline</option>
             </select>
           </span>
+
         </div>
         {/* <div className="app-header-query">Query: {query}</div> */}
       </div>
