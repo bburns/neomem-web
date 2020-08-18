@@ -113,7 +113,7 @@ const facetObjs = {
     WITH n, labels(n) as type, id(n) as id, length(path) as depth
     RETURN n { .*, type, id, depth }
     `,
-    cols: "id,type,name,description,depth",
+    cols: "id,type,name,description,depth,order",
     // addQuery: genericAddQuery,
   },
 }
@@ -128,7 +128,7 @@ function substituteQueryParams(query, params) {
 
 
 
-const emptyRow = { id:0 }
+const emptyRow = { id:-1 }
 
 
 export default function App() {

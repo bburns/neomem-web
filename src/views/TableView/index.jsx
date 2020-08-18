@@ -17,7 +17,8 @@ function substituteQueryParams(query, params) {
 
 //. put coldefs into db eventually
 const colDefs = {
-  id: { width: 50, visible:false },
+  // id: { width: 50, visible:false },
+  id: { width: 50 },
   name: { width: 250, editor: 'input' },
   description: { width: 350, editor: 'input' },
   
@@ -49,6 +50,7 @@ const colDefs = {
   related: { width: 100 },
   rels: { width: 100 },
   depth: { width: 100 },
+  order: { width: 100, editor: "input" },
 
 }
 
@@ -74,7 +76,7 @@ Object.keys(colDefs).forEach(key => {
 //   {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
 // ]
 
-const emptyRow = { id:0 }
+const emptyRow = { id:-1 }
 
 
 export default function TableView({ visible, rows, groupBy, facetObj, datasource }) {
@@ -125,7 +127,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     const session = datasource.getSession()
     
     if (editor==='input') {
-      if (id===0) {
+      if (id===-1) {
         // const facetObj = facetObjs[facet]
         const queryTemplate = facetObj.addQuery
         const params = facetObj.params || {}
@@ -138,8 +140,8 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
         console.log(record)
         const row = record.get('n')
         console.log('row', row)
-        table.updateData([{ id:0,  [field]: undefined }])
-        table.deleteRow(0)
+        table.updateData([{ id:-1,  [field]: undefined }])
+        table.deleteRow(0) //?
         table.addRow(row)
         table.addRow(emptyRow)
         id = row.id
