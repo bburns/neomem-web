@@ -29,20 +29,20 @@ Other views are possible for the same underlying information - chart, map, calen
 
 ## Use Cases
 
-Some simple use cases to test the system
+Some use cases to test the app and database structure -
 
 - task manager - projects, tasks, goals, timeframe, order, estimate, actual, recurring tasks - switch between table, document, kanban, calendar, timeline views
 - art travel planner - location (continent/country/state/city/museum), artist, date, name, rating, source, size, images - switch between table, map views
-- screenplay/outline editor - acts, scenes, characters, locations - switch between table view, outline view, document view
+- screenplay/outline editor - acts, scenes, characters, locations - switch between table, outline, document views
 - biographical timelines - subject, event, date, age, location - switch between table, document, map views
-- comparison shopping - make quick tables for comparison between items, with space for free-form notes
-- genealogy - add properties to relationships, e.g. marriage date and location, etc
- 
+- comparison shopping - make quick tables for comparison between items, with free-form notes
+- genealogy - add properties to relationships, e.g. marriage date and location
+
 
 ## Inspiration
 
 - Lotus Symphony (1990) - spreadsheet, chart, and document views of same information
-- Airtable - table editor with underlying graph db, presumably
+- Airtable - table editor with underlying graph db (?)
 
 
 ## Implementation
