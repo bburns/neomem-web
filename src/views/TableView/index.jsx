@@ -48,6 +48,7 @@ const colDefs = {
 
   related: { width: 100 },
   rels: { width: 100 },
+  depth: { width: 100 },
 
 }
 

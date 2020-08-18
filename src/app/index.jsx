@@ -109,11 +109,11 @@ const facetObjs = {
     params: {},
     query: `
     MATCH (p:Project {name: 'blt'}) 
-    MATCH (n)-[r*0..2]->(p) 
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
+    MATCH path=(n)-[r*0..2]->(p) 
+    WITH n, labels(n) as type, id(n) as id, length(path) as depth
+    RETURN n { .*, type, id, depth }
     `,
-    cols: "id,type,name,description",
+    cols: "id,type,name,description,depth",
     // addQuery: genericAddQuery,
   },
 }
