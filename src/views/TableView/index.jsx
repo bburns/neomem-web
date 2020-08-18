@@ -47,6 +47,7 @@ const colDefs = {
   }, multiselect: true },
 
   related: { width: 100 },
+  rels: { width: 100 },
 
 }
 

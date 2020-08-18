@@ -25,15 +25,16 @@ WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 
+// MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 const projectQuery = `
-MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
+MATCH (n)-[r]-(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-WITH n, labels(n) as type, collect(t.name) as timeframe, 
+WITH n, labels(n) as type, collect(r) as rels, collect(t.name) as timeframe, 
 collect(m.name) as project, 
 id(n) as id
-RETURN n { .*, type, timeframe, project, id }
+RETURN n { .*, type, timeframe, project, id, rels }
 `
-const projectCols = "id,project,type,name,timeframe,description"
+const projectCols = "id,project,type,name,timeframe,description,rels"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
