@@ -107,14 +107,22 @@ const facetObjs = {
   },
   story: {
     params: {},
+    // query: `
+    // MATCH (p:Project {name: 'blt'}) 
+    // MATCH path=(n)-[r*0..2]->(p) 
+    // WITH n, labels(n) as type, id(n) as id, length(path) as depth
+    // RETURN n { .*, type, id, depth }
+    // `,
+    // cols: "id,type,name,description,depth,order",
     query: `
-    MATCH (p:Project {name: 'blt'}) 
+    MATCH (p)
+    WHERE id(p)=$parentId 
     MATCH path=(n)-[r*0..2]->(p) 
     WITH n, labels(n) as type, id(n) as id, length(path) as depth
     RETURN n { .*, type, id, depth }
     `,
-    cols: "id,type,name,description,depth,order",
-    // addQuery: genericAddQuery,
+    params: { parentId: 48 }, // blt
+    cols: "id,type,name,description,order",
   },
 }
 
