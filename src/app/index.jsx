@@ -117,12 +117,12 @@ const facetObjs = {
     query: `
     MATCH (p)
     WHERE id(p)=$parentId 
-    MATCH path=(n)-[r*0..2]->(p) 
-    WITH n, labels(n) as type, id(n) as id, length(path) as depth
-    RETURN n { .*, type, id, depth }
+    MATCH (n)-[r]->(p) 
+    WITH n, labels(n) as type, id(n) as id, type(r) as rels, $parentId as parentId
+    RETURN n { .*, type, id, rels, parentId }
     `,
     params: { parentId: 48 }, // blt
-    cols: "id,type,name,description,order",
+    cols: "id,type,name,description,order,rels,parentId",
   },
 }
 
