@@ -106,7 +106,7 @@ const facetObjs = {
     cols: "id,type,project,name,timeframe,description",
   },
   story: {
-    params: {},
+    // params: {},
     // query: `
     // MATCH (p:Project {name: 'blt'}) 
     // MATCH path=(n)-[r*0..2]->(p) 

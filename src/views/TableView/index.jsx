@@ -215,7 +215,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
         ref={tableRef}
         data={data}
         columns={columns}
-        options={{groupBy}}
+        options={{groupBy, dataTree:true }}
         tooltips={false}
         layout={"fitData"}
         cellEdited={cellEdited}
