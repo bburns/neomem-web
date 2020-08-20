@@ -35,6 +35,13 @@ export default {
 //   session.close()
 // })()
 
+
+
+// # Show vertex types in Cypher method 1
+// MATCH (n) 
+// RETURN DISTINCT labels(n)
+// # Show vertex types in Cypher method 2
+// CALL db.labels();
 async function getTypes() {
   const session = driver.session()
   const query = "call db.labels()"
