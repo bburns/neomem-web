@@ -1,5 +1,5 @@
 import React from 'react'
-import neo4jDatasource from '../datasources/neo4jDatasource'
+import datasource from '../datasources/neo4j'
 import TableView from '../views/TableView'
 import DocumentView from '../views/DocumentView'
 import logo from '../assets/logo256.png'
@@ -8,8 +8,6 @@ import './styles.css'
 
 // const initialFacet = 'neomem'
 const initialFacet = 'all'
-
-const datasource = neo4jDatasource
 
 //. these will need to get translated from generic datastructs into
 // those specific to each datasource
@@ -215,6 +213,14 @@ export default function App() {
     setView(view)
   }
 
+  async function clickNew(e) {
+    // const item = { name: 'pokpok' }
+    // const response = await getItem(item)
+    // if (response.ok) {
+    //   //. write to datasource
+    // }
+  }
+
   return (
     <div className="app">
       
@@ -227,7 +233,7 @@ export default function App() {
 
         <div className="app-controls">
 
-          <button>new</button>
+          <button onClick={clickNew}>new</button>
 
           <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
