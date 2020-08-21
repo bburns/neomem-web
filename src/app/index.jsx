@@ -14,8 +14,17 @@ const initialFacet = 'all'
 
 
 // reusable facet definitions
+
 //. how would you include the project itself at the top of this query result?
+//  maybe a union query?
 const projectQuery = `
+MATCH (n:Project {name:$projectName})
+OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+WITH n, labels(n) as type, 'self' as rels, collect(t.name) as timeframe, 
+$projectName as project, 
+id(n) as id
+RETURN n { .*, type, timeframe, project, id, rels }
+UNION
 MATCH (n)-[r]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 WITH n, labels(n) as type, collect(r) as rels, collect(t.name) as timeframe, 
