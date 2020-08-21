@@ -27,7 +27,7 @@ UNION
 MATCH (n)-[r]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
-collect(m.name) as project, 
+$projectName as project, 
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels }
 `
@@ -200,6 +200,7 @@ export default function App() {
         // join any array fields into a comma-separated string
         Object.keys(row).forEach(key => {
           if (Array.isArray(row[key])) {
+            console.log('join array field', key, row[key])
             row[key] = row[key].join(', ')
           }
         })
