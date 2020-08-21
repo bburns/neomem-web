@@ -20,7 +20,7 @@ const colDefs = {
   // id: { width: 50, visible:false },
   id: { width: 50 },
   name: { width: 250, editor: 'input' },
-  description: { width: 350, editor: 'input' },
+  description: { width: 250, editor: 'input' },
   
   //. singleselect
   project: { width: 100, editorParams: { 
@@ -48,7 +48,7 @@ const colDefs = {
   }, multiselect: true },
 
   related: { width: 100 },
-  rels: { width: 100 },
+  rels: { width: 200 },
   depth: { width: 100 },
   parentId: { width: 100 },
   order: { width: 100, editor: "input" },

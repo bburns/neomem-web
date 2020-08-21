@@ -6,6 +6,8 @@ import logo from '../assets/logo256.png'
 import './styles.css'
 
 
+const initialFacet = 'neomem'
+
 const datasource = neo4jDatasource
 
 //. these will need to get translated from generic datastructs into
@@ -27,14 +29,15 @@ RETURN n { .*, type, id }
 
 // MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 const projectQuery = `
-MATCH (n)-[r]-(m:Project {name:$projectName}) 
+MATCH (n)<-[r]-(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 WITH n, labels(n) as type, collect(r) as rels, collect(t.name) as timeframe, 
 collect(m.name) as project, 
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels }
 `
-const projectCols = "id,project,type,name,timeframe,description,rels"
+// const projectCols = "id,project,type,name,timeframe,description,rels"
+const projectCols = "id,project,type,name,timeframe,rels"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
@@ -79,24 +82,24 @@ const facetObjs = {
   },
   personal: { params: { projectName: 'personal' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
   neomem: { params: { projectName: 'neomem' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  tallieo: { params: { projectName: 'tallieo' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  facemate: { params: { projectName: 'facemate' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  ccs: { params: { projectName: 'ccs' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  people: {
-    params: { label: 'Person' },
-    query: genericQuery,
-    cols: genericCols,
-    addQuery: genericAddQuery,
-  },
-  books: {
-    query: `
-    MATCH (n) 
-    WHERE (n:Book) or (n:Author) 
-    OPTIONAL MATCH (n)-[r:AUTHOR]->(m) 
-    WITH n, collect(m.name) as author, labels(n) as type, id(n) as id
-    RETURN n { .*, type, author, id }`,
-    cols: "id,type,author,name,description",
-  },
+  // tallieo: { params: { projectName: 'tallieo' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  // facemate: { params: { projectName: 'facemate' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  // ccs: { params: { projectName: 'ccs' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  // people: {
+  //   params: { label: 'Person' },
+  //   query: genericQuery,
+  //   cols: genericCols,
+  //   addQuery: genericAddQuery,
+  // },
+  // books: {
+  //   query: `
+  //   MATCH (n) 
+  //   WHERE (n:Book) or (n:Author) 
+  //   OPTIONAL MATCH (n)-[r:AUTHOR]->(m) 
+  //   WITH n, collect(m.name) as author, labels(n) as type, id(n) as id
+  //   RETURN n { .*, type, author, id }`,
+  //   cols: "id,type,author,name,description",
+  // },
   timeframe: {
     //. include items without a project also
     query: `
@@ -141,7 +144,7 @@ const emptyRow = { id:-1 }
 
 export default function App() {
 
-  const [facet, setFacet] = React.useState("projects")
+  const [facet, setFacet] = React.useState(initialFacet)
   const [facetObj, setFacetObj] = React.useState({})
   const [filter, setFilter] = React.useState("")
   const [groupBy, setGroupBy] = React.useState("")
@@ -228,12 +231,12 @@ export default function App() {
             </select>
           </span>
 
-          <span className="app-controls-filter">
+          {/* <span className="app-controls-filter">
             <span>Filter:&nbsp;</span>
             <select name="filter" id="filter" value={filter} onChange={changeFilter}>
               <option value="">(none)</option>
             </select>
-          </span>
+          </span> */}
 
           <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
@@ -246,19 +249,19 @@ export default function App() {
             </select>
           </span>
 
-          <span className="app-controls-sort">
+          {/* <span className="app-controls-sort">
             <span>Sort:&nbsp;</span>
             <select name="sort" id="sort" value={sort} onChange={changeSort}>
               <option value="">(none)</option>
             </select>
-          </span>
+          </span> */}
 
           <span className="app-controls-sort">
             <span>View:&nbsp;</span>
             <select name="view" id="view" value={view} onChange={changeView}>
               <option value="table">table</option>
               <option value="document">document</option>
-              <option value="outline">outline</option>
+              {/* <option value="outline">outline</option> */}
             </select>
           </span>
 
