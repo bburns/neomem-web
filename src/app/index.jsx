@@ -14,20 +14,8 @@ const datasource = neo4jDatasource
 //. these will need to get translated from generic datastructs into
 // those specific to each datasource
 
-const projectsQuery = `
-MATCH (n:Project) 
-OPTIONAL MATCH (n)-[:CLIENT]->(c)
-WITH n, labels(n) as type, id(n) as id,
-collect(c.name) as client
-RETURN n { .*, type, id, client }
-`
-const projectsCols = "id,type,name,description,client"
-const projectsAddQuery = `
-CREATE (n:Project)
-WITH n, labels(n) as type, id(n) as id
-RETURN n { .*, type, id }
-`
 
+// reusable facet definitions
 //. how would you include the project itself at the top of this query result?
 const projectQuery = `
 MATCH (n)-[r]->(m:Project {name:$projectName}) 
@@ -38,7 +26,6 @@ id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels }
 `
 const projectCols = "id,project,type,name,timeframe,description,rels"
-// const projectCols = "id,project,type,name,timeframe,rels"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
@@ -58,12 +45,14 @@ WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 
+// facet definitions
+
 const facetObjs = {
   // facets: {
   //   params: { label: 'Facet' },
   //   query: genericQuery,
-  //   addQuery: genericAddQuery,
   //   cols: genericCols,
+  //   addQuery: genericAddQuery,
   // },
   all: {
     params: {},
@@ -81,9 +70,18 @@ const facetObjs = {
   },
   projects: {
     params: {},
-    query: projectsQuery,
-    cols: projectsCols,
-    addQuery: projectsAddQuery,
+    query: `
+    MATCH (n:Project) 
+    OPTIONAL MATCH (n)-[:CLIENT]->(c)
+    WITH n, labels(n) as type, id(n) as id,
+    collect(c.name) as client
+    RETURN n { .*, type, id, client }
+    `,
+    cols: "id,type,name,description,client",
+    addQuery: `CREATE (n:Project)
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `,
   },
   personal: { params: { projectName: 'personal' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
   neomem: { params: { projectName: 'neomem' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
@@ -106,9 +104,9 @@ const facetObjs = {
   //   cols: "id,type,author,name,description",
   // },
   timeframe: {
-    //. include items without a project also
     query: `
-    MATCH (n)-[r:PROJECT]->(m), (n)-[:TIMEFRAME]->(t) 
+    MATCH (n)-[:TIMEFRAME]->(t) 
+    OPTIONAL MATCH (n)-[:PROJECT]->(m)
     WITH n, labels(n) AS type, collect(m.name) AS project , collect(t.name) AS timeframe, id(n) as id
     RETURN n {.*, type, project, timeframe, id }`,
     cols: "id,type,project,name,timeframe,description",
