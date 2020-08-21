@@ -199,11 +199,15 @@ export default function App() {
         const row = record.get('n')
         // join any array fields into a comma-separated string
         Object.keys(row).forEach(key => {
-          if (Array.isArray(row[key])) {
-            console.log('join array field', key, row[key])
-            row[key] = row[key].join(', ')
+          if (key==='timeframe') {
+            row[key] = row[key][0] ? row[key][0].properties.order : 10
           }
+        //   if (Array.isArray(row[key])) {
+        //     console.log('join array field', key, row[key])
+        //     row[key] = row[key].join(', ')
+        //   }
         })
+        
         rows.push(row)
       })
       session.close()
@@ -211,15 +215,20 @@ export default function App() {
     })()
   }, [facet])
 
+
+  // sort data
   React.useEffect(() => {
     const rowsCopy = [...rows]
-    rowsCopy.sort((a,b) => a[sort].localeCompare(b[sort]))
+    if (sort==='timeframe') {
+      console.log(rows[0][sort])
+      // rowsCopy.sort((a,b) => a[sort].order - b[sort].order)
+      rowsCopy.sort((a,b) => a[sort] - b[sort])
+    } else {
+      rowsCopy.sort((a,b) => a[sort].localeCompare(b[sort]))
+    }
     setRows(rowsCopy)
   }, [sort])
 
-  // React.useEffect(() => {
-  //   tableRef.current.setData(rows)
-  // }, [rows])
 
   function changeFacet(e) {
     const facet = e.currentTarget.value
