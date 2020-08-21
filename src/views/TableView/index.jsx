@@ -97,14 +97,18 @@ const emptyRow = { id:-1 }
 
 export default function TableView({ visible, rows, groupBy, facetObj, datasource }) {
 
-  const [data, setData] = React.useState([])
+  // const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
 
   React.useEffect(() => {
+    console.log('rows changed', rows)
     // const data = [...rows, emptyRow]
-    const data = rows
-    setData(data)
+    // setData(data)
+    // setData(rows)
+    const table = tableRef.current.table
+    table.clearData()
+    table.addData(rows)
   }, [rows])
 
   React.useEffect(() => {
@@ -229,7 +233,8 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     <div className={"table-view" + (visible ? '' : ' hidden')}>
       <ReactTabulator
         ref={tableRef}
-        data={data}
+        // data={data}
+        data={[]}
         columns={columns}
         options={{groupBy, dataTree:true, dataSorting, dataSorted }}
         tooltips={false}

@@ -212,7 +212,7 @@ export default function App() {
 
   React.useEffect(() => {
     const rowsCopy = [...rows]
-    rowsCopy.sort((a,b) => a[sort] > b[sort])
+    rowsCopy.sort((a,b) => a[sort].localeCompare(b[sort]))
     setRows(rowsCopy)
   }, [sort])
 
