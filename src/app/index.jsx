@@ -28,17 +28,16 @@ WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 
-// MATCH (n)-[r:PROJECT]->(m:Project {name:$projectName}) 
 const projectQuery = `
-MATCH (n)<-[r]-(m:Project {name:$projectName}) 
+MATCH (n)-[r]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 WITH n, labels(n) as type, collect(r) as rels, collect(t.name) as timeframe, 
 collect(m.name) as project, 
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels }
 `
-// const projectCols = "id,project,type,name,timeframe,description,rels"
-const projectCols = "id,project,type,name,timeframe,rels"
+const projectCols = "id,project,type,name,timeframe,description,rels"
+// const projectCols = "id,project,type,name,timeframe,rels"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
@@ -69,12 +68,14 @@ const facetObjs = {
     params: {},
     query: `
     MATCH (n) 
-    OPTIONAL MATCH (n)-[]->(m:Project)
+    OPTIONAL MATCH (n)-[]->(p:Project)
     OPTIONAL MATCH (n)-[]->(t:Timeframe)
-    WITH n, labels(n) as type, collect(m.name) as project, collect(t.name) as timeframe, id(n) as id
-    RETURN n { .*, type, project, timeframe, id }
+    OPTIONAL MATCH (n)-[]->(place:Place)
+    WITH n, labels(n) as type, collect(p.name) as project, collect(t.name) as timeframe, id(n) as id,
+    collect(place.name) as place
+    RETURN n { .*, type, project, timeframe, id, place }
     `,
-    cols: "id,type,project,name,description,timeframe",
+    cols: "id,type,project,name,description,timeframe,place",
     addQuery: genericAddQuery,
   },
   projects: {

@@ -52,6 +52,7 @@ const colDefs = {
   depth: { width: 100 },
   parentId: { width: 100 },
   order: { width: 100, editor: "input" },
+  place: { width: 100 },
 
 }
 
