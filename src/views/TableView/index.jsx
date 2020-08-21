@@ -14,11 +14,25 @@ function substituteQueryParams(query, params) {
 }
 
 
+function headerClick(e, column) {
+  console.log(e, column)
+}
+
+// const headerSort = true
+const headerSort = false
+
+function dataSorting(sorters) {
+  //. remove last row
+}
+function dataSorted(sorters, rows) {
+  //. re-add last row
+}
+
 
 //. put coldefs into db eventually
 const colDefs = {
   // id: { width: 50, visible:false },
-  id: { width: 50 },
+  id: { width: 50, headerClick, headerSort },
   name: { width: 250, editor: 'input' },
   description: { width: 250, editor: 'input' },
   
@@ -88,7 +102,8 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
   const tableRef = React.useRef(null)
 
   React.useEffect(() => {
-    const data = [...rows, emptyRow]
+    // const data = [...rows, emptyRow]
+    const data = [...rows]
     setData(data)
   }, [rows])
 
@@ -106,7 +121,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
 
   async function cellEdited(cell) {
     console.log(cell)
-    const table = tableRef.current.table    
+    const table = tableRef.current.table
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
     const colDef = col.getDefinition()
@@ -216,7 +231,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
         ref={tableRef}
         data={data}
         columns={columns}
-        options={{groupBy, dataTree:true }}
+        options={{groupBy, dataTree:true, dataSorting, dataSorted }}
         tooltips={false}
         layout={"fitData"}
         cellEdited={cellEdited}

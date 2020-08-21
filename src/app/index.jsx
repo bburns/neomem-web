@@ -28,6 +28,7 @@ WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 
+//. how would you include the project itself at the top of this query result?
 const projectQuery = `
 MATCH (n)-[r]->(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
