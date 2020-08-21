@@ -103,7 +103,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
 
   React.useEffect(() => {
     // const data = [...rows, emptyRow]
-    const data = [...rows]
+    const data = rows
     setData(data)
   }, [rows])
 

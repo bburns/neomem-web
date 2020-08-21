@@ -69,7 +69,7 @@ const facetObjs = {
     OPTIONAL MATCH (n)-[]->(p:Project)
     OPTIONAL MATCH (n)-[]->(t:Timeframe)
     OPTIONAL MATCH (n)-[]->(place:Place)
-    WITH n, labels(n) as type, collect(p.name) as project, collect(t.name) as timeframe, id(n) as id,
+    WITH n, labels(n) as type, collect(p.name) as project, collect(t) as timeframe, id(n) as id,
     collect(place.name) as place
     RETURN n { .*, type, project, timeframe, id, place }
     `,
@@ -210,6 +210,16 @@ export default function App() {
     })()
   }, [facet])
 
+  React.useEffect(() => {
+    const rowsCopy = [...rows]
+    rowsCopy.sort((a,b) => a[sort] > b[sort])
+    setRows(rowsCopy)
+  }, [sort])
+
+  // React.useEffect(() => {
+  //   tableRef.current.setData(rows)
+  // }, [rows])
+
   function changeFacet(e) {
     const facet = e.currentTarget.value
     setFacet(facet)
@@ -282,12 +292,16 @@ export default function App() {
             </select>
           </span> */}
 
-          {/* <span className="app-controls-sort">
+          <span className="app-controls-sort">
             <span>Sort:&nbsp;</span>
             <select name="sort" id="sort" value={sort} onChange={changeSort}>
               <option value="">(none)</option>
+              <option value="name">name</option>
+              <option value="timeframe">timeframe</option>
+              <option value="type">type</option>
+              <option value="project">project</option>
             </select>
-          </span> */}
+          </span>
 
           {/* <span className="app-controls-view">
             <span>View:&nbsp;</span>
