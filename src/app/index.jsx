@@ -200,12 +200,11 @@ export default function App() {
         // join any array fields into a comma-separated string
         Object.keys(row).forEach(key => {
           if (key==='timeframe') {
-            row[key] = row[key][0] ? row[key][0].properties.order : 10
+            row[key] = row[key][0] ? row[key][0].properties : { name:'', order:10}
+          } else if (Array.isArray(row[key])) {
+            console.log('join array field', key, row[key])
+            row[key] = row[key].join(', ')
           }
-        //   if (Array.isArray(row[key])) {
-        //     console.log('join array field', key, row[key])
-        //     row[key] = row[key].join(', ')
-        //   }
         })
         
         rows.push(row)
@@ -221,8 +220,9 @@ export default function App() {
     const rowsCopy = [...rows]
     if (sort==='timeframe') {
       console.log(rows[0][sort])
-      // rowsCopy.sort((a,b) => a[sort].order - b[sort].order)
-      rowsCopy.sort((a,b) => a[sort] - b[sort])
+      rowsCopy.sort((a,b) => a[sort].order - b[sort].order)
+      // rowsCopy.sort((a,b) => a[sort] - b[sort])
+    } else if (sort==='') {
     } else {
       rowsCopy.sort((a,b) => a[sort].localeCompare(b[sort]))
     }
@@ -306,10 +306,10 @@ export default function App() {
             <span>Sort:&nbsp;</span>
             <select name="sort" id="sort" value={sort} onChange={changeSort}>
               <option value="">(none)</option>
+              <option value="project">project</option>
+              <option value="type">type</option>
               <option value="name">name</option>
               <option value="timeframe">timeframe</option>
-              <option value="type">type</option>
-              <option value="project">project</option>
             </select>
           </span>
 

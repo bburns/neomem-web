@@ -48,8 +48,16 @@ const colDefs = {
   
   //. singleselect - get values from db - how?
   timeframe: { width: 100, editor: "select", editorParams: {
-    values: "year,quarter,month,week,today,now,done".split(','),
-  }},
+      values: "year,quarter,month,week,today,now,done".split(','),
+    },
+    formatter: function(cell, formatterParams, onRendered) {
+      // cell - the cell component
+      // formatterParams - parameters set for the column
+      // onRendered - function to call when the formatter has been rendered
+      // return "Mr" + cell.getValue(); //return the contents of the cell;
+      return cell.getValue().name
+    },
+  },
   
   //. singleselect
   client: { width: 100, editor: "select", editorParams: { 
