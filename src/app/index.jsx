@@ -6,7 +6,8 @@ import logo from '../assets/logo256.png'
 import './styles.css'
 
 
-const initialFacet = 'neomem'
+// const initialFacet = 'neomem'
+const initialFacet = 'all'
 
 const datasource = neo4jDatasource
 
@@ -58,20 +59,22 @@ RETURN n { .*, type, id }
 `
 
 const facetObjs = {
-  facets: {
-    params: { label: 'Facet' },
-    query: genericQuery,
-    addQuery: genericAddQuery,
-    cols: genericCols,
-  },
+  // facets: {
+  //   params: { label: 'Facet' },
+  //   query: genericQuery,
+  //   addQuery: genericAddQuery,
+  //   cols: genericCols,
+  // },
   all: {
     params: {},
     query: `
     MATCH (n) 
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
+    OPTIONAL MATCH (n)-[]->(m:Project)
+    OPTIONAL MATCH (n)-[]->(t:Timeframe)
+    WITH n, labels(n) as type, collect(m.name) as project, collect(t.name) as timeframe, id(n) as id
+    RETURN n { .*, type, project, timeframe, id }
     `,
-    cols: genericCols,
+    cols: "id,type,project,name,description,timeframe",
     addQuery: genericAddQuery,
   },
   projects: {
@@ -238,7 +241,7 @@ export default function App() {
             </select>
           </span> */}
 
-          <span className="app-controls-groupby">
+          {/* <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
             <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
               <option value="">(none)</option>
@@ -247,7 +250,7 @@ export default function App() {
               <option value="project">project</option>
               <option value="client">client</option>
             </select>
-          </span>
+          </span> */}
 
           {/* <span className="app-controls-sort">
             <span>Sort:&nbsp;</span>
@@ -256,14 +259,13 @@ export default function App() {
             </select>
           </span> */}
 
-          <span className="app-controls-sort">
+          {/* <span className="app-controls-view">
             <span>View:&nbsp;</span>
             <select name="view" id="view" value={view} onChange={changeView}>
               <option value="table">table</option>
               <option value="document">document</option>
-              {/* <option value="outline">outline</option> */}
             </select>
-          </span>
+          </span> */}
 
         </div>
         {/* <div className="app-header-query">Query: {query}</div> */}
