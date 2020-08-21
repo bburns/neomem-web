@@ -227,6 +227,8 @@ export default function App() {
 
         <div className="app-controls">
 
+          <button>new</button>
+
           <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
             <select name="facet" id="facet" value={facet} onChange={changeFacet}>

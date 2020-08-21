@@ -50,6 +50,9 @@ body {
   font-size: 0.9em;
   background: #111;
 }
+.app-controls-facet {
+  margin-left: 8px;
+}
 .app-controls-groupby {
   margin-left: 8px;
 }
