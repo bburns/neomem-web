@@ -24,7 +24,7 @@ $projectName as project,
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels }
 UNION
-MATCH (n)-[r]->(m:Project {name:$projectName}) 
+MATCH (n)<-[r]-(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
 $projectName as project, 
@@ -125,8 +125,8 @@ const facetObjs = {
   timeframe: {
     query: `
     MATCH (n)-[:TIMEFRAME]->(t) 
-    OPTIONAL MATCH (n)-[:PROJECT]->(m)
-    WITH n, labels(n) AS type, collect(m.name) AS project , collect(t.name) AS timeframe, id(n) as id
+    OPTIONAL MATCH (n)<-[:PROJECT]-(m)
+    WITH n, labels(n) AS type, collect(m.name) AS project , collect(t) AS timeframe, id(n) as id
     RETURN n {.*, type, project, timeframe, id }`,
     cols: "id,type,project,name,timeframe,description",
   },
@@ -143,7 +143,7 @@ const facetObjs = {
     query: `
     MATCH (p)
     WHERE id(p)=$parentId 
-    MATCH (n)-[r]->(p) 
+    MATCH (p)-[r]->(n) 
     WITH n, labels(n) as type, id(n) as id, type(r) as rels, $parentId as parentId
     RETURN n { .*, type, id, rels, parentId }
     `,
