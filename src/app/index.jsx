@@ -1,25 +1,23 @@
-import React from 'react'
-import datasource from '../datasources/neo4j'
-import TableView from '../views/TableView'
-import DocumentView from '../views/DocumentView'
-import logo from '../assets/logo256.png'
-import './styles.css'
-
+import React from "react";
+import datasource from "../datasources/neo4j";
+import TableView from "../views/TableView";
+import DocumentView from "../views/DocumentView";
+import logo from "../assets/logo256.png";
+import "./styles.css";
 
 // const initialFacet = 'neomem'
-const initialFacet = 'all'
+const initialFacet = "all";
 
 //. these will need to get translated from generic datastructs into
 // those specific to each datasource
-
 
 // reusable facet definitions
 
 // do a union query to include the project item at the top of the results
 // MATCH (n:Project {name:$projectName})
 // OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-// WITH n, labels(n) as type, 'self' as rels, collect(t) as timeframe, 
-// $projectName as project, 
+// WITH n, labels(n) as type, 'self' as rels, collect(t) as timeframe,
+// $projectName as project,
 // id(n) as id
 // RETURN n { .*, type, timeframe, project, id, rels }
 // UNION
@@ -32,18 +30,18 @@ $projectName as project,
 collect(place.name) as place,
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels, place }
-`
+`;
 // const projectCols = "id,project,type,name,timeframe,description,rels"
-const projectCols = "name,timeframe,description,place"
+const projectCols = "name,timeframe,description,place";
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
-`
+`;
 
 // const genericQuery = `
-// MATCH (n:#label#) 
+// MATCH (n:#label#)
 // WITH n, labels(n) as type, id(n) as id
 // RETURN n { .*, type, id }
 // `
@@ -52,19 +50,18 @@ const genericAddQuery = `
 CREATE (n:#label#)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
-`
+`;
 
 // facet definitions
 
 const facetObjs = {
-  
   // facets: {
   //   params: { label: 'Facet' },
   //   query: genericQuery,
   //   cols: genericCols,
   //   addQuery: genericAddQuery,
   // },
-  
+
   all: {
     params: {},
     query: `
@@ -79,7 +76,7 @@ const facetObjs = {
     // cols: "id,type,project,name,description,timeframe,place",
     cols: "name,project,description,timeframe,place,order",
     addQuery: genericAddQuery,
-    group: 'type',
+    group: "type",
   },
 
   projects: {
@@ -99,34 +96,44 @@ const facetObjs = {
     RETURN n { .*, type, id }
     `,
   },
-  
-  personal: { params: { projectName: 'personal' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  
-  neomem: { params: { projectName: 'neomem' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  
+
+  personal: {
+    params: { projectName: "personal" },
+    query: projectQuery,
+    cols: projectCols,
+    addQuery: projectAddQuery,
+  },
+
+  neomem: {
+    params: { projectName: "neomem" },
+    query: projectQuery,
+    cols: projectCols,
+    addQuery: projectAddQuery,
+  },
+
   // tallieo: { params: { projectName: 'tallieo' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  
+
   // facemate: { params: { projectName: 'facemate' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  
+
   // ccs: { params: { projectName: 'ccs' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-  
+
   // people: {
   //   params: { label: 'Person' },
   //   query: genericQuery,
   //   cols: genericCols,
   //   addQuery: genericAddQuery,
   // },
-  
+
   // books: {
   //   query: `
-  //   MATCH (n) 
-  //   WHERE (n:Book) or (n:Author) 
-  //   OPTIONAL MATCH (n)-[r:AUTHOR]->(m) 
+  //   MATCH (n)
+  //   WHERE (n:Book) or (n:Author)
+  //   OPTIONAL MATCH (n)-[r:AUTHOR]->(m)
   //   WITH n, collect(m.name) as author, labels(n) as type, id(n) as id
   //   RETURN n { .*, type, author, id }`,
   //   cols: "id,type,author,name,description",
   // },
-  
+
   timeframe: {
     query: `
     MATCH (n)-[:TIMEFRAME]->(t) 
@@ -136,14 +143,14 @@ const facetObjs = {
     RETURN n {.*, type, project, timeframe, id }`,
     // cols: "id,type,project,name,timeframe,description",
     cols: "name,type,project,description",
-    group: 'timeframe',
+    group: "timeframe",
   },
-  
+
   story: {
     // params: {},
     // query: `
-    // MATCH (p:Project {name: 'blt'}) 
-    // MATCH path=(n)-[r*0..2]->(p) 
+    // MATCH (p:Project {name: 'blt'})
+    // MATCH path=(n)-[r*0..2]->(p)
     // WITH n, labels(n) as type, id(n) as id, length(path) as depth
     // RETURN n { .*, type, id, depth }
     // `,
@@ -158,109 +165,104 @@ const facetObjs = {
     params: { parentId: 48 }, // blt
     cols: "id,type,name,description,order,rels,parentId",
   },
-}
+};
 
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
-    const value = params[key]
-    query = query.replace('#' + key + '#', value)
-  }  
-  return query
+    const value = params[key];
+    query = query.replace("#" + key + "#", value);
+  }
+  return query;
 }
 
-
-
-const emptyRow = { id:-1 }
-
+const emptyRow = { id: -1 };
 
 export default function App() {
-
-  const [facet, setFacet] = React.useState(initialFacet)
-  const [facetObj, setFacetObj] = React.useState({})
-  const [filter, setFilter] = React.useState("")
-  const [groupBy, setGroupBy] = React.useState("")
-  const [sort, setSort] = React.useState("")
-  const [view, setView] = React.useState("table")
+  const [facet, setFacet] = React.useState(initialFacet);
+  const [facetObj, setFacetObj] = React.useState({});
+  const [filter, setFilter] = React.useState("");
+  const [groupBy, setGroupBy] = React.useState("");
+  const [sort, setSort] = React.useState("");
+  const [view, setView] = React.useState("table");
   // const [query, setQuery] = React.useState("") // used to display query to user
-  const [rows, setRows] = React.useState([])
-  const facetRef = React.useRef(facet) //. better way?
+  const [rows, setRows] = React.useState([]);
+  const facetRef = React.useRef(facet); //. better way?
 
   // on change facet
   React.useEffect(() => {
-    facetRef.current = facet
-    ;(async () => {
+    facetRef.current = facet;
+    (async () => {
+      const facetObj = facetObjs[facet];
+      setFacetObj(facetObj);
 
-      const facetObj = facetObjs[facet]
-      setFacetObj(facetObj)
-
-      const queryTemplate = facetObj.query
-      const params = facetObj.params || {}
-      const query = substituteQueryParams(queryTemplate, params)
+      const queryTemplate = facetObj.query;
+      const params = facetObj.params || {};
+      const query = substituteQueryParams(queryTemplate, params);
       // setQuery(query)
-      if (!query) return
+      if (!query) return;
 
-      console.log(query, params)
-      const rows = []
+      console.log(query, params);
+      const rows = [];
       // const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-      const session = datasource.getSession(true)
-      const result = await session.run(query, params)
-      result.records.forEach(record => {
-        const row = record.get('n')
+      const session = datasource.getSession(true);
+      const result = await session.run(query, params);
+      result.records.forEach((record) => {
+        const row = record.get("n");
         // join any array fields into a comma-separated string
-        Object.keys(row).forEach(key => {
-          if (key==='timeframe') {
-            row[key] = row[key][0] ? row[key][0].properties : { name:'', order:10}
+        Object.keys(row).forEach((key) => {
+          if (key === "timeframe") {
+            row[key] = row[key][0]
+              ? row[key][0].properties
+              : { name: "", order: 10 };
           } else if (Array.isArray(row[key])) {
-            console.log('join array field', key, row[key])
-            row[key] = row[key].join(', ')
+            console.log("join array field", key, row[key]);
+            row[key] = row[key].join(", ");
           }
-        })
-        
-        rows.push(row)
-      })
-      session.close()
-      setRows(rows)
-    })()
-  }, [facet])
+        });
 
+        rows.push(row);
+      });
+      session.close();
+      setRows(rows);
+    })();
+  }, [facet]);
 
   // on change sort
   React.useEffect(() => {
-    const rowsCopy = [...rows]
-    if (sort==='timeframe') {
-      console.log(rows[0][sort])
-      rowsCopy.sort((a,b) => a[sort].order - b[sort].order)
-    } else if (sort==='') {
+    const rowsCopy = [...rows];
+    if (sort === "timeframe") {
+      console.log(rows[0][sort]);
+      rowsCopy.sort((a, b) => a[sort].order - b[sort].order);
+    } else if (sort === "") {
     } else {
-      rowsCopy.sort((a,b) => a[sort].localeCompare(b[sort]))
+      rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]));
     }
-    setRows(rowsCopy)
-  }, [sort])
-
+    setRows(rowsCopy);
+  }, [sort]);
 
   function changeFacet(e) {
-    const facet = e.currentTarget.value
-    setFacet(facet)
+    const facet = e.currentTarget.value;
+    setFacet(facet);
   }
 
   function changeFilter(e) {
-    const filter = e.currentTarget.value
-    setFilter(filter)
+    const filter = e.currentTarget.value;
+    setFilter(filter);
   }
 
   function changeGroupBy(e) {
-    const groupBy = e.currentTarget.value
-    setGroupBy(groupBy)
+    const groupBy = e.currentTarget.value;
+    setGroupBy(groupBy);
   }
 
   function changeSort(e) {
-    const sort = e.currentTarget.value
-    setSort(sort)
+    const sort = e.currentTarget.value;
+    setSort(sort);
   }
 
   function changeView(e) {
-    const view = e.currentTarget.value
-    setView(view)
+    const view = e.currentTarget.value;
+    setView(view);
   }
 
   async function clickNew(e) {
@@ -273,22 +275,26 @@ export default function App() {
 
   return (
     <div className="app">
-      
       <div className="app-header">
-        
         <div className="app-header-logo">
-          <img src={logo} alt="logo" /> 
+          <img src={logo} alt="logo" />
           <span>Neomem</span>
         </div>
 
         <div className="app-controls">
-
-          <button onClick={clickNew}>new</button>
-
           <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
-            <select name="facet" id="facet" value={facet} onChange={changeFacet}>
-              {Object.keys(facetObjs).map(facet => <option key={facet} value={facet}>{facet}</option>)}
+            <select
+              name="facet"
+              id="facet"
+              value={facet}
+              onChange={changeFacet}
+            >
+              {Object.keys(facetObjs).map((facet) => (
+                <option key={facet} value={facet}>
+                  {facet}
+                </option>
+              ))}
             </select>
           </span>
 
@@ -301,7 +307,12 @@ export default function App() {
 
           <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
-            <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
+            <select
+              name="groupby"
+              id="groupby"
+              value={groupBy}
+              onChange={changeGroupBy}
+            >
               <option value="">(none)</option>
               <option value="type">type</option>
               <option value="timeframe">timeframe</option>
@@ -329,27 +340,27 @@ export default function App() {
             </select>
           </span> */}
 
+          <span className="app-controls-new">
+            <button onClick={clickNew}>new</button>
+          </span>
         </div>
         {/* <div className="app-header-query">Query: {query}</div> */}
       </div>
-      
+
       <div className="app-contents">
         {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
-          <TableView
-            visible={view==='table'}
-            rows={rows}
-            groupBy={groupBy}
-            facetObj={facetObj} // for columns, addquery, params - //. better way?
-            datasource={datasource}
-          />
-          {/* } */}
-        {view==="document" &&
-          <DocumentView 
-            rows={rows}
-            groupBy={groupBy}
-            datasource={datasource}
-          />}
+        <TableView
+          visible={view === "table"}
+          rows={rows}
+          groupBy={groupBy}
+          facetObj={facetObj} // for columns, addquery, params - //. better way?
+          datasource={datasource}
+        />
+        {/* } */}
+        {view === "document" && (
+          <DocumentView rows={rows} groupBy={groupBy} datasource={datasource} />
+        )}
       </div>
     </div>
-  )
+  );
 }

@@ -35,13 +35,10 @@ function objectFormatter(cell, formatterParams, onRendered) {
   // return "Mr" + cell.getValue(); //return the contents of the cell;
   const value = cell.getValue()
   // console.log(cell.getColumn().getField())
-  // if (cell.getColumn().getField()==='timeframe') {
-  //   return value ? value.name : ''
-  // }
-  // if (isObject(value)) {
-  console.log(cell,value, typeof(value))
+  // console.log(cell,value, typeof(value))
   if (typeof(value)==='object') {
-    return value ? value.name : ''
+    // return value ? value.name : ''
+    return value.name
   }
   return value
 }
@@ -50,9 +47,12 @@ function objectFormatter(cell, formatterParams, onRendered) {
 
 //. put coldefs into db eventually
 const colDefs = {
+
   // id: { width: 50, visible:false },
   id: { width: 50, headerClick, headerSort },
+
   name: { width: 250, editor: 'input', formatter: objectFormatter },
+
   description: { width: 250, editor: 'input' },
   
   //. singleselect
@@ -137,13 +137,13 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
       //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
       const dict = {}
       for (const row of rows) {
-        // let group
-        // if (groupBy==='timeframe') {
-        //   group = row.timeframe ? row.timeframe.name : ''
-        // } else {
-        //   group = row[groupBy]
-        // }
-        const group = row[groupBy]
+        let group
+        if (groupBy==='timeframe') {
+          group = row.timeframe ? row.timeframe.name : ''
+          row.timeframeOrder = row.timeframe ? row.timeframe.order : 100
+        } else {
+          group = row[groupBy]
+        }
         if (!dict[group]) {
           dict[group] = []
         }
@@ -157,7 +157,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
         data.push(row)
       }
       if (groupBy==='timeframe') {
-        data.sort((a,b)=>a[firstCol].order - b[firstCol].order)
+        data.sort((a,b)=>a.timeframeOrder - b.timeframeOrder)
       } else {
         data.sort((a,b)=>a[firstCol].localeCompare(b[firstCol]))
       }
