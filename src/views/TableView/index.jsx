@@ -121,25 +121,34 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     // const header = {id:999,name:'Acts',_children:rows}
     // const data = rows[0] && [header]
 
-    //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
-    const dict = {}
-    for (const row of rows) {
-      // const type = row.type
-      const type = row.timeframe ? row.timeframe.name : ''
-      if (!dict[type]) {
-        dict[type] = []
+    if (groupBy) {
+
+      //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
+      const dict = {}
+      for (const row of rows) {
+        let group
+        if (groupBy==='timeframe') {
+          group = row.timeframe ? row.timeframe.name : ''
+        } else {
+          group = row[groupBy]
+        }
+        if (!dict[group]) {
+          dict[group] = []
+        }
+        dict[group].push(row)
       }
-      dict[type].push(row)
-    }
-    
-    const data = []
-    for (const type of Object.keys(dict)) {
-      const row = {name:type, _children: dict[type]}
-      data.push(row)
+      
+      const data = []
+      for (const group of Object.keys(dict)) {
+        const row = {name:group, _children: dict[group]}
+        data.push(row)
+      }
+      table.addData(data)
+    } else {
+      table.addData(rows)
     }
 
-    table.addData(data)
-  }, [rows])
+  }, [rows, groupBy])
 
 
   React.useEffect(() => {

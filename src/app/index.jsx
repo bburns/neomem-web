@@ -79,6 +79,7 @@ const facetObjs = {
     // cols: "id,type,project,name,description,timeframe,place",
     cols: "name,project,description,timeframe,place,order",
     addQuery: genericAddQuery,
+    group: 'type',
   },
 
   projects: {
@@ -135,9 +136,7 @@ const facetObjs = {
     RETURN n {.*, type, project, timeframe, id }`,
     // cols: "id,type,project,name,timeframe,description",
     cols: "name,type,project,description",
-    settingsTableView: {
-      
-    },
+    group: 'timeframe',
   },
   
   story: {
@@ -186,6 +185,7 @@ export default function App() {
   const [rows, setRows] = React.useState([])
   const facetRef = React.useRef(facet) //. better way?
 
+  // on change facet
   React.useEffect(() => {
     facetRef.current = facet
     ;(async () => {
@@ -224,7 +224,7 @@ export default function App() {
   }, [facet])
 
 
-  // sort data
+  // on change sort
   React.useEffect(() => {
     const rowsCopy = [...rows]
     if (sort==='timeframe') {
@@ -300,7 +300,7 @@ export default function App() {
             </select>
           </span> */}
 
-          {/* <span className="app-controls-groupby">
+          <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
             <select name="groupby" id="groupby" value={groupBy} onChange={changeGroupBy}>
               <option value="">(none)</option>
@@ -309,7 +309,7 @@ export default function App() {
               <option value="project">project</option>
               <option value="client">client</option>
             </select>
-          </span> */}
+          </span>
 
           <span className="app-controls-sort">
             <span>Sort:&nbsp;</span>
