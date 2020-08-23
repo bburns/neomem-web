@@ -16,23 +16,25 @@ const initialFacet = 'all'
 // reusable facet definitions
 
 // do a union query to include the project item at the top of the results
+// MATCH (n:Project {name:$projectName})
+// OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+// WITH n, labels(n) as type, 'self' as rels, collect(t) as timeframe, 
+// $projectName as project, 
+// id(n) as id
+// RETURN n { .*, type, timeframe, project, id, rels }
+// UNION
 const projectQuery = `
-MATCH (n:Project {name:$projectName})
-OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-WITH n, labels(n) as type, 'self' as rels, collect(t) as timeframe, 
-$projectName as project, 
-id(n) as id
-RETURN n { .*, type, timeframe, project, id, rels }
-UNION
 MATCH (n)<-[r]-(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+OPTIONAL MATCH (n)-[:PLACE]->(place)
 WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
 $projectName as project, 
+collect(place.name) as place,
 id(n) as id
-RETURN n { .*, type, timeframe, project, id, rels }
+RETURN n { .*, type, timeframe, project, id, rels, place }
 `
 // const projectCols = "id,project,type,name,timeframe,description,rels"
-const projectCols = "name,timeframe,description"
+const projectCols = "name,timeframe,description,place"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)

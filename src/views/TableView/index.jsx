@@ -157,7 +157,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
 
   function rowFormatter(row) {
     const data = row.getData()
-    if (!data.id) {
+    if (data.id===undefined) {
       row.getElement().style.fontWeight = 'bold'
     }
   }
