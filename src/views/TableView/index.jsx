@@ -124,7 +124,8 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
     const dict = {}
     for (const row of rows) {
-      const type = row.type
+      // const type = row.type
+      const type = row.timeframe ? row.timeframe.name : ''
       if (!dict[type]) {
         dict[type] = []
       }

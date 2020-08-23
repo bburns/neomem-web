@@ -129,10 +129,15 @@ const facetObjs = {
   timeframe: {
     query: `
     MATCH (n)-[:TIMEFRAME]->(t) 
-    OPTIONAL MATCH (n)<-[:PROJECT]-(m)
-    WITH n, labels(n) AS type, collect(m.name) AS project , collect(t) AS timeframe, id(n) as id
+    OPTIONAL MATCH (n)<-[]-(m:Project)
+    WITH n, labels(n) AS type, collect(m.name) AS project, 
+    collect(t) AS timeframe, id(n) as id
     RETURN n {.*, type, project, timeframe, id }`,
-    cols: "id,type,project,name,timeframe,description",
+    // cols: "id,type,project,name,timeframe,description",
+    cols: "name,type,project,description",
+    settingsTableView: {
+      
+    },
   },
   
   story: {
