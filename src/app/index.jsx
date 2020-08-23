@@ -77,7 +77,7 @@ const facetObjs = {
     RETURN n { .*, type, project, timeframe, id, place }
     `,
     // cols: "id,type,project,name,description,timeframe,place",
-    cols: "name,project,description,timeframe,place",
+    cols: "name,project,description,timeframe,place,order",
     addQuery: genericAddQuery,
   },
 

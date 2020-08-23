@@ -121,7 +121,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     // const header = {id:999,name:'Acts',_children:rows}
     // const data = rows[0] && [header]
 
-    //. group by type at first
+    //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
     const dict = {}
     for (const row of rows) {
       const type = row.type
