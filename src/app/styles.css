@@ -37,12 +37,12 @@ body {
   /* padding-left: 4px; */
 }
 .app-header-logo {
-  font-size: 24px;
+  font-size: 26px;
   font-family: 'Futura Std Light', futura, sans-serif;
-  margin-bottom: 4px;
+  margin: 4px 0;
 }
 .app-header-logo img {
-  height: 24px;
+  height: 22px;
   margin-right: 4px;
 }
 .app-controls {
