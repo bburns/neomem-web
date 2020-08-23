@@ -114,10 +114,30 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     console.log('rows changed', rows)
     // const data = [...rows, emptyRow]
     // setData(data)
-    // setData(rows)
+
     const table = tableRef.current.table
     table.clearData()
-    table.addData(rows)
+
+    // const header = {id:999,name:'Acts',_children:rows}
+    // const data = rows[0] && [header]
+
+    //. group by type at first
+    const dict = {}
+    for (const row of rows) {
+      const type = row.type
+      if (!dict[type]) {
+        dict[type] = []
+      }
+    }
+
+    
+    const data = []
+    for (const type of Object.keys(dict)) {
+      const row = {name:type, _children: dict[type]}
+      data.push(row)
+    }
+
+    table.addData(data)
   }, [rows])
 
   React.useEffect(() => {
@@ -128,8 +148,8 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
   }, [facetObj])
 
   React.useEffect(() => {
-    const table = tableRef.current.table
-    table.setGroupBy(groupBy)
+    // const table = tableRef.current.table
+    // table.setGroupBy(groupBy)
   }, [groupBy])
 
   async function cellEdited(cell) {
