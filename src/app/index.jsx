@@ -230,7 +230,6 @@ export default function App() {
     if (sort==='timeframe') {
       console.log(rows[0][sort])
       rowsCopy.sort((a,b) => a[sort].order - b[sort].order)
-      // rowsCopy.sort((a,b) => a[sort] - b[sort])
     } else if (sort==='') {
     } else {
       rowsCopy.sort((a,b) => a[sort].localeCompare(b[sort]))

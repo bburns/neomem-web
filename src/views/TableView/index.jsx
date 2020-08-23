@@ -28,12 +28,31 @@ function dataSorted(sorters, rows) {
   //. re-add last row
 }
 
+function objectFormatter(cell, formatterParams, onRendered) {
+  // cell - the cell component
+  // formatterParams - parameters set for the column
+  // onRendered - function to call when the formatter has been rendered
+  // return "Mr" + cell.getValue(); //return the contents of the cell;
+  const value = cell.getValue()
+  // console.log(cell.getColumn().getField())
+  // if (cell.getColumn().getField()==='timeframe') {
+  //   return value ? value.name : ''
+  // }
+  // if (isObject(value)) {
+  console.log(cell,value, typeof(value))
+  if (typeof(value)==='object') {
+    return value ? value.name : ''
+  }
+  return value
+}
+
+
 
 //. put coldefs into db eventually
 const colDefs = {
   // id: { width: 50, visible:false },
   id: { width: 50, headerClick, headerSort },
-  name: { width: 250, editor: 'input' },
+  name: { width: 250, editor: 'input', formatter: objectFormatter },
   description: { width: 250, editor: 'input' },
   
   //. singleselect
@@ -50,14 +69,7 @@ const colDefs = {
   timeframe: { width: 100, editor: "select", editorParams: {
       values: "now,today,weekend,week,month,quarter,year,decade,life,done".split(','),
     },
-    formatter: function(cell, formatterParams, onRendered) {
-      // cell - the cell component
-      // formatterParams - parameters set for the column
-      // onRendered - function to call when the formatter has been rendered
-      // return "Mr" + cell.getValue(); //return the contents of the cell;
-      const value = cell.getValue()
-      return value ? value.name : ''
-    },
+    formatter: objectFormatter,
   },
   
   //. singleselect
@@ -106,7 +118,6 @@ const emptyRow = { id:-1 }
 
 export default function TableView({ visible, rows, groupBy, facetObj, datasource }) {
 
-  // const [data, setData] = React.useState([])
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
 
@@ -126,12 +137,13 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
       //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
       const dict = {}
       for (const row of rows) {
-        let group
-        if (groupBy==='timeframe') {
-          group = row.timeframe ? row.timeframe.name : ''
-        } else {
-          group = row[groupBy]
-        }
+        // let group
+        // if (groupBy==='timeframe') {
+        //   group = row.timeframe ? row.timeframe.name : ''
+        // } else {
+        //   group = row[groupBy]
+        // }
+        const group = row[groupBy]
         if (!dict[group]) {
           dict[group] = []
         }
@@ -139,9 +151,15 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
       }
       
       const data = []
+      const firstCol = 'name'
       for (const group of Object.keys(dict)) {
-        const row = {name:group, _children: dict[group]}
+        const row = {[firstCol]:group, _children: dict[group]}
         data.push(row)
+      }
+      if (groupBy==='timeframe') {
+        data.sort((a,b)=>a[firstCol].order - b[firstCol].order)
+      } else {
+        data.sort((a,b)=>a[firstCol].localeCompare(b[firstCol]))
       }
       table.addData(data)
     } else {
