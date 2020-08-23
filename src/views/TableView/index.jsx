@@ -128,8 +128,8 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
       if (!dict[type]) {
         dict[type] = []
       }
+      dict[type].push(row)
     }
-
     
     const data = []
     for (const type of Object.keys(dict)) {
@@ -140,6 +140,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     table.addData(data)
   }, [rows])
 
+
   React.useEffect(() => {
     const cols = facetObj.cols || 'name'
     const colNames = cols.split(',')
@@ -147,10 +148,19 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     setColumns(columns)
   }, [facetObj])
 
+
   React.useEffect(() => {
     // const table = tableRef.current.table
     // table.setGroupBy(groupBy)
   }, [groupBy])
+
+
+  function rowFormatter(row) {
+    const data = row.getData()
+    if (!data.id) {
+      row.getElement().style.fontWeight = 'bold'
+    }
+  }
 
   async function cellEdited(cell) {
     console.log(cell)
@@ -265,7 +275,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
         // data={data}
         data={[]}
         columns={columns}
-        options={{groupBy, dataTree:true, dataSorting, dataSorted }}
+        options={{groupBy, dataTree:true, dataSorting, dataSorted, rowFormatter }}
         tooltips={false}
         layout={"fitData"}
         cellEdited={cellEdited}

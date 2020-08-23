@@ -31,7 +31,8 @@ $projectName as project,
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels }
 `
-const projectCols = "id,project,type,name,timeframe,description,rels"
+// const projectCols = "id,project,type,name,timeframe,description,rels"
+const projectCols = "name,timeframe,description,rels"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
