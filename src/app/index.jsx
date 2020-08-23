@@ -67,14 +67,15 @@ const facetObjs = {
     params: {},
     query: `
     MATCH (n) 
-    OPTIONAL MATCH (n)-[]->(p:Project)
+    OPTIONAL MATCH (n)<-[]-(p:Project)
     OPTIONAL MATCH (n)-[]->(t:Timeframe)
     OPTIONAL MATCH (n)-[]->(place:Place)
     WITH n, labels(n) as type, collect(p.name) as project, collect(t) as timeframe, id(n) as id,
     collect(place.name) as place
     RETURN n { .*, type, project, timeframe, id, place }
     `,
-    cols: "id,type,project,name,description,timeframe,place",
+    // cols: "id,type,project,name,description,timeframe,place",
+    cols: "name,project,description,timeframe,place",
     addQuery: genericAddQuery,
   },
 
