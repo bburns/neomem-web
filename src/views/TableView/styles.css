@@ -4,3 +4,43 @@
 .table-view.hidden {
   display: none;
 }
+
+
+
+
+
+/* //. override defaults here. better way? */
+.tabulator {
+  font-size: 13px !important;
+  height: 100%;
+}
+.tabulator-row {
+  border-bottom: 1px solid #ddd;
+  background: none;
+}
+.tabulator-row .tabulator-cell {
+  border-right: 1px solid #ddd !important;
+}
+.tabulator-row.tabulator-row-even {
+  background: none;
+}
+.tabulator-row.tabulator-selectable:hover {
+  background: #f2f2f2 !important;
+}
+
+.tabulator-row .tabulator-cell {
+  padding: 0px 4px;
+  height: 1.7em !important;
+}
+
+.tabulator-row.tabulator-group {
+  background: #d6dbf1;
+}
+.tabulator-row.tabulator-group span {
+  color: gray;
+}
+
+.tabulator-row .tabulator-cell .tabulator-data-tree-branch {
+  visibility: hidden;
+}
+
