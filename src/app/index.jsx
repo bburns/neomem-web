@@ -111,7 +111,12 @@ const facetObjs = {
     addQuery: projectAddQuery,
   },
 
-  // tallieo: { params: { projectName: 'tallieo' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
+  tallieo: { 
+    params: { projectName: 'tallieo' }, 
+    query: projectQuery, 
+    cols: projectCols, 
+    addQuery: projectAddQuery,
+  },
 
   // facemate: { params: { projectName: 'facemate' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
 

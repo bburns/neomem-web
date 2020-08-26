@@ -16,6 +16,10 @@ function substituteQueryParams(query, params) {
 
 function headerClick(e, column) {
   console.log(e, column)
+  // alert(column)
+  const field = column.getField()
+  alert(field)
+  return false
 }
 
 // const headerSort = true
@@ -48,46 +52,88 @@ function objectFormatter(cell, formatterParams, onRendered) {
 //. put coldefs into db eventually
 const colDefs = {
 
-  // id: { width: 50, visible:false },
-  id: { width: 50, headerClick, headerSort },
+  id: { 
+    width: 50, 
+    headerSort, 
+    headerClick, 
+    // visible: false,
+  },
 
-  name: { width: 250, editor: 'input', formatter: objectFormatter },
+  name: { 
+    width: 250, 
+    headerSort, 
+    headerClick, 
+    editor: 'input', 
+    formatter: objectFormatter,
+  },
 
-  description: { width: 250, editor: 'input' },
+  description: { 
+    width: 250, 
+    editor: 'input', 
+    headerSort, 
+    headerClick, 
+  },
   
   //. singleselect
-  project: { width: 100, editorParams: { 
-    values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager".split(',').sort(),
-  }},
+  project: { 
+    width: 100, 
+    editorParams: { 
+      values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager".split(',').sort(),
+    },
+    headerSort, 
+    headerClick, 
+  },
   
   //. multiselect? single?
-  type: { width: 100, editor: "select", editorParams: { 
-    values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View".split(',').sort(),
-  }},
+  type: { 
+    width: 100, 
+    editor: "select", 
+    editorParams: { 
+      values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View".split(',').sort(), 
+    },
+    headerSort, 
+    headerClick, 
+  },
   
   //. singleselect - get values from db - how?
-  timeframe: { width: 100, editor: "select", editorParams: {
+  timeframe: { 
+    width: 100, 
+    editor: "select", 
+    editorParams: {
       values: "now,today,weekend,week,month,quarter,year,decade,life,done".split(','),
     },
+    headerSort, 
+    headerClick, 
     formatter: objectFormatter,
   },
   
   //. singleselect
-  client: { width: 100, editor: "select", editorParams: { 
-    values: "me,MRIIOT".split(',').sort(),
-  }},
+  client: { 
+    width: 100, 
+    editor: "select", 
+    editorParams: { values: "me,MRIIOT".split(',').sort() },
+    headerSort, 
+    headerClick, 
+  },
   
   //.
-  author: { width: 100, editor: "select", editorParams: {
-    values: "tolkien,pkdick,tanithlee".split(','),
-  }, multiselect: true },
+  author: { 
+    width: 100, 
+    editor: "select", 
+    editorParams: {
+      values: "tolkien,pkdick,tanithlee".split(','),
+    }, 
+    multiselect: true, 
+    headerSort, 
+    headerClick, 
+  },
 
-  related: { width: 100 },
-  rels: { width: 200 },
-  depth: { width: 100 },
-  parentId: { width: 100 },
-  order: { width: 100, editor: "input" },
-  place: { width: 100 },
+  related: { width: 100, headerSort, headerClick },
+  rels: { width: 200, headerSort, headerClick },
+  depth: { width: 100, headerSort, headerClick },
+  parentId: { width: 100, headerSort, headerClick },
+  order: { width: 100, editor: "input", headerSort, headerClick },
+  place: { width: 100, headerSort, headerClick },
 
 }
 
@@ -300,7 +346,6 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     <div className={"table-view" + (visible ? '' : ' hidden')}>
       <ReactTabulator
         ref={tableRef}
-        // data={data}
         data={[]}
         columns={columns}
         options={{groupBy, dataTree:true, dataSorting, dataSorted, rowFormatter }}
