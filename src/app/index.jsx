@@ -1,12 +1,12 @@
-import React from "react";
-import datasource from "../datasources/neo4j";
-import TableView from "../views/TableView";
-import DocumentView from "../views/DocumentView";
-import logo from "../assets/logo256.png";
-import "./styles.css";
+import React from "react"
+import datasource from "../datasources/neo4j"
+import TableView from "../views/TableView"
+import DocumentView from "../views/DocumentView"
+import logo from "../assets/logo256.png"
+import "./styles.css"
 
 // const initialFacet = 'neomem'
-const initialFacet = "all";
+const initialFacet = "all"
 
 //. these will need to get translated from generic datastructs into
 // those specific to each datasource
@@ -30,15 +30,15 @@ $projectName as project,
 collect(place.name) as place,
 id(n) as id
 RETURN n { .*, type, timeframe, project, id, rels, place }
-`;
+`
 // const projectCols = "id,project,type,name,timeframe,description,rels"
-const projectCols = "name,timeframe,description,place";
+const projectCols = "name,timeframe,description,place"
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})
 CREATE (n:Task)-[:PROJECT]->(m)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
-`;
+`
 
 // const genericQuery = `
 // MATCH (n:#label#)
@@ -50,7 +50,7 @@ const genericAddQuery = `
 CREATE (n:#label#)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
-`;
+`
 
 // facet definitions
 
@@ -170,104 +170,104 @@ const facetObjs = {
     params: { parentId: 48 }, // blt
     cols: "id,type,name,description,order,rels,parentId",
   },
-};
+}
 
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
-    const value = params[key];
-    query = query.replace("#" + key + "#", value);
+    const value = params[key]
+    query = query.replace("#" + key + "#", value)
   }
-  return query;
+  return query
 }
 
-const emptyRow = { id: -1 };
+const emptyRow = { id: -1 }
 
 export default function App() {
-  const [facet, setFacet] = React.useState(initialFacet);
-  const [facetObj, setFacetObj] = React.useState({});
-  const [filter, setFilter] = React.useState("");
-  const [groupBy, setGroupBy] = React.useState("");
-  const [sort, setSort] = React.useState("");
-  const [view, setView] = React.useState("table");
+  const [facet, setFacet] = React.useState(initialFacet)
+  const [facetObj, setFacetObj] = React.useState({})
+  const [filter, setFilter] = React.useState("")
+  const [groupBy, setGroupBy] = React.useState("")
+  const [sort, setSort] = React.useState("")
+  const [view, setView] = React.useState("table")
   // const [query, setQuery] = React.useState("") // used to display query to user
-  const [rows, setRows] = React.useState([]);
-  const facetRef = React.useRef(facet); //. better way?
+  const [rows, setRows] = React.useState([])
+  const facetRef = React.useRef(facet) //. better way?
 
   // on change facet
   React.useEffect(() => {
-    facetRef.current = facet;
+    facetRef.current = facet
     (async () => {
-      const facetObj = facetObjs[facet];
-      setFacetObj(facetObj);
+      const facetObj = facetObjs[facet]
+      setFacetObj(facetObj)
 
-      const queryTemplate = facetObj.query;
-      const params = facetObj.params || {};
-      const query = substituteQueryParams(queryTemplate, params);
+      const queryTemplate = facetObj.query
+      const params = facetObj.params || {}
+      const query = substituteQueryParams(queryTemplate, params)
       // setQuery(query)
-      if (!query) return;
+      if (!query) return
 
-      console.log(query, params);
-      const rows = [];
+      console.log(query, params)
+      const rows = []
       // const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-      const session = datasource.getSession(true);
-      const result = await session.run(query, params);
+      const session = datasource.getSession(true)
+      const result = await session.run(query, params)
       result.records.forEach((record) => {
-        const row = record.get("n");
+        const row = record.get("n")
         // join any array fields into a comma-separated string
         Object.keys(row).forEach((key) => {
           if (key === "timeframe") {
             row[key] = row[key][0]
               ? row[key][0].properties
-              : { name: "", order: 10 };
+              : { name: "", order: 10 }
           } else if (Array.isArray(row[key])) {
-            console.log("join array field", key, row[key]);
-            row[key] = row[key].join(", ");
+            console.log("join array field", key, row[key])
+            row[key] = row[key].join(", ")
           }
-        });
+        })
 
-        rows.push(row);
-      });
-      session.close();
-      setRows(rows);
-    })();
-  }, [facet]);
+        rows.push(row)
+      })
+      session.close()
+      setRows(rows)
+    })()
+  }, [facet])
 
   // on change sort
   React.useEffect(() => {
-    const rowsCopy = [...rows];
+    const rowsCopy = [...rows]
     if (sort === "timeframe") {
-      console.log(rows[0][sort]);
-      rowsCopy.sort((a, b) => a[sort].order - b[sort].order);
+      console.log(rows[0][sort])
+      rowsCopy.sort((a, b) => a[sort].order - b[sort].order)
     } else if (sort === "") {
     } else {
-      rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]));
+      rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]))
     }
-    setRows(rowsCopy);
-  }, [sort]);
+    setRows(rowsCopy)
+  }, [sort])
 
   function changeFacet(e) {
-    const facet = e.currentTarget.value;
-    setFacet(facet);
+    const facet = e.currentTarget.value
+    setFacet(facet)
   }
 
   function changeFilter(e) {
-    const filter = e.currentTarget.value;
-    setFilter(filter);
+    const filter = e.currentTarget.value
+    setFilter(filter)
   }
 
   function changeGroupBy(e) {
-    const groupBy = e.currentTarget.value;
-    setGroupBy(groupBy);
+    const groupBy = e.currentTarget.value
+    setGroupBy(groupBy)
   }
 
   function changeSort(e) {
-    const sort = e.currentTarget.value;
-    setSort(sort);
+    const sort = e.currentTarget.value
+    setSort(sort)
   }
 
   function changeView(e) {
-    const view = e.currentTarget.value;
-    setView(view);
+    const view = e.currentTarget.value
+    setView(view)
   }
 
   async function clickNew(e) {
@@ -367,5 +367,5 @@ export default function App() {
         )}
       </div>
     </div>
-  );
+  )
 }
