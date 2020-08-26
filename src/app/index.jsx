@@ -3,172 +3,77 @@ import datasource from "../datasources/neo4j"
 import TableView from "../views/TableView"
 import DocumentView from "../views/DocumentView"
 import logo from "../assets/logo256.png"
+import * as cypher from './cypher'
 import "./styles.css"
 
 // const initialFacet = 'neomem'
 const initialFacet = "all"
 
-//. these will need to get translated from generic datastructs into
-// those specific to each datasource
-
-// reusable facet definitions
-
-// do a union query to include the project item at the top of the results
-// MATCH (n:Project {name:$projectName})
-// OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-// WITH n, labels(n) as type, 'self' as rels, collect(t) as timeframe,
-// $projectName as project,
-// id(n) as id
-// RETURN n { .*, type, timeframe, project, id, rels }
-// UNION
-const projectQuery = `
-MATCH (n)<-[r]-(m:Project {name:$projectName}) 
-OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
-OPTIONAL MATCH (n)-[:PLACE]->(place)
-WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
-$projectName as project, 
-collect(place.name) as place,
-id(n) as id
-RETURN n { .*, type, timeframe, project, id, rels, place }
-`
-// const projectCols = "id,project,type,name,timeframe,description,rels"
-const projectCols = "name,timeframe,description,place"
-const projectAddQuery = `
-MATCH (m:Project {name:$projectName})
-CREATE (n:Task)-[:PROJECT]->(m)
-WITH n, labels(n) as type, id(n) as id
-RETURN n { .*, type, id }
-`
-
-// const genericQuery = `
-// MATCH (n:#label#)
-// WITH n, labels(n) as type, id(n) as id
-// RETURN n { .*, type, id }
-// `
-// const genericCols = "id,type,name,description"
-const genericAddQuery = `
-CREATE (n:#label#)
-WITH n, labels(n) as type, id(n) as id
-RETURN n { .*, type, id }
-`
 
 // facet definitions
+// const projectCols = "id,project,type,name,timeframe,description,rels"
+const projectCols = "name,timeframe,description,place"
 
 const facetObjs = {
-  // facets: {
-  //   params: { label: 'Facet' },
-  //   query: genericQuery,
-  //   cols: genericCols,
-  //   addQuery: genericAddQuery,
-  // },
 
   all: {
-    params: {},
-    query: `
-    MATCH (n) 
-    OPTIONAL MATCH (n)<-[]-(p:Project)
-    OPTIONAL MATCH (n)-[]->(t:Timeframe)
-    OPTIONAL MATCH (n)-[]->(place:Place)
-    WITH n, labels(n) as type, collect(p.name) as project, collect(t) as timeframe, id(n) as id,
-    collect(place.name) as place
-    RETURN n { .*, type, project, timeframe, id, place }
-    `,
-    // cols: "id,type,project,name,description,timeframe,place",
     cols: "name,project,description,timeframe,place,order",
-    addQuery: genericAddQuery,
     group: "type",
+    query: cypher.facets.all.query,
+    addQuery: cypher.facets.all.addQuery,
   },
 
   projects: {
-    params: {},
-    query: `
-    MATCH (n:Project) 
-    OPTIONAL MATCH (n)-[:CLIENT]->(c)
-    OPTIONAL MATCH (n)-[:TIMEFRAME]->(t)
-    WITH n, labels(n) as type, id(n) as id,
-    collect(c.name) as client, 
-    collect(t.name) as timeframe
-    RETURN n { .*, type, id, timeframe, client }
-    `,
     cols: "id,type,name,description,timeframe,client",
-    addQuery: `CREATE (n:Project)
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
-    `,
+    group: "type",
+    query: cypher.facets.projects.query,
+    addQuery: cypher.facets.projects.addQuery,
   },
 
   personal: {
     params: { projectName: "personal" },
-    query: projectQuery,
     cols: projectCols,
-    addQuery: projectAddQuery,
+    query: cypher.facets.personal.query,
+    addQuery: cypher.facets.personal.addQuery,
   },
 
   neomem: {
     params: { projectName: "neomem" },
-    query: projectQuery,
     cols: projectCols,
-    addQuery: projectAddQuery,
+    query: cypher.facets.neomem.query,
+    addQuery: cypher.facets.neomem.addQuery,
   },
 
   tallieo: { 
     params: { projectName: 'tallieo' }, 
-    query: projectQuery, 
     cols: projectCols, 
-    addQuery: projectAddQuery,
+    query: cypher.facets.tallieo.query,
+    addQuery: cypher.facets.tallieo.addQuery,
   },
 
-  // facemate: { params: { projectName: 'facemate' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-
-  // ccs: { params: { projectName: 'ccs' }, query: projectQuery, cols: projectCols, addQuery: projectAddQuery },
-
   // people: {
-  //   params: { label: 'Person' },
-  //   query: genericQuery,
   //   cols: genericCols,
-  //   addQuery: genericAddQuery,
+  //   params: { label: 'Person' },
   // },
 
   // books: {
-  //   query: `
-  //   MATCH (n)
-  //   WHERE (n:Book) or (n:Author)
-  //   OPTIONAL MATCH (n)-[r:AUTHOR]->(m)
-  //   WITH n, collect(m.name) as author, labels(n) as type, id(n) as id
-  //   RETURN n { .*, type, author, id }`,
   //   cols: "id,type,author,name,description",
   // },
 
   timeframe: {
-    query: `
-    MATCH (n)-[:TIMEFRAME]->(t) 
-    OPTIONAL MATCH (n)<-[]-(m:Project)
-    WITH n, labels(n) AS type, collect(m.name) AS project, 
-    collect(t) AS timeframe, id(n) as id
-    RETURN n {.*, type, project, timeframe, id }`,
-    // cols: "id,type,project,name,timeframe,description",
     cols: "name,type,project,description",
     group: "timeframe",
+    query: cypher.facets.timeframe.query,
+    addQuery: cypher.facets.timeframe.addQuery,
   },
 
   story: {
-    // params: {},
-    // query: `
-    // MATCH (p:Project {name: 'blt'})
-    // MATCH path=(n)-[r*0..2]->(p)
-    // WITH n, labels(n) as type, id(n) as id, length(path) as depth
-    // RETURN n { .*, type, id, depth }
-    // `,
-    // cols: "id,type,name,description,depth,order",
-    query: `
-    MATCH (p)
-    WHERE id(p)=$parentId 
-    MATCH (p)-[r]->(n) 
-    WITH n, labels(n) as type, id(n) as id, type(r) as rels, $parentId as parentId
-    RETURN n { .*, type, id, rels, parentId }
-    `,
-    params: { parentId: 48 }, // blt
     cols: "id,type,name,description,order,rels,parentId",
+    // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
+    // cols: "id,type,name,description,depth,order",
+    params: { parentId: 48 }, // blt
+    query: cypher.facets.story.query,
+    addQuery: cypher.facets.story.addQuery,
   },
 }
 

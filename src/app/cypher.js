@@ -1,0 +1,141 @@
+
+
+// do a union query to include the project item at the top of the results
+// MATCH (n:Project {name:$projectName})
+// OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+// WITH n, labels(n) as type, 'self' as rels, collect(t) as timeframe,
+// $projectName as project,
+// id(n) as id
+// RETURN n { .*, type, timeframe, project, id, rels }
+// UNION
+const projectQuery = `
+MATCH (n)<-[r]-(m:Project {name:$projectName}) 
+OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+OPTIONAL MATCH (n)-[:PLACE]->(place)
+WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
+$projectName as project, 
+collect(place.name) as place,
+id(n) as id
+RETURN n { .*, type, timeframe, project, id, rels, place }
+`
+const projectAddQuery = `
+MATCH (m:Project {name:$projectName})
+CREATE (n:Task)-[:PROJECT]->(m)
+WITH n, labels(n) as type, id(n) as id
+RETURN n { .*, type, id }
+`
+
+// const genericQuery = `
+// MATCH (n:#label#)
+// WITH n, labels(n) as type, id(n) as id
+// RETURN n { .*, type, id }
+// `
+// const genericCols = "id,type,name,description"
+const genericAddQuery = `
+CREATE (n:#label#)
+WITH n, labels(n) as type, id(n) as id
+RETURN n { .*, type, id }
+`
+
+
+export const facets = {
+  // facets: {
+  //   params: { label: 'Facet' },
+  //   query: genericQuery,
+  //   cols: genericCols,
+  //   addQuery: genericAddQuery,
+  // },
+
+  all: {
+    query: `
+    MATCH (n) 
+    OPTIONAL MATCH (n)<-[]-(p:Project)
+    OPTIONAL MATCH (n)-[]->(t:Timeframe)
+    OPTIONAL MATCH (n)-[]->(place:Place)
+    WITH n, labels(n) as type, collect(p.name) as project, collect(t) as timeframe, id(n) as id,
+    collect(place.name) as place
+    RETURN n { .*, type, project, timeframe, id, place }
+    `,
+    addQuery: genericAddQuery,
+  },
+
+  projects: {
+    query: `
+    MATCH (n:Project) 
+    OPTIONAL MATCH (n)-[:CLIENT]->(c)
+    OPTIONAL MATCH (n)-[:TIMEFRAME]->(t)
+    WITH n, labels(n) as type, id(n) as id,
+    collect(c.name) as client, 
+    collect(t.name) as timeframe
+    RETURN n { .*, type, id, timeframe, client }
+    `,
+    addQuery: `CREATE (n:Project)
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `,
+  },
+
+  personal: {
+    params: { projectName: "personal" },
+    query: projectQuery,
+    addQuery: projectAddQuery,
+  },
+
+  neomem: {
+    params: { projectName: "neomem" },
+    query: projectQuery,
+    addQuery: projectAddQuery,
+  },
+
+  tallieo: { 
+    params: { projectName: 'tallieo' }, 
+    query: projectQuery, 
+    addQuery: projectAddQuery,
+  },
+
+  // facemate: { params: { projectName: 'facemate' }, query: projectQuery, addQuery: projectAddQuery },
+
+  // ccs: { params: { projectName: 'ccs' }, query: projectQuery, addQuery: projectAddQuery },
+
+  // people: {
+  //   params: { label: 'Person' },
+  //   query: genericQuery,
+  //   addQuery: genericAddQuery,
+  // },
+
+  // books: {
+  //   query: `
+  //   MATCH (n)
+  //   WHERE (n:Book) or (n:Author)
+  //   OPTIONAL MATCH (n)-[r:AUTHOR]->(m)
+  //   WITH n, collect(m.name) as author, labels(n) as type, id(n) as id
+  //   RETURN n { .*, type, author, id }`,
+  // },
+
+  timeframe: {
+    query: `
+    MATCH (n)-[:TIMEFRAME]->(t) 
+    OPTIONAL MATCH (n)<-[]-(m:Project)
+    WITH n, labels(n) AS type, collect(m.name) AS project, 
+    collect(t) AS timeframe, id(n) as id
+    RETURN n {.*, type, project, timeframe, id }`,
+  },
+
+  story: {
+    // query: `
+    // MATCH (p:Project {name: 'blt'})
+    // MATCH path=(n)-[r*0..2]->(p)
+    // WITH n, labels(n) as type, id(n) as id, length(path) as depth
+    // RETURN n { .*, type, id, depth }
+    // `,
+    query: `
+    MATCH (p)
+    WHERE id(p)=$parentId 
+    MATCH (p)-[r]->(n) 
+    WITH n, labels(n) as type, id(n) as id, type(r) as rels, $parentId as parentId
+    RETURN n { .*, type, id, rels, parentId }
+    `,
+    params: { parentId: 48 }, // blt
+  },
+}
+
