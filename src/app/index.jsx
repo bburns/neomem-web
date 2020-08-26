@@ -195,7 +195,7 @@ export default function App() {
 
   // on change facet
   React.useEffect(() => {
-    facetRef.current = facet
+    facetRef.current = facet;
     (async () => {
       const facetObj = facetObjs[facet]
       setFacetObj(facetObj)
@@ -240,7 +240,8 @@ export default function App() {
       rowsCopy.sort((a, b) => a[sort].order - b[sort].order)
     } else if (sort === "") {
     } else {
-      rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]))
+      // rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]))
+      rowsCopy.sort((a, b) => (a[sort]||'').localeCompare(b[sort]||''))
     }
     setRows(rowsCopy)
   }, [sort])
@@ -260,8 +261,8 @@ export default function App() {
     setGroupBy(groupBy)
   }
 
-  function changeSort(e) {
-    const sort = e.currentTarget.value
+  function changeSort(sort) {
+    // const sort = e.currentTarget.value
     setSort(sort)
   }
 
@@ -328,11 +329,15 @@ export default function App() {
 
           <span className="app-controls-sort">
             <span>Sort:&nbsp;</span>
-            <select name="sort" id="sort" value={sort} onChange={changeSort}>
+            {/* <select name="sort" id="sort" value={sort} onChange={changeSort}> */}
+            <select name="sort" id="sort" value={sort} onChange={e=>changeSort(e.currentTarget.value)}>
+              {/* //. these need to be associated with / obtained from the table view eh? */}
               <option value="">(none)</option>
               <option value="project">project</option>
               <option value="type">type</option>
               <option value="name">name</option>
+              <option value="description">description</option>
+              <option value="order">order</option>
               <option value="timeframe">timeframe</option>
             </select>
           </span>
@@ -360,6 +365,7 @@ export default function App() {
           groupBy={groupBy}
           facetObj={facetObj} // for columns, addquery, params - //. better way?
           datasource={datasource}
+          changeSort={changeSort}
         />
         {/* } */}
         {view === "document" && (

@@ -162,7 +162,14 @@ Object.keys(colDefs).forEach(key => {
 const emptyRow = { id:-1 }
 
 
-export default function TableView({ visible, rows, groupBy, facetObj, datasource }) {
+export default function TableView({ 
+  visible, 
+  rows, 
+  groupBy, 
+  facetObj, 
+  datasource, 
+  changeSort,
+}) {
 
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
@@ -172,11 +179,11 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     // const data = [...rows, emptyRow]
     // setData(data)
 
-    const table = tableRef.current.table
-    table.clearData()
-
     // const header = {id:999,name:'Acts',_children:rows}
     // const data = rows[0] && [header]
+
+    const table = tableRef.current.table
+    table.clearData()
 
     if (groupBy) {
 
@@ -219,6 +226,7 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
     const cols = facetObj.cols || 'name'
     const colNames = cols.split(',')
     const columns = colNames.map(colName => colDefs[colName])
+    columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
     setColumns(columns)
   }, [facetObj])
 
@@ -352,8 +360,6 @@ export default function TableView({ visible, rows, groupBy, facetObj, datasource
         tooltips={false}
         layout={"fitData"}
         cellEdited={cellEdited}
-        // dataEdited={newData => console.log('dataEdited', newData)}
-        // footerElement={<span>Footer</span>}
       />
     </div>
   )
