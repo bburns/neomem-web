@@ -241,7 +241,8 @@ export default function App() {
     } else if (sort === "") {
     } else {
       // rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]))
-      rowsCopy.sort((a, b) => (a[sort]||'').localeCompare(b[sort]||''))
+      //. sort undefineds at the end - klunky - better way?
+      rowsCopy.sort((a, b) => (a[sort]||'zzz').localeCompare(b[sort]||'zzz'))
     }
     setRows(rowsCopy)
   }, [sort])
