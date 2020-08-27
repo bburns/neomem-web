@@ -6,24 +6,25 @@ import logo from "../assets/logo256.png"
 import * as cypher from './cypher'
 import "./styles.css"
 
-// const initialFacet = 'neomem'
+
 const initialFacet = "all"
 
 
 // facet definitions
-const projectCols = "name,timeframe,description,place"
+
+const projectCols = "name,timeframe,notes,place"
 
 const facetObjs = {
 
   all: {
-    cols: "name,project,description,timeframe,place,order",
+    cols: "name,project,notes,timeframe,place,order",
     group: "type",
     query: cypher.facets.all.query,
     addQuery: cypher.facets.all.addQuery,
   },
 
   projects: {
-    cols: "id,type,name,description,timeframe,client",
+    cols: "id,type,name,notes,timeframe,client",
     group: "type",
     query: cypher.facets.projects.query,
     addQuery: cypher.facets.projects.addQuery,
@@ -56,20 +57,20 @@ const facetObjs = {
   // },
 
   // books: {
-  //   cols: "id,type,author,name,description",
+  //   cols: "id,type,author,name,notes",
   // },
 
   timeframe: {
-    cols: "name,type,project,description",
+    cols: "name,type,project,notes",
     group: "timeframe",
     query: cypher.facets.timeframe.query,
     addQuery: cypher.facets.timeframe.addQuery,
   },
 
   story: {
-    cols: "id,type,name,description,order,rels,parentId",
+    cols: "id,type,name,notes,order,rels,parentId",
     // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
-    // cols: "id,type,name,description,depth,order",
+    // cols: "id,type,name,notes,depth,order",
     params: { parentId: 48 }, // blt
     query: cypher.facets.story.query,
     addQuery: cypher.facets.story.addQuery,
@@ -234,7 +235,7 @@ export default function App() {
               <option value="project">project</option>
               <option value="type">type</option>
               <option value="name">name</option>
-              <option value="description">description</option>
+              <option value="notes">notes</option>
               <option value="order">order</option>
               <option value="timeframe">timeframe</option>
             </select>

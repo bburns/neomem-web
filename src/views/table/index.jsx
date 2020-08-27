@@ -67,7 +67,7 @@ const colDefs = {
     formatter: objectFormatter,
   },
 
-  description: { 
+  notes: { 
     width: 250, 
     editor: 'input', 
     headerSort, 
