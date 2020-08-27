@@ -7,7 +7,10 @@ import facetObjs from './facetObjs'
 import getItem from '../getItem'
 import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
-import { Button } from 'semantic-ui-react'
+// import { Button } from 'semantic-ui-react'
+import GetItem2 from '../getItem2'
+import { Dropdown } from 'semantic-ui-react'
+import { Menu } from 'semantic-ui-react'
 
 
 const initialFacet = "all"
@@ -21,6 +24,11 @@ function substituteQueryParams(query, params) {
   return query
 }
 
+
+
+const facetOptions = Object.keys(facetObjs).map(facet => (
+  { key:facet, text:facet, value:facet }
+))
 
 
 export default function App() {
@@ -125,10 +133,19 @@ export default function App() {
           <span>Neomem</span>
         </div>
 
+        <Menu compact>
+          <Menu.Item header>
+            Neomem
+          </Menu.Item>
+          Facet
+          <Dropdown simple item selection options={facetOptions} />
+        </Menu>
+
+
         <div className="app-controls">
           <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
-            <select
+            {/* <select
               name="facet"
               id="facet"
               value={facet}
@@ -139,7 +156,7 @@ export default function App() {
                   {facet}
                 </option>
               ))}
-            </select>
+            </select> */}
           </span>
 
           {/* <span className="app-controls-filterby">
@@ -187,9 +204,14 @@ export default function App() {
             </select>
           </span> */}
 
+          {/* <span className="app-controls-new">
+            <Button color='green' size='tiny' onClick={clickNew}>New</Button>
+          </span> */}
+
           <span className="app-controls-new">
-            <Button basic color='green' size='mini' onClick={clickNew}>New</Button>
+            <GetItem2 />
           </span>
+
         </div>
         {/* <div className="app-header-query">Query: {query}</div> */}
       </div>
