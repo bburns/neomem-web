@@ -15,7 +15,7 @@ function GetItem({ title, message, item, resolve }) {
   // const [value, setValue] = React.useState(defaultValue)
   const clickOK = () => {
     closeDialog()
-    resolve({ ok: true })
+    resolve({ ok: true, item })
   }
   const clickCancel = () => {
     closeDialog()
@@ -36,9 +36,6 @@ function GetItem({ title, message, item, resolve }) {
       <h3>{title}</h3>
       <p>{message}</p>
       <PropertyView item={item} />
-      {/* <div>
-        <input autoFocus value={value} onChange={changeInput} type="text" id="getString-input" onKeyDown={handleKeyDown} />
-      </div> */}
       <div className="getItem-buttons">
         <button className="cancel" onClick={clickCancel}>Cancel</button>
         <button className="ok" onClick={clickOK}>OK</button>

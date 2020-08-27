@@ -9,7 +9,8 @@ export default function({ item }) {
   const columns = [
     {
       field: 'name',
-      title: "Name",
+      title: "Property",
+      width: 200,
     },
     {
       field: 'value',

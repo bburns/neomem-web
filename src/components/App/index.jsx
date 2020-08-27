@@ -5,7 +5,9 @@ import DocumentView from "../../plugins/views/document"
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import getItem from '../getItem'
+import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
+import { Button } from 'semantic-ui-react'
 
 
 const initialFacet = "all"
@@ -107,9 +109,11 @@ export default function App() {
   async function clickNew(e) {
     // alert('pok')
     const item = { name: 'pokpok' }
-    const response = await getItem({ item })
-    if (response.ok) {
+    const ret = await getItem({ item })
+    if (ret.ok) {
+      const item = ret.item
       //. write to datasource
+
     }
   }
 
@@ -184,7 +188,7 @@ export default function App() {
           </span> */}
 
           <span className="app-controls-new">
-            <button onClick={clickNew}>new</button>
+            <Button basic color='green' size='mini' onClick={clickNew}>New</Button>
           </span>
         </div>
         {/* <div className="app-header-query">Query: {query}</div> */}
