@@ -1,5 +1,6 @@
 import React from 'react'
 import { openDialog, closeDialog } from '../../packages/react-async-dialog'
+import PropertyView from '../../plugins/views/property'
 import './styles.css'
 
 
@@ -34,6 +35,7 @@ function GetString({ title, message, resolve }) {
     <div className='getItem'>
       <h3>{title}</h3>
       <p>{message}</p>
+      <PropertyView />
       {/* <div>
         <input autoFocus value={value} onChange={changeInput} type="text" id="getString-input" onKeyDown={handleKeyDown} />
       </div> */}
