@@ -4,6 +4,7 @@ import TableView from "../../plugins/views/table"
 import DocumentView from "../../plugins/views/document"
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
+import getItem from '../getItem'
 import "./styles.css"
 
 
@@ -104,12 +105,12 @@ export default function App() {
   }
 
   async function clickNew(e) {
-    // const item = { name: 'pokpok' }
-    // const response = await getItem(item)
-    // if (response.ok) {
-    //   //. write to datasource
-    // }
-    alert('pok')
+    // alert('pok')
+    const item = { name: 'pokpok' }
+    const response = await getItem(item)
+    if (response.ok) {
+      //. write to datasource
+    }
   }
 
   return (

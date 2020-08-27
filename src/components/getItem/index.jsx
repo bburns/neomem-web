@@ -1,5 +1,6 @@
 import React from 'react'
 import { openDialog, closeDialog } from '../../packages/react-async-dialog'
+import './styles.css'
 
 
 export default function getItem({ title, message }) {
@@ -33,9 +34,9 @@ function GetString({ title, message, resolve }) {
     <div className='getItem'>
       <h3>{title}</h3>
       <p>{message}</p>
-      <div>
+      {/* <div>
         <input autoFocus value={value} onChange={changeInput} type="text" id="getString-input" onKeyDown={handleKeyDown} />
-      </div>
+      </div> */}
       <div className="getItem-buttons">
         <button className="cancel" onClick={clickCancel}>Cancel</button>
         <button className="ok" onClick={clickOK}>OK</button>
