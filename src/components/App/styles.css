@@ -35,6 +35,7 @@ body {
   /* flex-direction: column; */
   /* align-items: center; */
   /* padding-left: 4px; */
+  z-index: 1;
 }
 .app-header-logo {
   font-size: 26px;
@@ -91,3 +92,8 @@ select {
   overflow-y: auto;
 }
 
+
+
+.ui.menu .item {
+  padding: 0 8px;
+}

@@ -136,16 +136,10 @@ export default function App() {
   }
 
   return (
-    <div>
-    {/* <Container fluid> */}
+    <div className="app">
 
-      {/* <Header inverted> */}
-
-        {/* <Header.Subheader> */}
-        {/* <Sticky> */}
-        <Menu inverted fixed='top'>
-
-<Container>
+      <div className="app-header">
+        <Menu inverted>
           <Menu.Item header>
             <Image src={logo} alt="logo" size='mini' />
             &nbsp;
@@ -153,18 +147,15 @@ export default function App() {
           </Menu.Item>
 
           <Menu.Item>
-            Facet:
-            <Dropdown simple item selection options={facetOptions} />
+            Facet: <Dropdown simple item selection options={facetOptions} />
           </Menu.Item>
 
           <Menu.Item>
-            Group:
-            <Dropdown simple item selection options={groupOptions} />
+            Group: <Dropdown simple item selection options={groupOptions} />
           </Menu.Item>
 
           <Menu.Item>
-            Sort:
-            <Dropdown simple item selection options={sortOptions} />
+            Sort: <Dropdown simple item selection options={sortOptions} />
           </Menu.Item>
 
           <Menu.Item>
@@ -243,14 +234,12 @@ export default function App() {
         {/* </div> */}
         {/* <div className="app-header-query">Query: {query}</div> */}
       {/* </div> */}
-      </Container>
-            </Menu>
-      {/* </Sticky> */}
+      {/* </Container> */}
+      </Menu>
+    </div>
 
-      {/* </Header.Subheader> */}
-            {/* </Header> */}
-<div>
-{/* <Container> */}
+    <div className="app-contents">
+    {/* <Container> */}
       {/* <div className="app-contents"> */}
         {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
         <TableView
@@ -269,9 +258,7 @@ export default function App() {
             datasource={datasource} 
           />
         )}
-      {/* </Container> */}
     </div>
-    {/* </Container> */}
-    </div>
-      )
+  </div>
+  )
 }
