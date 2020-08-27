@@ -1,7 +1,7 @@
 import React from "react"
-import datasource from "../datasources/neo4j"
-import TableView from "../views/table"
-import DocumentView from "../views/document"
+import datasource from "../plugins/datasources/neo4j"
+import TableView from "../plugins/views/table"
+import DocumentView from "../plugins/views/document"
 import logo from "../assets/logo256.png"
 import * as cypher from './cypher'
 import "./styles.css"
