@@ -45,6 +45,11 @@ body {
   height: 22px;
   margin-right: 4px;
 }
+.neomem {
+  font-size: 26px;
+  font-family: 'Futura Std Light', futura, sans-serif;
+  margin: 4px 0;
+}
 .app-controls {
   padding: 4px 2px;
   /* font-size: 0.9em; */

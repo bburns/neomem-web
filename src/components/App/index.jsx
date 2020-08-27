@@ -11,6 +11,9 @@ import "./styles.css"
 import GetItem2 from '../getItem2'
 import { Dropdown } from 'semantic-ui-react'
 import { Menu } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
+import { Header } from 'semantic-ui-react'
+import { Image } from 'semantic-ui-react'
 
 
 const initialFacet = "all"
@@ -29,6 +32,12 @@ function substituteQueryParams(query, params) {
 const facetOptions = Object.keys(facetObjs).map(facet => (
   { key:facet, text:facet, value:facet }
 ))
+
+const groups = '(none),type,timeframe,project,client'.split(',')
+const groupOptions = groups.map(group => ({ key:group, text:group, value:group }))
+
+const sorts = '(none),project,type,name,notes,order,timeframe'.split(',')
+const sortOptions = sorts.map(sort => ({ key:sort, text:sort, value:sort }))
 
 
 export default function App() {
@@ -126,25 +135,41 @@ export default function App() {
   }
 
   return (
-    <div className="app">
-      <div className="app-header">
-        <div className="app-header-logo">
+    <Container fluid>
+    {/* <div className="app"> */}
+      {/* <div className="app-header"> */}
+      <Header inverted>
+
+        {/* <div className="app-header-logo">
           <img src={logo} alt="logo" />
           <span>Neomem</span>
-        </div>
+        </div> */}
 
-        <Menu compact>
+        <Menu inverted>
           <Menu.Item header>
-            Neomem
+            <Image src={logo} alt="logo" size='mini' />
+            &nbsp;
+            <span className="neomem">Neomem</span>
           </Menu.Item>
-          Facet
-          <Dropdown simple item selection options={facetOptions} />
-        </Menu>
 
+          <Menu.Item>
+            Facet:
+            <Dropdown simple item selection options={facetOptions} />
+          </Menu.Item>
 
-        <div className="app-controls">
-          <span className="app-controls-facet">
-            <span>Facet:&nbsp;</span>
+          <Menu.Item>
+            Group:
+            <Dropdown simple item selection options={groupOptions} />
+          </Menu.Item>
+
+          <Menu.Item>
+            Sort:
+            <Dropdown simple item selection options={sortOptions} />
+          </Menu.Item>
+
+        {/* <div className="app-controls"> */}
+          {/* <span className="app-controls-facet"> */}
+            {/* <span>Facet:&nbsp;</span> */}
             {/* <select
               name="facet"
               id="facet"
@@ -157,7 +182,7 @@ export default function App() {
                 </option>
               ))}
             </select> */}
-          </span>
+          {/* </span> */}
 
           {/* <span className="app-controls-filterby">
             <span>Filter:&nbsp;</span>
@@ -166,7 +191,7 @@ export default function App() {
             </select>
           </span> */}
 
-          <span className="app-controls-groupby">
+          {/* <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
             <select
               name="groupby"
@@ -180,12 +205,11 @@ export default function App() {
               <option value="project">project</option>
               <option value="client">client</option>
             </select>
-          </span>
+          </span> */}
 
-          <span className="app-controls-sortby">
+          {/* <span className="app-controls-sortby">
             <span>Sort:&nbsp;</span>
             <select name="sortby" id="sortby" value={sortBy} onChange={e=>changeSort(e.currentTarget.value)}>
-              {/* //. these need to be associated with / obtained from the table view eh? */}
               <option value="">(none)</option>
               <option value="project">project</option>
               <option value="type">type</option>
@@ -194,7 +218,7 @@ export default function App() {
               <option value="order">order</option>
               <option value="timeframe">timeframe</option>
             </select>
-          </span>
+          </span> */}
 
           {/* <span className="app-controls-view">
             <span>View:&nbsp;</span>
@@ -212,9 +236,11 @@ export default function App() {
             <GetItem2 />
           </span>
 
-        </div>
+        {/* </div> */}
         {/* <div className="app-header-query">Query: {query}</div> */}
-      </div>
+      {/* </div> */}
+      </Menu>
+      </Header>
 
       <div className="app-contents">
         {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
@@ -235,6 +261,7 @@ export default function App() {
           />
         )}
       </div>
-    </div>
-  )
+    {/* </div> */}
+    </Container>
+      )
 }
