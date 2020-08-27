@@ -14,6 +14,7 @@ import { Menu } from 'semantic-ui-react'
 import { Container } from 'semantic-ui-react'
 import { Header } from 'semantic-ui-react'
 import { Image } from 'semantic-ui-react'
+// import { Sticky } from 'semantic-ui-react'
 
 
 const initialFacet = "all"
@@ -135,17 +136,16 @@ export default function App() {
   }
 
   return (
-    <Container fluid>
-    {/* <div className="app"> */}
-      {/* <div className="app-header"> */}
-      <Header inverted>
+    <div>
+    {/* <Container fluid> */}
 
-        {/* <div className="app-header-logo">
-          <img src={logo} alt="logo" />
-          <span>Neomem</span>
-        </div> */}
+      {/* <Header inverted> */}
 
-        <Menu inverted>
+        {/* <Header.Subheader> */}
+        {/* <Sticky> */}
+        <Menu inverted fixed='top'>
+
+<Container>
           <Menu.Item header>
             <Image src={logo} alt="logo" size='mini' />
             &nbsp;
@@ -165,6 +165,10 @@ export default function App() {
           <Menu.Item>
             Sort:
             <Dropdown simple item selection options={sortOptions} />
+          </Menu.Item>
+
+          <Menu.Item>
+            <GetItem2 />
           </Menu.Item>
 
         {/* <div className="app-controls"> */}
@@ -232,17 +236,22 @@ export default function App() {
             <Button color='green' size='tiny' onClick={clickNew}>New</Button>
           </span> */}
 
-          <span className="app-controls-new">
-            <GetItem2 />
-          </span>
+          {/* <span className="app-controls-new"> */}
+            {/* <GetItem2 /> */}
+          {/* </span> */}
 
         {/* </div> */}
         {/* <div className="app-header-query">Query: {query}</div> */}
       {/* </div> */}
-      </Menu>
-      </Header>
+      </Container>
+            </Menu>
+      {/* </Sticky> */}
 
-      <div className="app-contents">
+      {/* </Header.Subheader> */}
+            {/* </Header> */}
+<div>
+{/* <Container> */}
+      {/* <div className="app-contents"> */}
         {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
         <TableView
           visible={view === "table"}
@@ -260,8 +269,9 @@ export default function App() {
             datasource={datasource} 
           />
         )}
-      </div>
-    {/* </div> */}
-    </Container>
+      {/* </Container> */}
+    </div>
+    {/* </Container> */}
+    </div>
       )
 }
