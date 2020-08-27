@@ -107,7 +107,7 @@ export default function App() {
   async function clickNew(e) {
     // alert('pok')
     const item = { name: 'pokpok' }
-    const response = await getItem(item)
+    const response = await getItem({ item })
     if (response.ok) {
       //. write to datasource
     }

@@ -4,14 +4,14 @@ import PropertyView from '../../plugins/views/property'
 import './styles.css'
 
 
-export default function getItem({ title, message }) {
+export default function getItem({ title, message, item }) {
   return new Promise(resolve => {
-    openDialog(GetString, { title, message, resolve })
+    openDialog(GetItem, { title, message, item, resolve })
   })
 }
 
 
-function GetString({ title, message, resolve }) {
+function GetItem({ title, message, item, resolve }) {
   // const [value, setValue] = React.useState(defaultValue)
   const clickOK = () => {
     closeDialog()
@@ -35,7 +35,7 @@ function GetString({ title, message, resolve }) {
     <div className='getItem'>
       <h3>{title}</h3>
       <p>{message}</p>
-      <PropertyView />
+      <PropertyView item={item} />
       {/* <div>
         <input autoFocus value={value} onChange={changeInput} type="text" id="getString-input" onKeyDown={handleKeyDown} />
       </div> */}
