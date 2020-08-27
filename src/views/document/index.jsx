@@ -4,8 +4,6 @@ import _ from 'lodash'
 import './styles.css'
 
 
-//. group rows by groupBy field, display with larger header
-
 export default function DocumentView({ rows, groupBy }) {
   
   const [groups, setGroups] = React.useState({})
