@@ -1,81 +1,14 @@
 import React from "react"
-import datasource from "../plugins/datasources/neo4j"
-import TableView from "../plugins/views/table"
-import DocumentView from "../plugins/views/document"
-import logo from "../assets/logo256.png"
-import * as cypher from './cypher'
+import datasource from "../../plugins/datasources/neo4j"
+import TableView from "../../plugins/views/table"
+import DocumentView from "../../plugins/views/document"
+import logo from "../../assets/logo256.png"
+import facetObjs from './facetObjs'
 import "./styles.css"
 
 
 const initialFacet = "all"
-
-
-// facet definitions
-
-const projectCols = "name,timeframe,notes,place"
-
-const facetObjs = {
-
-  all: {
-    cols: "name,project,notes,timeframe,place,order",
-    group: "type",
-    query: cypher.facets.all.query,
-    addQuery: cypher.facets.all.addQuery,
-  },
-
-  projects: {
-    cols: "id,type,name,notes,timeframe,client",
-    group: "type",
-    query: cypher.facets.projects.query,
-    addQuery: cypher.facets.projects.addQuery,
-  },
-
-  personal: {
-    params: { projectName: "personal" },
-    cols: projectCols,
-    query: cypher.facets.personal.query,
-    addQuery: cypher.facets.personal.addQuery,
-  },
-
-  neomem: {
-    params: { projectName: "neomem" },
-    cols: projectCols,
-    query: cypher.facets.neomem.query,
-    addQuery: cypher.facets.neomem.addQuery,
-  },
-
-  tallieo: { 
-    params: { projectName: 'tallieo' }, 
-    cols: projectCols, 
-    query: cypher.facets.tallieo.query,
-    addQuery: cypher.facets.tallieo.addQuery,
-  },
-
-  // people: {
-  //   cols: genericCols,
-  //   params: { label: 'Person' },
-  // },
-
-  // books: {
-  //   cols: "id,type,author,name,notes",
-  // },
-
-  timeframe: {
-    cols: "name,type,project,notes",
-    group: "timeframe",
-    query: cypher.facets.timeframe.query,
-    addQuery: cypher.facets.timeframe.addQuery,
-  },
-
-  story: {
-    cols: "id,type,name,notes,order,rels,parentId",
-    // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
-    // cols: "id,type,name,notes,depth,order",
-    params: { parentId: 48 }, // blt
-    query: cypher.facets.story.query,
-    addQuery: cypher.facets.story.addQuery,
-  },
-}
+// const emptyRow = { id: -1 }
 
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
@@ -85,7 +18,6 @@ function substituteQueryParams(query, params) {
   return query
 }
 
-// const emptyRow = { id: -1 }
 
 
 export default function App() {
