@@ -8,10 +8,13 @@ const password = process.env.REACT_APP_NEO4J_PASSWORD
 // get driver
 // note: neo4j stores 64-bit ints, js only goes up to 53-bits (9e16)
 // see https://github.com/neo4j/neo4j-javascript-driver#enabling-native-numbers
-const driver = neo4j.driver(uri, neo4j.auth.basic(user, password), { disableLosslessIntegers: true })
+const driver = neo4j.driver(uri, 
+  neo4j.auth.basic(user, password), 
+  { disableLosslessIntegers: true },
+)
 
 
-function getSession(readOnly=false) {
+function getSession({ readOnly=false }) {
   if (readOnly) {
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
     return session

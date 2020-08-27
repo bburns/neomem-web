@@ -86,14 +86,15 @@ function substituteQueryParams(query, params) {
 
 // const emptyRow = { id: -1 }
 
+
 export default function App() {
+
   const [facet, setFacet] = React.useState(initialFacet)
   const [facetObj, setFacetObj] = React.useState({})
   const [filterBy, setFilterBy] = React.useState("")
   const [groupBy, setGroupBy] = React.useState("")
   const [sortBy, setSortBy] = React.useState("")
   const [view, setView] = React.useState("table")
-  // const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
   const facetRef = React.useRef(facet) //. better way?
 
@@ -107,13 +108,11 @@ export default function App() {
       const queryTemplate = facetObj.query
       const params = facetObj.params || {}
       const query = substituteQueryParams(queryTemplate, params)
-      // setQuery(query)
       if (!query) return
 
-      console.log(query, params)
       const rows = []
       // const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-      const session = datasource.getSession(true)
+      const session = datasource.getSession({ readOnly: true })
       const result = await session.run(query, params)
       result.records.forEach((record) => {
         const row = record.get("n")
@@ -124,11 +123,9 @@ export default function App() {
               ? row[key][0].properties
               : { name: "", order: 10 } //.
           } else if (Array.isArray(row[key])) {
-            console.log("join array field", key, row[key])
             row[key] = row[key].join(", ")
           }
         })
-
         rows.push(row)
       })
       session.close()
@@ -140,7 +137,6 @@ export default function App() {
   React.useEffect(() => {
     const rowsCopy = [...rows]
     if (sortBy === "timeframe") { //.
-      console.log(rows[0][sortBy])
       rowsCopy.sort((a, b) => a[sortBy].order - b[sortBy].order)
     } else if (sortBy === "") {
     } else {
@@ -209,7 +205,7 @@ export default function App() {
 
           {/* <span className="app-controls-filterby">
             <span>Filter:&nbsp;</span>
-            <select name="filterby" id="filter" value={filterBy} onChange={changeFilter}>
+            <select name="filterby" id="filterby" value={filterBy} onChange={changeFilter}>
               <option value="">(none)</option>
             </select>
           </span> */}
