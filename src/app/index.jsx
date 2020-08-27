@@ -11,7 +11,6 @@ const initialFacet = "all"
 
 
 // facet definitions
-// const projectCols = "id,project,type,name,timeframe,description,rels"
 const projectCols = "name,timeframe,description,place"
 
 const facetObjs = {
@@ -85,14 +84,14 @@ function substituteQueryParams(query, params) {
   return query
 }
 
-const emptyRow = { id: -1 }
+// const emptyRow = { id: -1 }
 
 export default function App() {
   const [facet, setFacet] = React.useState(initialFacet)
   const [facetObj, setFacetObj] = React.useState({})
-  const [filter, setFilter] = React.useState("")
+  const [filterBy, setFilterBy] = React.useState("")
   const [groupBy, setGroupBy] = React.useState("")
-  const [sort, setSort] = React.useState("")
+  const [sortBy, setSortBy] = React.useState("")
   const [view, setView] = React.useState("table")
   // const [query, setQuery] = React.useState("") // used to display query to user
   const [rows, setRows] = React.useState([])
@@ -123,7 +122,7 @@ export default function App() {
           if (key === "timeframe") {
             row[key] = row[key][0]
               ? row[key][0].properties
-              : { name: "", order: 10 }
+              : { name: "", order: 10 } //.
           } else if (Array.isArray(row[key])) {
             console.log("join array field", key, row[key])
             row[key] = row[key].join(", ")
@@ -140,17 +139,16 @@ export default function App() {
   // on change sort
   React.useEffect(() => {
     const rowsCopy = [...rows]
-    if (sort === "timeframe") {
-      console.log(rows[0][sort])
-      rowsCopy.sort((a, b) => a[sort].order - b[sort].order)
-    } else if (sort === "") {
+    if (sortBy === "timeframe") { //.
+      console.log(rows[0][sortBy])
+      rowsCopy.sort((a, b) => a[sortBy].order - b[sortBy].order)
+    } else if (sortBy === "") {
     } else {
-      // rowsCopy.sort((a, b) => a[sort].localeCompare(b[sort]))
       //. sort undefineds at the end - klunky - better way?
-      rowsCopy.sort((a, b) => (a[sort]||'zzz').localeCompare(b[sort]||'zzz'))
+      rowsCopy.sort((a, b) => (a[sortBy]||'zzz').localeCompare(b[sortBy]||'zzz'))
     }
     setRows(rowsCopy)
-  }, [sort])
+  }, [sortBy])
 
   function changeFacet(e) {
     const facet = e.currentTarget.value
@@ -158,18 +156,17 @@ export default function App() {
   }
 
   function changeFilter(e) {
-    const filter = e.currentTarget.value
-    setFilter(filter)
+    const filterBy = e.currentTarget.value
+    setFilterBy(filterBy)
   }
 
-  function changeGroupBy(e) {
+  function changeGroup(e) {
     const groupBy = e.currentTarget.value
     setGroupBy(groupBy)
   }
 
-  function changeSort(sort) {
-    // const sort = e.currentTarget.value
-    setSort(sort)
+  function changeSort(sortBy) {
+    setSortBy(sortBy)
   }
 
   function changeView(e) {
@@ -210,9 +207,9 @@ export default function App() {
             </select>
           </span>
 
-          {/* <span className="app-controls-filter">
+          {/* <span className="app-controls-filterby">
             <span>Filter:&nbsp;</span>
-            <select name="filter" id="filter" value={filter} onChange={changeFilter}>
+            <select name="filterby" id="filter" value={filterBy} onChange={changeFilter}>
               <option value="">(none)</option>
             </select>
           </span> */}
@@ -223,7 +220,7 @@ export default function App() {
               name="groupby"
               id="groupby"
               value={groupBy}
-              onChange={changeGroupBy}
+              onChange={changeGroup}
             >
               <option value="">(none)</option>
               <option value="type">type</option>
@@ -233,10 +230,9 @@ export default function App() {
             </select>
           </span>
 
-          <span className="app-controls-sort">
+          <span className="app-controls-sortby">
             <span>Sort:&nbsp;</span>
-            {/* <select name="sort" id="sort" value={sort} onChange={changeSort}> */}
-            <select name="sort" id="sort" value={sort} onChange={e=>changeSort(e.currentTarget.value)}>
+            <select name="sortby" id="sortby" value={sortBy} onChange={e=>changeSort(e.currentTarget.value)}>
               {/* //. these need to be associated with / obtained from the table view eh? */}
               <option value="">(none)</option>
               <option value="project">project</option>
@@ -275,7 +271,11 @@ export default function App() {
         />
         {/* } */}
         {view === "document" && (
-          <DocumentView rows={rows} groupBy={groupBy} datasource={datasource} />
+          <DocumentView 
+            rows={rows} 
+            groupBy={groupBy} 
+            datasource={datasource} 
+          />
         )}
       </div>
     </div>
