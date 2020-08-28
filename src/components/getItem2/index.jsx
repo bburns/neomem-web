@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Header, Image, Modal } from 'semantic-ui-react'
 
 
-const trigger = <Button basic color='green' size='tiny'>New</Button>
+const trigger = <Button basic color='green' size='mini'>New</Button>
 
 
 export default function GetItem() {
