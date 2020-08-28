@@ -10,6 +10,7 @@ import "./styles.css"
 // import { Button } from 'semantic-ui-react'
 import GetItem2 from '../getItem2'
 import { Dropdown } from 'semantic-ui-react'
+import { Input } from 'semantic-ui-react'
 import { Menu } from 'semantic-ui-react'
 import { Container } from 'semantic-ui-react'
 import { Header } from 'semantic-ui-react'
@@ -139,28 +140,35 @@ export default function App() {
     <div className="app">
 
       <div className="app-header">
+
         <Menu inverted>
-          <Menu.Item header>
-            <Image src={logo} alt="logo" size='mini' />
-            &nbsp;
-            <span className="neomem">Neomem</span>
-          </Menu.Item>
+          <span className="app-header-logo">
+            <img src={logo} alt="logo" />
+            <span>Neomem</span>
+          </span>
+        </Menu>
+        
+        <Header.Subheader>
+          <Menu inverted>
 
-          <Menu.Item>
-            Facet: <Dropdown simple item selection options={facetOptions} />
-          </Menu.Item>
+            <Menu.Item>
+              Facet: <Dropdown simple item selection options={facetOptions} /> 
+            </Menu.Item>
 
-          <Menu.Item>
-            Group: <Dropdown simple item selection options={groupOptions} />
-          </Menu.Item>
+            <Menu.Item>
+              Group: <Dropdown simple item selection options={groupOptions} />
+            </Menu.Item>
 
-          <Menu.Item>
-            Sort: <Dropdown simple item selection options={sortOptions} />
-          </Menu.Item>
+            <Menu.Item>
+              Sort: <Dropdown simple item selection options={sortOptions} />
+            </Menu.Item>
 
-          <Menu.Item>
-            <GetItem2 />
-          </Menu.Item>
+            <Menu.Item>
+              <GetItem2 />
+            </Menu.Item>
+          </Menu>
+        </Header.Subheader>
+      </div>
 
         {/* <div className="app-controls"> */}
           {/* <span className="app-controls-facet"> */}
@@ -235,9 +243,7 @@ export default function App() {
         {/* <div className="app-header-query">Query: {query}</div> */}
       {/* </div> */}
       {/* </Container> */}
-      </Menu>
-    </div>
-
+      
     <div className="app-contents">
     {/* <Container> */}
       {/* <div className="app-contents"> */}

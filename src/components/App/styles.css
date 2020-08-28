@@ -40,20 +40,14 @@ body {
 .app-header-logo {
   font-size: 26px;
   font-family: 'Futura Std Light', futura, sans-serif;
-  margin: 4px 0;
+  margin: 4px;
 }
 .app-header-logo img {
-  height: 22px;
+  height: 26px;
   margin-right: 4px;
-}
-.neomem {
-  font-size: 26px;
-  font-family: 'Futura Std Light', futura, sans-serif;
-  margin: 4px 0;
 }
 .app-controls {
   padding: 4px 2px;
-  /* font-size: 0.9em; */
   background: #111;
 }
 .app-controls span+span {
@@ -93,7 +87,23 @@ select {
 }
 
 
-
+/* semantic-ui overrides */
+.ui.menu {
+  margin: 0;
+}
 .ui.menu .item {
-  padding: 0 8px;
+  padding: 2px 6px;
+}
+.ui.selection.dropdown {
+  min-width: 8em;
+  min-height: 2em;
+  margin-left: 8px;
+}
+.ui.selection.dropdown>.dropdown.icon {
+  top: 6px;
+}
+.ui.menu .ui.dropdown .menu>.item {
+  /* padding: 8px !important; */
+}
+.ui.dropdown .menu>.item {
 }
