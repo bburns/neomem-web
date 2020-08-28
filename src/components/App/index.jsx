@@ -125,30 +125,29 @@ export default function App() {
     setView(view)
   }
 
-  async function clickNew(e) {
-    // alert('pok')
-    const item = { name: 'pokpok' }
-    const ret = await getItem({ item })
-    if (ret.ok) {
-      const item = ret.item
-      //. write to datasource
-
-    }
-  }
+  // async function clickNew(e) {
+  //   // alert('pok')
+  //   const item = { name: 'pokpok' }
+  //   const ret = await getItem({ item })
+  //   if (ret.ok) {
+  //     const item = ret.item
+  //     //. write to datasource
+  //   }
+  // }
 
   return (
     <div className="app">
 
       <div className="app-header">
 
-        <Menu inverted>
-          <span className="app-header-logo">
+        {/* <Menu inverted> */}
+          <div className="app-header-logo">
             <img src={logo} alt="logo" />
             <span>Neomem</span>
-          </span>
-        </Menu>
+          </div>
+        {/* </Menu> */}
         
-        <Header.Subheader>
+        {/* <Header.Subheader>
           <Menu inverted>
 
             <Menu.Item>
@@ -167,25 +166,26 @@ export default function App() {
               <GetItem2 />
             </Menu.Item>
           </Menu>
-        </Header.Subheader>
-      </div>
+        </Header.Subheader> */}
 
-        {/* <div className="app-controls"> */}
-          {/* <span className="app-controls-facet"> */}
-            {/* <span>Facet:&nbsp;</span> */}
-            {/* <select
+
+        <div className="app-controls">
+
+          <span className="app-controls-facet">
+            <span>Facet:&nbsp;</span>
+            <select
               name="facet"
               id="facet"
               value={facet}
               onChange={changeFacet}
             >
-              {Object.keys(facetObjs).map((facet) => (
-                <option key={facet} value={facet}>
-                  {facet}
+              {facetOptions.map(facet => (
+                <option key={facet.key} value={facet.value}>
+                  {facet.text}
                 </option>
               ))}
-            </select> */}
-          {/* </span> */}
+            </select>
+          </span>
 
           {/* <span className="app-controls-filterby">
             <span>Filter:&nbsp;</span>
@@ -194,7 +194,7 @@ export default function App() {
             </select>
           </span> */}
 
-          {/* <span className="app-controls-groupby">
+          <span className="app-controls-groupby">
             <span>Group:&nbsp;</span>
             <select
               name="groupby"
@@ -202,26 +202,26 @@ export default function App() {
               value={groupBy}
               onChange={changeGroup}
             >
-              <option value="">(none)</option>
-              <option value="type">type</option>
-              <option value="timeframe">timeframe</option>
-              <option value="project">project</option>
-              <option value="client">client</option>
+              {groupOptions.map(group => (
+                <option value={group.value} key={group.key}>
+                  {group.text}
+                </option>
+              ))}
+              {/* <option value="">(none)</option> */}
             </select>
-          </span> */}
+          </span>
 
-          {/* <span className="app-controls-sortby">
+          <span className="app-controls-sortby">
             <span>Sort:&nbsp;</span>
             <select name="sortby" id="sortby" value={sortBy} onChange={e=>changeSort(e.currentTarget.value)}>
-              <option value="">(none)</option>
-              <option value="project">project</option>
-              <option value="type">type</option>
-              <option value="name">name</option>
-              <option value="notes">notes</option>
-              <option value="order">order</option>
-              <option value="timeframe">timeframe</option>
+              {sortOptions.map(sort => (
+                <option value={sort.value} key={sort.key}>
+                  {sort.text}
+                </option>
+              ))}
+              {/* <option value="">(none)</option> */}
             </select>
-          </span> */}
+          </span>
 
           {/* <span className="app-controls-view">
             <span>View:&nbsp;</span>
@@ -235,35 +235,34 @@ export default function App() {
             <Button color='green' size='tiny' onClick={clickNew}>New</Button>
           </span> */}
 
-          {/* <span className="app-controls-new"> */}
-            {/* <GetItem2 /> */}
-          {/* </span> */}
+          <span className="app-controls-new">
+            <GetItem2 />
+          </span>
 
         {/* </div> */}
         {/* <div className="app-header-query">Query: {query}</div> */}
-      {/* </div> */}
-      {/* </Container> */}
+      </div>
+      </div>
       
     <div className="app-contents">
-    {/* <Container> */}
-      {/* <div className="app-contents"> */}
-        {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
-        <TableView
-          visible={view === "table"}
-          rows={rows}
-          groupBy={groupBy}
-          facetObj={facetObj} // for columns, addquery, params - //. better way?
-          datasource={datasource}
-          changeSort={changeSort}
+
+      {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
+      <TableView
+        visible={view === "table"}
+        rows={rows}
+        groupBy={groupBy}
+        facetObj={facetObj} // for columns, addquery, params - //. better way?
+        datasource={datasource}
+        changeSort={changeSort}
+      />
+      {/* } */}
+      {view === "document" && (
+        <DocumentView 
+          rows={rows} 
+          groupBy={groupBy} 
+          datasource={datasource} 
         />
-        {/* } */}
-        {view === "document" && (
-          <DocumentView 
-            rows={rows} 
-            groupBy={groupBy} 
-            datasource={datasource} 
-          />
-        )}
+      )}
     </div>
   </div>
   )
