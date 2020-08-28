@@ -127,7 +127,7 @@ export default function App() {
 
   async function clickNew(e) {
     // alert('pok')
-    const item = { name: 'pokpok' }
+    const item = { name: 'pokpok', notes: '', project: '', timeframe: '', type: '' }
     const ret = await getItem({ item })
     if (ret.ok) {
       const item = ret.item

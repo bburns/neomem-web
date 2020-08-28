@@ -265,7 +265,6 @@ export default function TableView({
     console.log(value)
     console.log(editor)
 
-    // const session = driver.session()
     const session = datasource.getSession()
     
     if (editor==='input') {

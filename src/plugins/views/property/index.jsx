@@ -10,11 +10,12 @@ export default function({ item }) {
     {
       field: 'name',
       title: "Property",
-      width: 200,
+      width: 150,
     },
     {
       field: 'value',
       title: "Value",
+      editor: 'input', 
     },
   ]
 

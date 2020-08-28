@@ -38,8 +38,8 @@ function GetItem({ title, message, item, resolve }) {
       <p>{message}</p>
       <PropertyView item={item} />
       <div className="getItem-buttons">
-        <Button className="cancel" onClick={clickCancel}>Cancel</Button>
-        <Button attached="bottom" className="ok" onClick={clickOK}>OK</Button>
+        <Button onClick={clickCancel}>Cancel</Button>
+        <Button onClick={clickOK}>OK</Button>
       </div>
     </div>
   )
