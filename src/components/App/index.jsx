@@ -7,7 +7,7 @@ import facetObjs from './facetObjs'
 import getItem from '../getItem'
 import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
-// import { Button } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
 import GetItem2 from '../getItem2'
 import { Dropdown } from 'semantic-ui-react'
 import { Input } from 'semantic-ui-react'
@@ -125,15 +125,15 @@ export default function App() {
     setView(view)
   }
 
-  // async function clickNew(e) {
-  //   // alert('pok')
-  //   const item = { name: 'pokpok' }
-  //   const ret = await getItem({ item })
-  //   if (ret.ok) {
-  //     const item = ret.item
-  //     //. write to datasource
-  //   }
-  // }
+  async function clickNew(e) {
+    // alert('pok')
+    const item = { name: 'pokpok' }
+    const ret = await getItem({ item })
+    if (ret.ok) {
+      const item = ret.item
+      //. write to datasource
+    }
+  }
 
   return (
     <div className="app">
@@ -231,9 +231,9 @@ export default function App() {
             </select>
           </span> */}
 
-          {/* <span className="app-controls-new">
-            <Button color='green' size='tiny' onClick={clickNew}>New</Button>
-          </span> */}
+          <span className="app-controls-new">
+            <Button basic color='green' size='mini' onClick={clickNew}>New</Button>
+          </span>
 
           <span className="app-controls-new">
             <GetItem2 />
