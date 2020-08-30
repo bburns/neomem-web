@@ -136,13 +136,36 @@ export default function App() {
   }
 
   async function clickNew(e) {
-    // alert('pok')
-    const item = { name: 'pokpok', notes: '', project: '', timeframe: '', type: '' }
+
+    // const item = { name: 'pokpok', notes: '', project: '', timeframe: '', type: '' }
+
+    const session = datasource.getSession()
+
+    const queryTemplate = `
+    CREATE (n:#label#)
+    SET n.name='lkmlkm'
+    WITH n, labels(n) as type, id(n) as id
+    RETURN n { .*, type, id }
+    `
+    const params = { label: 'Node' }
+    const query = substituteQueryParams(queryTemplate, params)
+
+    const result = await session.run(query, params)
+    const record = result.records[0]
+    const item = record.get('n')
+
     const ret = await getItem({ item })
     if (ret.ok) {
-      const item = ret.item
-      //. write to datasource
+      //. add ret.item to table
+      // table.updateData([{ id:-1,  [field]: undefined }])
+      // table.deleteRow(0) //?
+      // table.addRow(row)
+      // table.addRow(emptyRow)
+    } else {
+      //. delete node
     }
+
+    session.close()
   }
 
   return (
