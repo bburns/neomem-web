@@ -37,9 +37,11 @@ const facetOptions = Object.keys(facetObjs).map(facet => (
 
 const groups = '(none),type,relntype,timeframe,project,client'.split(',')
 const groupOptions = groups.map(group => ({ key:group, text:group, value:group }))
+groupOptions[0].value = ''
 
 const sorts = '(none),project,type,name,notes,order,timeframe'.split(',')
 const sortOptions = sorts.map(sort => ({ key:sort, text:sort, value:sort }))
+sortOptions[0].value = ''
 
 
 async function getChildren(query, params) {
