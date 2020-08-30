@@ -227,10 +227,15 @@ export default function TableView({
   React.useEffect(() => {
     const cols = facetObj.cols || 'name'
     const colNames = cols.split(',')
-    const columns = colNames.map(colName => colDefs[colName])
+    let columns = colNames.map(colName => colDefs[colName])
+    console.log(columns)
+    // for (const column of columns) {
+    //   column.visible = column.field !== groupBy
+    // }
+    columns = columns.filter(column => column.field !== groupBy)
     columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
     setColumns(columns)
-  }, [facetObj])
+  }, [facetObj, groupBy])
 
 
   React.useEffect(() => {

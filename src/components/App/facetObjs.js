@@ -2,7 +2,7 @@
 
 import * as cypher from './cypher'
 
-const projectCols = "name,timeframe,notes,place"
+const projectCols = "type,name,timeframe,notes,place"
 
 
 export default {
