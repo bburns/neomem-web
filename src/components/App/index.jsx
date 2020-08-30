@@ -141,18 +141,19 @@ export default function App() {
 
     const session = datasource.getSession()
 
-    const queryTemplate = `
-    CREATE (n:#label#)
-    SET n.name='lkmlkm'
+    const query = `
+    CREATE (n)
+    SET n.name="New Item"
     WITH n, labels(n) as type, id(n) as id
     RETURN n { .*, type, id }
     `
-    const params = { label: 'Node' }
-    const query = substituteQueryParams(queryTemplate, params)
+    // const params = { label: 'Node' }
+    // const query = substituteQueryParams(queryTemplate, params)
 
-    const result = await session.run(query, params)
+    const result = await session.run(query)
     const record = result.records[0]
     const item = record.get('n')
+    console.log(item)
 
     const ret = await getItem({ item })
     if (ret.ok) {
@@ -163,6 +164,11 @@ export default function App() {
       // table.addRow(emptyRow)
     } else {
       //. delete node
+      const query = `
+      MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n
+      `
+      const result = await session.run(query)
+      console.log(result)
     }
 
     session.close()
