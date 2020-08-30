@@ -157,16 +157,12 @@ export default function App() {
 
     const ret = await getItem({ item })
     if (ret.ok) {
-      //. add ret.item to table
-      // table.updateData([{ id:-1,  [field]: undefined }])
-      // table.deleteRow(0) //?
-      // table.addRow(row)
-      // table.addRow(emptyRow)
+      // add ret.item to views
+      const rowsCopy = [...rows, ret.item]
+      setRows(rowsCopy)
     } else {
-      //. delete node
-      const query = `
-      MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n
-      `
+      // delete the node
+      const query = `MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n`
       const result = await session.run(query)
       console.log(result)
     }
