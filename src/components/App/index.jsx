@@ -42,6 +42,36 @@ const sorts = '(none),project,type,name,notes,order,timeframe'.split(',')
 const sortOptions = sorts.map(sort => ({ key:sort, text:sort, value:sort }))
 
 
+// async function getChildren(session, query, params) {
+async function getChildren(query, params) {
+  const session = datasource.getSession({ readOnly: true })
+  const rows = []
+  const result = await session.run(query, params)
+  // result.records.forEach((record) => {
+  for (const record of result.records) {
+    const row = record.get("n")
+    // join any array fields into a comma-separated string
+    Object.keys(row).forEach((key) => {
+      if (key === "timeframe") {
+        row[key] = row[key][0]
+          ? row[key][0].properties
+          : { name: "", order: 10 } //.
+      } else if (Array.isArray(row[key])) {
+        row[key] = row[key].join(", ")
+      }
+    })
+    if (row.hasChildren) {
+      console.log('recurse on', row, 'with', row.id)
+      // row._children = getChildren(session, query, {parentId:row.id})
+      row._children = await getChildren(query, {parentId:row.id})
+    }
+    rows.push(row)
+  }
+  session.close()
+  return rows
+}
+
+
 export default function App() {
 
   const [facet, setFacet] = React.useState(initialFacet)
@@ -56,34 +86,20 @@ export default function App() {
   // on change facet
   React.useEffect(() => {
     facetRef.current = facet;
+    const facetObj = facetObjs[facet]
+    setFacetObj(facetObj)
+
+    const queryTemplate = facetObj.query
+    const params = facetObj.params || {}
+    const query = substituteQueryParams(queryTemplate, params)
+    if (!query) return
+
     (async () => {
-      const facetObj = facetObjs[facet]
-      setFacetObj(facetObj)
-
-      const queryTemplate = facetObj.query
-      const params = facetObj.params || {}
-      const query = substituteQueryParams(queryTemplate, params)
-      if (!query) return
-
-      const rows = []
-      // const session = driver.session({ defaultAccessMode: neo4j.session.READ })
-      const session = datasource.getSession({ readOnly: true })
-      const result = await session.run(query, params)
-      result.records.forEach((record) => {
-        const row = record.get("n")
-        // join any array fields into a comma-separated string
-        Object.keys(row).forEach((key) => {
-          if (key === "timeframe") {
-            row[key] = row[key][0]
-              ? row[key][0].properties
-              : { name: "", order: 10 } //.
-          } else if (Array.isArray(row[key])) {
-            row[key] = row[key].join(", ")
-          }
-        })
-        rows.push(row)
-      })
-      session.close()
+      // const rows = []
+      // const session = datasource.getSession({ readOnly: true })
+      // const rows = await getChildren(session, query, params)
+      const rows = await getChildren(query, params)
+      // session.close()
       setRows(rows)
     })()
   }, [facet])
