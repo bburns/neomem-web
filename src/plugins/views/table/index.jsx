@@ -150,7 +150,7 @@ Object.keys(colDefs).forEach(key => {
 })
 
 
-// avail table column types - cool
+// avail table column types - cool - eg progress, star, tickCross
 // const columns = [
 //   { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
 //   { title: "Favourite Color", field: "col" },
@@ -231,17 +231,6 @@ export default function TableView({
   }, [facetObj, rows, groupBy])
 
 
-  // React.useEffect(() => {
-  //   const cols = facetObj.cols || 'name'
-  //   const colNames = cols.split(',')
-  //   let columns = colNames.map(colName => colDefs[colName])
-  //   console.log(columns)
-  //   columns = columns.filter(column => column.field !== groupBy)
-  //   columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
-  //   setColumns(columns)
-  // }, [facetObj, groupBy])
-
-
   function rowFormatter(row) {
     const data = row.getData()
     if (data.id===undefined) {
@@ -261,37 +250,29 @@ export default function TableView({
     const value = cell.getValue() // eg 'week'
     const oldvalue = cell.getOldValue() // eg 'month'
     const editor = colDef.editor // eg 'input', 'select'
-    console.log(col)
-    console.log(field)
-    console.log(colDef)
-    console.log(row)
-    console.log(data)
-    console.log(id)
-    console.log(value)
-    console.log(editor)
 
     const session = datasource.getSession()
     
     if (editor==='input') {
-      if (id===-1) {
-        // const facetObj = facetObjs[facet]
-        const queryTemplate = facetObj.addQuery
-        const params = facetObj.params || {}
-        console.log(queryTemplate)
-        const query = substituteQueryParams(queryTemplate, params)
-        console.log('run', query, params)
-        const result = await session.run(query, params)
-        console.log(result)
-        const record = result.records[0]
-        console.log(record)
-        const row = record.get('n')
-        console.log('row', row)
-        table.updateData([{ id:-1,  [field]: undefined }])
-        table.deleteRow(0) //?
-        table.addRow(row)
-        table.addRow(emptyRow)
-        id = row.id
-      }
+      // if (id===-1) {
+      //   // const facetObj = facetObjs[facet]
+      //   const queryTemplate = facetObj.addQuery
+      //   const params = facetObj.params || {}
+      //   console.log(queryTemplate)
+      //   const query = substituteQueryParams(queryTemplate, params)
+      //   console.log('run', query, params)
+      //   const result = await session.run(query, params)
+      //   console.log(result)
+      //   const record = result.records[0]
+      //   console.log(record)
+      //   const row = record.get('n')
+      //   console.log('row', row)
+      //   table.updateData([{ id:-1,  [field]: undefined }])
+      //   table.deleteRow(0) //?
+      //   table.addRow(row)
+      //   table.addRow(emptyRow)
+      //   id = row.id
+      // }
       const query = `
       MATCH (n) 
       WHERE id(n)=$id 
@@ -306,24 +287,29 @@ export default function TableView({
 
     else if (editor==='select' && field==='timeframe') {
 
-      // drop any existing relation
-      const query1 = `
-      MATCH (t)-[r]-(u:Timeframe {name: $oldvalue})
-      WHERE id(t)=$id 
-      DELETE r
-      `
       const params = { id, value, oldvalue }
-      const result1 = await session.run(query1, params)
-      console.log(result1)
+
+      // drop any existing relation
+      {
+        const query = `
+        MATCH (t)-[r:TIMEFRAME]->(u:Timeframe {name: $oldvalue})
+        WHERE id(t)=$id 
+        DELETE r
+        `
+        const result = await session.run(query, params)
+        console.log(result)
+      }
 
       // add new relation
-      const query2 = `
-      MATCH (t), (u:Timeframe {name: $value}) 
-      WHERE id(t)=$id 
-      CREATE (t)-[:TIMEFRAME]->(u)
-      `
-      const result2 = await session.run(query2, params)
-      console.log(result2)
+      {
+        const query = `
+        MATCH (t), (u:Timeframe {name: $value}) 
+        WHERE id(t)=$id 
+        CREATE (t)-[:TIMEFRAME]->(u)
+        `
+        const result = await session.run(query, params)
+        console.log(result)
+      }
     }
 
     else if (editor==='select' && field==='type') {

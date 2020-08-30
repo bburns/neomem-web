@@ -103,9 +103,11 @@ export default function App() {
   // on change sort
   React.useEffect(() => {
     const rowsCopy = [...rows]
+    console.log('sortby', sortBy, rows)
     if (sortBy === "timeframe") { //.
       rowsCopy.sort((a, b) => a[sortBy].order - b[sortBy].order)
-    } else if (sortBy === "") {
+    } else if (sortBy === "order") { //. ie numeric
+      rowsCopy.sort((a, b) => (a[sortBy]||Infinity) - (b[sortBy]||Infinity))
     } else {
       //. sort undefineds at the end - klunky - better way?
       rowsCopy.sort((a, b) => (a[sortBy]||'zzz').localeCompare(b[sortBy]||'zzz'))

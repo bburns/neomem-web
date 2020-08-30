@@ -15,7 +15,7 @@ export default {
   },
 
   projects: {
-    cols: "name,notes,timeframe,client",
+    cols: "type,name,notes,timeframe,client",
     group: "type",
     query: cypher.facets.projects.query,
     addQuery: cypher.facets.projects.addQuery,
