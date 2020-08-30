@@ -15,7 +15,7 @@ export default {
   },
 
   projects: {
-    cols: "id,type,name,notes,timeframe,client",
+    cols: "name,notes,timeframe,client",
     group: "type",
     query: cypher.facets.projects.query,
     addQuery: cypher.facets.projects.addQuery,
@@ -60,7 +60,8 @@ export default {
   },
 
   story: {
-    cols: "id,name,type,notes,order,relntype,parentId,hasChildren",
+    // cols: "name,type,notes,order,relntype,parentId,hasChildren",
+    cols: "name,type,notes,order",
     // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
     // cols: "id,type,name,notes,depth,order",
     params: { parentId: 48 }, // blt

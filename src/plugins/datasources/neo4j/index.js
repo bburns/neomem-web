@@ -14,7 +14,7 @@ const driver = neo4j.driver(uri,
 )
 
 
-function getSession({ readOnly=false }) {
+function getSession({ readOnly=false }={}) {
   if (readOnly) {
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
     return session

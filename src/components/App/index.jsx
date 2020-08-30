@@ -42,17 +42,15 @@ const sorts = '(none),project,type,name,notes,order,timeframe'.split(',')
 const sortOptions = sorts.map(sort => ({ key:sort, text:sort, value:sort }))
 
 
-// async function getChildren(session, query, params) {
 async function getChildren(query, params) {
   const session = datasource.getSession({ readOnly: true })
   const rows = []
   const result = await session.run(query, params)
-  // result.records.forEach((record) => {
   for (const record of result.records) {
     const row = record.get("n")
     // join any array fields into a comma-separated string
     Object.keys(row).forEach((key) => {
-      if (key === "timeframe") {
+      if (key === "timeframe") { //.
         row[key] = row[key][0]
           ? row[key][0].properties
           : { name: "", order: 10 } //.
@@ -60,9 +58,9 @@ async function getChildren(query, params) {
         row[key] = row[key].join(", ")
       }
     })
+    //. generalize more
     if (row.hasChildren) {
-      console.log('recurse on', row, 'with', row.id)
-      // row._children = getChildren(session, query, {parentId:row.id})
+      // console.log('recurse on', row, 'with', row.id)
       row._children = await getChildren(query, {parentId:row.id})
     }
     rows.push(row)
@@ -95,11 +93,7 @@ export default function App() {
     if (!query) return
 
     (async () => {
-      // const rows = []
-      // const session = datasource.getSession({ readOnly: true })
-      // const rows = await getChildren(session, query, params)
       const rows = await getChildren(query, params)
-      // session.close()
       setRows(rows)
     })()
   }, [facet])
