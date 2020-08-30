@@ -137,8 +137,6 @@ export default function App() {
 
   async function clickNew(e) {
 
-    // const item = { name: 'pokpok', notes: '', project: '', timeframe: '', type: '' }
-
     const session = datasource.getSession()
 
     const query = `
@@ -147,21 +145,20 @@ export default function App() {
     WITH n, labels(n) as type, id(n) as id
     RETURN n { .*, type, id }
     `
-    // const params = { label: 'Node' }
-    // const query = substituteQueryParams(queryTemplate, params)
-
     const result = await session.run(query)
     const record = result.records[0]
     const item = record.get('n')
-    console.log(item)
 
-    const ret = await getItem({ item })
+    const ret = await getItem({ item }) // bring up dialog
+
     if (ret.ok) {
-      // add ret.item to views
+      // add new item to rows, which will update the views
       const rowsCopy = [...rows, ret.item]
       setRows(rowsCopy)
+      //. also tell them we selected that item
+      // setSelection(ret.item)
     } else {
-      // delete the node
+      // delete the new item
       const query = `MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n`
       const result = await session.run(query)
       console.log(result)
@@ -175,35 +172,11 @@ export default function App() {
 
       <div className="app-header">
 
-        {/* <Menu inverted> */}
-          <div className="app-header-logo">
-            <img src={logo} alt="logo" />
-            <span>Neomem</span>
-          </div>
-        {/* </Menu> */}
+        <div className="app-header-logo">
+          <img src={logo} alt="logo" />
+          <span>Neomem</span>
+        </div>
         
-        {/* <Header.Subheader>
-          <Menu inverted>
-
-            <Menu.Item>
-              Facet: <Dropdown simple item selection options={facetOptions} /> 
-            </Menu.Item>
-
-            <Menu.Item>
-              Group: <Dropdown simple item selection options={groupOptions} />
-            </Menu.Item>
-
-            <Menu.Item>
-              Sort: <Dropdown simple item selection options={sortOptions} />
-            </Menu.Item>
-
-            <Menu.Item>
-              <GetItem2 />
-            </Menu.Item>
-          </Menu>
-        </Header.Subheader> */}
-
-
         <div className="app-controls">
 
           <span className="app-controls-facet">
@@ -274,10 +247,8 @@ export default function App() {
             <GetItem2 />
           </span>
 
-        {/* </div> */}
-        {/* <div className="app-header-query">Query: {query}</div> */}
       </div>
-      </div>
+    </div>
       
     <div className="app-contents">
 
