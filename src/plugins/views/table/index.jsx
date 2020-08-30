@@ -134,6 +134,7 @@ const colDefs = {
   parentId: { width: 100, headerSort, headerClick },
   order: { width: 100, editor: "input", headerSort, headerClick },
   place: { width: 100, headerSort, headerClick },
+  relntype: { width: 100, headerSort, headerClick },
 
 }
 

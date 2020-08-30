@@ -143,8 +143,9 @@ export const facets = {
     MATCH (p)
     WHERE id(p)=$parentId 
     MATCH (p)-[r]->(n) 
-    WITH n, labels(n) as type, id(n) as id, type(r) as rels, $parentId as parentId
-    RETURN n { .*, type, id, rels, parentId }
+    WITH n, r, labels(n) as type, id(n) as id, type(r) as relntype, $parentId as parentId
+    ORDER BY r.order
+    RETURN n { .*, type, id, relntype, parentId }
     `,
   },
 }
