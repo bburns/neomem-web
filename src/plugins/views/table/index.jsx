@@ -105,7 +105,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: {
-      values: "now,today,weekend,week,month,quarter,year,decade,life,done".split(','),
+      values: "now,today,tonight,weekend,week,month,quarter,year,decade,life,nevermind,done".split(','),
     },
     headerSort, 
     headerClick, 
