@@ -32,6 +32,11 @@ function dataSorted(sorters, rows) {
   //. re-add last row
 }
 
+function dataTreeStartExpanded(row, level) {
+  // return true // nowork
+  return false
+}
+
 function objectFormatter(cell, formatterParams, onRendered) {
   // cell - the cell component
   // formatterParams - parameters set for the column
@@ -176,20 +181,22 @@ export default function TableView({
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
 
+  // facet, rows, groupby changed
   React.useEffect(() => {
-    console.log('rows changed', rows)
-    // const data = [...rows, emptyRow]
-    // setData(data)
-
-    // const header = {id:999,name:'Acts',_children:rows}
-    // const data = rows[0] && [header]
 
     const table = tableRef.current.table
     table.clearData()
 
+    // get columns
+    const cols = facetObj.cols || 'name'
+    const colNames = cols.split(',')
+    let columns = colNames.map(colName => colDefs[colName])
+    columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
+    columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
+    setColumns(columns)
+
     if (groupBy) {
 
-      //. group by type at first, then by relntype (eg 'INSPIRATION'->'Inspirations')
       const dict = {}
       for (const row of rows) {
         let group
@@ -206,9 +213,9 @@ export default function TableView({
       }
       
       const data = []
-      const firstCol = 'name'
+      const firstCol = columns[0].field // always put the group text in the first column
       for (const group of Object.keys(dict)) {
-        const row = {[firstCol]:group, _children: dict[group]}
+        const row = { [firstCol]:group, _children:dict[group] }
         data.push(row)
       }
       if (groupBy==='timeframe') {
@@ -221,27 +228,18 @@ export default function TableView({
       table.addData(rows)
     }
 
-  }, [rows, groupBy])
+  }, [facetObj, rows, groupBy])
 
 
-  React.useEffect(() => {
-    const cols = facetObj.cols || 'name'
-    const colNames = cols.split(',')
-    let columns = colNames.map(colName => colDefs[colName])
-    console.log(columns)
-    // for (const column of columns) {
-    //   column.visible = column.field !== groupBy
-    // }
-    columns = columns.filter(column => column.field !== groupBy)
-    columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
-    setColumns(columns)
-  }, [facetObj, groupBy])
-
-
-  React.useEffect(() => {
-    // const table = tableRef.current.table
-    // table.setGroupBy(groupBy)
-  }, [groupBy])
+  // React.useEffect(() => {
+  //   const cols = facetObj.cols || 'name'
+  //   const colNames = cols.split(',')
+  //   let columns = colNames.map(colName => colDefs[colName])
+  //   console.log(columns)
+  //   columns = columns.filter(column => column.field !== groupBy)
+  //   columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
+  //   setColumns(columns)
+  // }, [facetObj, groupBy])
 
 
   function rowFormatter(row) {
@@ -362,7 +360,15 @@ export default function TableView({
         ref={tableRef}
         data={[]}
         columns={columns}
-        options={{groupBy, dataTree:true, dataSorting, dataSorted, rowFormatter }}
+        options={{
+          groupBy, 
+          dataTree: true, 
+          dataTreeStartExpanded,
+          movableRows: true,
+          dataSorting, 
+          dataSorted, 
+          rowFormatter, 
+        }}
         tooltips={false}
         layout={"fitData"}
         cellEdited={cellEdited}
