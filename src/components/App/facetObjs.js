@@ -60,7 +60,7 @@ export default {
   },
 
   story: {
-    cols: "id,name,type,notes,order,relntype,parentId",
+    cols: "id,name,type,notes,order,relntype,parentId,hasChildren",
     // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
     // cols: "id,type,name,notes,depth,order",
     params: { parentId: 48 }, // blt

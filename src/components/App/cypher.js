@@ -140,12 +140,16 @@ export const facets = {
     // RETURN n { .*, type, id, depth }
     // `,
     query: `
-    MATCH (p)
-    WHERE id(p)=$parentId 
-    MATCH (p)-[r]->(n) 
-    WITH n, r, labels(n) as type, id(n) as id, type(r) as relntype, $parentId as parentId
-    ORDER BY r.order
-    RETURN n { .*, type, id, relntype, parentId }
+    MATCH (parent)
+    WHERE id(parent)=$parentId 
+    MATCH (parent)-[r1]->(n) 
+    OPTIONAL MATCH path=(n)-[r2]->(grandchild)
+    WITH n, r1, labels(n) as type, id(n) as id, 
+      type(r1) as relntype, 
+      size(collect(path))>0 as hasChildren,
+      $parentId as parentId
+    ORDER BY r1.order
+    RETURN n { .*, type, id, relntype, hasChildren, parentId }
     `,
   },
 }
