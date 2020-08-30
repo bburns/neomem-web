@@ -30,6 +30,7 @@ export default {
 
   neomem: {
     params: { projectName: "neomem" },
+    // group: "relntype",
     cols: projectCols,
     query: cypher.facets.neomem.query,
     addQuery: cypher.facets.neomem.addQuery,

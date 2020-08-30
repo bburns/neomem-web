@@ -8,15 +8,26 @@
 // id(n) as id
 // RETURN n { .*, type, timeframe, project, id, rels }
 // UNION
+// const projectQuery = `
+// MATCH (n)<-[r]-(m:Project {name:$projectName}) 
+// OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
+// OPTIONAL MATCH (n)-[:PLACE]->(place)
+// WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
+// $projectName as project, 
+// collect(place.name) as place,
+// id(n) as id
+// RETURN n { .*, type, timeframe, project, id, rels, place }
+// `
+// use relntype as recursor
 const projectQuery = `
 MATCH (n)<-[r]-(m:Project {name:$projectName}) 
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 OPTIONAL MATCH (n)-[:PLACE]->(place)
-WITH n, labels(n) as type, collect(r) as rels, collect(t) as timeframe, 
+WITH n, labels(n) as type, type(r) as relntype, collect(t) as timeframe, 
 $projectName as project, 
 collect(place.name) as place,
 id(n) as id
-RETURN n { .*, type, timeframe, project, id, rels, place }
+RETURN n { .*, type, timeframe, project, id, relntype, place }
 `
 const projectAddQuery = `
 MATCH (m:Project {name:$projectName})

@@ -35,7 +35,7 @@ const facetOptions = Object.keys(facetObjs).map(facet => (
   { key:facet, text:facet, value:facet }
 ))
 
-const groups = '(none),type,timeframe,project,client'.split(',')
+const groups = '(none),type,relntype,timeframe,project,client'.split(',')
 const groupOptions = groups.map(group => ({ key:group, text:group, value:group }))
 
 const sorts = '(none),project,type,name,notes,order,timeframe'.split(',')
