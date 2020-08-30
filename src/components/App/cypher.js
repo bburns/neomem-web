@@ -146,7 +146,6 @@ export const facets = {
     WITH n, labels(n) as type, id(n) as id, type(r) as rels, $parentId as parentId
     RETURN n { .*, type, id, rels, parentId }
     `,
-    params: { parentId: 48 }, // blt
   },
 }
 

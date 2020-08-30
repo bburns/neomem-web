@@ -64,6 +64,7 @@ export default {
     // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
     // cols: "id,type,name,notes,depth,order",
     params: { parentId: 48 }, // blt
+    // params: { parentId: 69 }, // act one
     query: cypher.facets.story.query,
     addQuery: cypher.facets.story.addQuery,
   },
