@@ -79,7 +79,6 @@ const tableOptions = {
 const colDef = {
   width: 50, 
   headerSort, 
-  headerClick, 
   headerContextMenu,
 }
 
