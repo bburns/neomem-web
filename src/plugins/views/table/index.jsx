@@ -20,7 +20,8 @@ const rowContextMenu = [
     action: function(e, row) {
       //. bring up new item dialog - call a callback in app?
       // row.delete()
-      alert('new dialog')
+      // alert('new dialog')
+      // clickNew()
     }
   },
   {
@@ -213,10 +214,21 @@ export default function TableView({
   facetObj, 
   datasource, 
   changeSort,
+  clickNew,
 }) {
 
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
+
+  React.useEffect(() => {
+    rowContextMenu[0].action = (e, row) => {
+      //. bring up new item dialog - call a callback in app?
+      // row.delete()
+      // alert('new dialog')
+      clickNew()
+    }
+  }, [])
+
 
   // facet, rows, groupby changed
   React.useEffect(() => {
@@ -229,7 +241,7 @@ export default function TableView({
     const colNames = cols.split(',')
     let columns = colNames.map(colName => colDefs[colName])
     columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
-    columns.forEach(column=>column.headerClick = (e,column) => changeSort(column.getField()))
+    columns.forEach(column=>column.headerClick = (e, column) => changeSort(column.getField()))
     setColumns(columns)
 
     if (groupBy) {

@@ -139,7 +139,7 @@ export default function App() {
     setView(view)
   }
 
-  async function clickNew(e) {
+  async function clickNew() {
 
     const session = datasource.getSession()
 
@@ -264,6 +264,7 @@ export default function App() {
         facetObj={facetObj} // for columns, addquery, params - //. better way?
         datasource={datasource}
         changeSort={changeSort}
+        clickNew={clickNew}
       />
       {/* } */}
       {view === "document" && (
