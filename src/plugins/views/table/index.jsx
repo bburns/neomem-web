@@ -5,6 +5,16 @@ import './styles.css'
 
 
 
+const headerContextMenu = [
+  {
+      label:"Hide Column",
+      action:function(e, column){
+          column.hide();
+      }
+  },
+]
+
+
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
     const value = params[key]
@@ -52,95 +62,113 @@ function objectFormatter(cell, formatterParams, onRendered) {
   return value
 }
 
+function rowFormatter(row) {
+  const data = row.getData()
+  if (data.id===undefined) {
+    row.getElement().style.fontWeight = 'bold'
+  }
+}
+
+const tableOptions = {
+  dataTree: true, 
+  dataTreeStartExpanded,
+  movableRows: true,
+  dataSorting, 
+  dataSorted, 
+  rowFormatter, 
+}
+
+
+
 
 
 //. put coldefs into db eventually
+
+const colDef = {
+  width: 50, 
+  headerSort, 
+  headerClick, 
+  headerContextMenu,
+}
+
+
 const colDefs = {
 
   id: { 
-    width: 50, 
-    headerSort, 
-    headerClick, 
+    ...colDef,
     // visible: false,
   },
 
   name: { 
+    ...colDef,
     width: 250, 
-    headerSort, 
-    headerClick, 
     editor: 'input', 
     formatter: objectFormatter,
   },
 
   notes: { 
+    ...colDef,
     width: 250, 
     editor: 'input', 
-    headerSort, 
-    headerClick, 
   },
   
   //. singleselect
   project: { 
+    ...colDef,
     width: 100, 
     editorParams: { 
       values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager".split(',').sort(),
     },
-    headerSort, 
-    headerClick, 
   },
   
   //. multiselect? single?
   type: { 
+    ...colDef,
     width: 100, 
     editor: "select", 
     editorParams: { 
       values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View".split(',').sort(), 
     },
-    headerSort, 
-    headerClick, 
   },
   
   //. singleselect - get values from db - how?
   timeframe: { 
+    ...colDef,
     width: 100, 
     editor: "select", 
     editorParams: {
       values: "now,today,tonight,weekend,week,month,quarter,year,decade,life,nevermind,done".split(','),
     },
-    headerSort, 
-    headerClick, 
     formatter: objectFormatter,
   },
   
   //. singleselect
   client: { 
+    ...colDef,
     width: 100, 
     editor: "select", 
     editorParams: { values: "me,MRIIOT".split(',').sort() },
-    headerSort, 
-    headerClick, 
   },
   
   //.
   author: { 
+    ...colDef,
     width: 100, 
     editor: "select", 
     editorParams: {
       values: "tolkien,pkdick,tanithlee".split(','),
     }, 
     multiselect: true, 
-    headerSort, 
-    headerClick, 
   },
 
-  related: { width: 100, headerSort, headerClick },
-  rels: { width: 200, headerSort, headerClick },
-  depth: { width: 100, headerSort, headerClick },
-  parentId: { width: 100, headerSort, headerClick },
-  order: { width: 100, editor: "input", headerSort, headerClick },
-  place: { width: 100, headerSort, headerClick },
-  relntype: { width: 100, headerSort, headerClick },
-  hasChildren: { width: 100, headerSort, headerClick },
+  related: { ...colDef, width: 100 },
+  rels: { ...colDef, width: 200 },
+  depth: { ...colDef, width: 100 },
+  parentId: { ...colDef, width: 100 },
+  order: { ...colDef, width: 100, editor: "input" },
+  place: { ...colDef, width: 100 },
+  relntype: { ...colDef, width: 100 },
+  hasChildren: { ...colDef, width: 100 },
 
 }
 
@@ -230,13 +258,6 @@ export default function TableView({
 
   }, [facetObj, rows, groupBy])
 
-
-  function rowFormatter(row) {
-    const data = row.getData()
-    if (data.id===undefined) {
-      row.getElement().style.fontWeight = 'bold'
-    }
-  }
 
   async function cellEdited(cell) {
     console.log(cell)
@@ -346,15 +367,7 @@ export default function TableView({
         ref={tableRef}
         data={[]}
         columns={columns}
-        options={{
-          groupBy, 
-          dataTree: true, 
-          dataTreeStartExpanded,
-          movableRows: true,
-          dataSorting, 
-          dataSorted, 
-          rowFormatter, 
-        }}
+        options={tableOptions}
         tooltips={false}
         layout={"fitData"}
         cellEdited={cellEdited}
