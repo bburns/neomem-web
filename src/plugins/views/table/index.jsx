@@ -18,9 +18,7 @@ const rowContextMenu = [
   {
     label: "Add Row...",
     action: function(e, row) {
-      //. bring up new item dialog - call a callback in app?
-      // row.delete()
-      // alert('new dialog')
+      // leave this blank - useEffect will bind the clickNew fn into it
       // clickNew()
     }
   },
@@ -84,9 +82,9 @@ const tableOptions = {
   dataSorting,
   dataSorted,
   rowFormatter,
-  rowContextMenu,
   movableRows: true,
-  cellContext: e => e.preventDefault(),
+  rowContextMenu,
+  cellContext: e => e.preventDefault(), // prevent browser's context menu
 }
 
 
@@ -220,12 +218,12 @@ export default function TableView({
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
 
+
   React.useEffect(() => {
-    rowContextMenu[0].action = (e, row) => {
-      //. bring up new item dialog - call a callback in app?
-      // row.delete()
-      // alert('new dialog')
-      clickNew()
+    // update context menu
+    const menuItem = rowContextMenu.find(value => value.label === "Add Row...")
+    if (menuItem) {
+      menuItem.action = clickNew
     }
   }, [])
 
