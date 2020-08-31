@@ -43,15 +43,6 @@ export default {
     addQuery: cypher.facets.tallieo.addQuery,
   },
 
-  // people: {
-  //   cols: genericCols,
-  //   params: { label: 'Person' },
-  // },
-
-  // books: {
-  //   cols: "id,type,author,name,notes",
-  // },
-
   timeframe: {
     cols: "timeframe,type,name,project,notes",
     group: "timeframe",
@@ -61,13 +52,22 @@ export default {
 
   story: {
     // cols: "name,type,notes,order,relntype,parentId,hasChildren",
-    cols: "type,name,notes,order",
+    cols: "name,notes,order",
     // group: "uhhhhh", //. how recursively group? by eg a CHILD reln?
     // cols: "id,type,name,notes,depth,order",
-    params: { parentId: 48 }, // blt
-    // params: { parentId: 69 }, // act one
+    params: { parentId: 48 }, // blt //.
     query: cypher.facets.story.query,
     addQuery: cypher.facets.story.addQuery,
   },
+
+  // people: {
+  //   cols: genericCols,
+  //   params: { label: 'Person' },
+  // },
+
+  // books: {
+  //   cols: "id,type,author,name,notes",
+  // },
+
 }
 

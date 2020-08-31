@@ -55,7 +55,7 @@ function objectFormatter(cell, formatterParams, onRendered) {
 
 function rowFormatter(row) {
   const data = row.getData()
-  if (data.id===undefined) {
+  if (data.id===undefined || data.hasChildren) {
     row.getElement().style.fontWeight = 'bold'
   }
 }
@@ -77,7 +77,7 @@ const tableOptions = {
 
 // default props to override
 const colDef = {
-  width: 50, 
+  width: 100, 
   headerSort, 
   headerContextMenu,
 }
