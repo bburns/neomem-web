@@ -7,13 +7,30 @@ import './styles.css'
 
 const headerContextMenu = [
   {
-      label:"Hide Column",
-      action:function(e, column){
-          column.hide();
-      }
+    label: "Hide Column",
+    action: function(e, column) {
+      column.hide()
+    }
   },
 ]
 
+const rowContextMenu = [
+  {
+    label: "Add Row...",
+    action: function(e, row) {
+      //. bring up new item dialog - call a callback in app?
+      // row.delete()
+      alert('new dialog')
+    }
+  },
+  {
+    label: "Delete Row...",
+    action: function(e, row) {
+      //. delete from db - call a callback in app?
+      row.delete()
+    }
+  },
+]
 
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
@@ -61,25 +78,34 @@ function rowFormatter(row) {
 }
 
 const tableOptions = {
-  dataTree: true, 
+  dataTree: true,
   dataTreeStartExpanded,
+  dataSorting,
+  dataSorted,
+  rowFormatter,
+  rowContextMenu,
   movableRows: true,
-  dataSorting, 
-  dataSorted, 
-  rowFormatter, 
+  // cellContext: e => { console.log(e); e.stopImmediatePropagation(); e.stopPropagation(); e.preventDefault() },
+  cellContext: e => { e.preventDefault() },
 }
-
-
 
 
 
 //. put coldefs into db eventually
 
+// function cellClick(e, cell) {
+//   return false
+// }
+
+
 // default props to override
 const colDef = {
   width: 100, 
   headerSort, 
+  editable: false,
   headerContextMenu,
+  // cellClick: undefined,
+  cellDblClick: (e, cell) => cell.edit(true),
 }
 
 

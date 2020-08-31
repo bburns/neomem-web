@@ -247,9 +247,9 @@ export default function App() {
             <Button basic color='green' size='mini' onClick={clickNew}>New</Button>
           </span>
 
-          <span className="app-controls-new">
+          {/* <span className="app-controls-new">
             <GetItem2 />
-          </span>
+          </span> */}
 
       </div>
     </div>
