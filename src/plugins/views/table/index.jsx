@@ -85,18 +85,12 @@ const tableOptions = {
   rowFormatter,
   rowContextMenu,
   movableRows: true,
-  // cellContext: e => { console.log(e); e.stopImmediatePropagation(); e.stopPropagation(); e.preventDefault() },
-  cellContext: e => { e.preventDefault() },
+  cellContext: e => e.preventDefault(),
 }
 
 
 
 //. put coldefs into db eventually
-
-// function cellClick(e, cell) {
-//   return false
-// }
-
 
 // default props to override
 const colDef = {
@@ -104,10 +98,8 @@ const colDef = {
   headerSort, 
   editable: false,
   headerContextMenu,
-  // cellClick: undefined,
   cellDblClick: (e, cell) => cell.edit(true),
 }
-
 
 const colDefs = {
 
