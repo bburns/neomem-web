@@ -24,16 +24,7 @@ function substituteQueryParams(query, params) {
 }
 
 
-function headerClick(e, column) {
-  console.log(e, column)
-  // alert(column)
-  const field = column.getField()
-  alert(field)
-  return false
-}
-
-// const headerSort = true
-const headerSort = false
+const headerSort = false // we handle it in app, not in tableview
 
 function dataSorting(sorters) {
   //. remove last row
@@ -84,6 +75,7 @@ const tableOptions = {
 
 //. put coldefs into db eventually
 
+// default props to override
 const colDef = {
   width: 50, 
   headerSort, 
