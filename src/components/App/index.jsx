@@ -2,6 +2,7 @@ import React from "react"
 import datasource from "../../plugins/datasources/neo4j"
 import TableView from "../../plugins/views/table"
 import DocumentView from "../../plugins/views/document"
+import HeaderView from "../../plugins/views/header"
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import getItem from '../getItem'
@@ -185,6 +186,10 @@ export default function App() {
         <div className="app-header-logo">
           <img src={logo} alt="logo" />
           <span>Neomem</span>
+        </div>
+
+        <div className="header-view">
+          <HeaderView item={facet} />
         </div>
         
         <div className="app-controls">
