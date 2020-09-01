@@ -124,6 +124,7 @@ const colDefs = {
   project: { 
     ...colDef,
     width: 100, 
+    editor: "select", 
     editorParams: { 
       values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager".split(',').sort(),
     },
@@ -135,7 +136,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: { 
-      values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
+      values: "Author,Tip,Component,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
     },
   },
   
@@ -278,6 +279,7 @@ export default function TableView({
   }, [facetObj, rows, groupBy])
 
 
+  // a cell was edited
   async function cellEdited(cell) {
     console.log(cell)
     const table = tableRef.current.table
@@ -377,6 +379,38 @@ export default function TableView({
         MATCH (t)
         WHERE id(t)=$id 
         SET t:#value#
+        `
+        query = substituteQueryParams(query, params)
+        console.log(query)
+        const result = await session.run(query, params)
+        console.log(result)
+      }
+
+    } else if (editor==='select' && field==='project') {
+
+      // eg oldvalue='', value='neomem'
+      //. multiselect? single select for now?
+      const params = { id, value, oldvalue, RELNTYPE: 'TIP' }
+
+      // drop any existing project
+      if (oldvalue) {
+        let query = `
+        MATCH (n)<-[r]-(m:Project {name:#oldvalue#})
+        WHERE id(n)=$id 
+        DELETE r
+        `
+        query = substituteQueryParams(query, params)
+        console.log(query)
+        const result = await session.run(query, params)
+        console.log(result)
+      }
+
+      // add link to new project
+      if (value) {
+        let query = `
+        MATCH (n), (m:Project {name:"#value#"})
+        WHERE id(n)=$id
+        CREATE (n)<-[r:#RELNTYPE#]-(m)
         `
         query = substituteQueryParams(query, params)
         console.log(query)
