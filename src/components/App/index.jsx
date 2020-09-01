@@ -9,7 +9,7 @@ import getItem from '../getItem'
 import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
 import { Button } from 'semantic-ui-react'
-import GetItem2 from '../getItem2'
+// import GetItem2 from '../getItem2'
 // import { Dropdown } from 'semantic-ui-react'
 // import { Input } from 'semantic-ui-react'
 // import { Menu } from 'semantic-ui-react'

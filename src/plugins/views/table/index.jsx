@@ -135,7 +135,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: { 
-      values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View".split(',').sort(), 
+      values: "Author,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
     },
   },
   
@@ -330,23 +330,25 @@ export default function TableView({
       const params = { id, value, oldvalue }
 
       // drop any existing relation
-      {
+      if (oldvalue) {
         const query = `
         MATCH (t)-[r:TIMEFRAME]->(u:Timeframe {name: $oldvalue})
         WHERE id(t)=$id 
         DELETE r
         `
+        console.log(query)
         const result = await session.run(query, params)
         console.log(result)
       }
 
       // add new relation
-      {
+      if (value) {
         const query = `
         MATCH (t), (u:Timeframe {name: $value}) 
         WHERE id(t)=$id 
         CREATE (t)-[:TIMEFRAME]->(u)
         `
+        console.log(query)
         const result = await session.run(query, params)
         console.log(result)
       }
@@ -354,26 +356,33 @@ export default function TableView({
 
     else if (editor==='select' && field==='type') {
 
-      // drop existing label
-      let query1 = `
-      MATCH (t)
-      WHERE id(t)=$id 
-      REMOVE t:#oldvalue#
-      `
       const params = { id, value, oldvalue }
-      query1 = substituteQueryParams(query1, params)
-      const result1 = await session.run(query1, params)
-      console.log(result1)
+
+      // drop existing label
+      if (oldvalue) {
+        let query = `
+        MATCH (t)
+        WHERE id(t)=$id 
+        REMOVE t:#oldvalue#
+        `
+        query = substituteQueryParams(query, params)
+        console.log(query)
+        const result = await session.run(query, params)
+        console.log(result)
+      }
 
       // add new label
-      let query2 = `
-      MATCH (t)
-      WHERE id(t)=$id 
-      SET t:#value#
-      `
-      query2 = substituteQueryParams(query2, params)
-      const result2 = await session.run(query2, params)
-      console.log(result2)
+      if (value) {
+        let query = `
+        MATCH (t)
+        WHERE id(t)=$id 
+        SET t:#value#
+        `
+        query = substituteQueryParams(query, params)
+        console.log(query)
+        const result = await session.run(query, params)
+        console.log(result)
+      }
 
     }
 
