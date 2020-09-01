@@ -83,7 +83,31 @@ export default function App() {
   const [sortBy, setSortBy] = React.useState("")
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([])
+  const [items, setItems] = React.useState([])
   const facetRef = React.useRef(facet) //. better way?
+
+  React.useEffect(() => {
+    (async () => {
+
+      const query = `
+      MATCH (n)
+      WITH n, id(n) as id
+      RETURN n { .name, id }
+      `
+      const params = {}
+      const session = datasource.getSession({ readOnly: true })
+      const items = []
+      console.log(query)
+      const result = await session.run(query, params)
+      for (const record of result.records) {
+        const item = record.get("n")
+        items.push(item)
+      }
+      session.close()
+      setItems(items) // this will force dependent views to redraw
+    })()
+  }, [])
+
 
   // on change facet
   React.useEffect(() => {
@@ -268,7 +292,7 @@ export default function App() {
       
       <div className="app-contents">
 
-        <NavigatorView />
+        <NavigatorView items={items} />
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}

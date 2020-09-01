@@ -1,0 +1,9 @@
+.navigator-view {
+  height: 100%;
+  overflow-y: auto;
+  flex-basis: 5em;
+  flex-shrink: 0;
+}
+.navigator-view-item {
+  font-size: 0.8em;
+}
