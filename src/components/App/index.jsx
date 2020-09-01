@@ -52,17 +52,17 @@ async function getChildren(query, params) {
     const row = record.get("n")
     // join any array fields into a comma-separated string
     Object.keys(row).forEach((key) => {
-      if (key === "timeframe") { //.
+      if (key === "timeframe") { //. make generic
         row[key] = row[key][0]
-          ? row[key][0].properties
+          ? row[key][0].properties // this includes { name, order, notes, ... }
           : { name: "", order: 10 } //.
       } else if (Array.isArray(row[key])) {
         row[key] = row[key].join(", ")
       }
     })
+    // recurse if item has children
     //. generalize more
     if (row.hasChildren) {
-      // console.log('recurse on', row, 'with', row.id)
       row._children = await getChildren(query, {parentId:row.id})
     }
     rows.push(row)
@@ -85,19 +85,21 @@ export default function App() {
 
   // on change facet
   React.useEffect(() => {
-    facetRef.current = facet;
+    
+    facetRef.current = facet
     const facetObj = facetObjs[facet]
     setFacetObj(facetObj)
 
     const queryTemplate = facetObj.query
     const params = facetObj.params || {}
     const query = substituteQueryParams(queryTemplate, params)
-    if (!query) return
-
+    if (!query) return;
+    
     (async () => {
-      const rows = await getChildren(query, params)
-      setRows(rows)
+      const rows = await getChildren(query, params) // recursive query
+      setRows(rows) // this will force dependent views to redraw
     })()
+    
   }, [facet])
 
   // on change sort
@@ -152,6 +154,10 @@ export default function App() {
     const result = await session.run(query)
     const record = result.records[0]
     const item = record.get('n')
+
+    item.description = ''
+    item.project = ''
+    item.timeline = ''
 
     const ret = await getItem({ item }) // bring up dialog
 
