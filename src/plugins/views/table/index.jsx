@@ -126,7 +126,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: { 
-      values: "neomem,tallieo,facemate,lockheed,ccs,PyVoyager".split(',').sort(),
+      values: "personal,neomem,tallieo,facemate,lockheed,ccs,pyvoyager".split(',').sort(),
     },
   },
   
@@ -178,6 +178,7 @@ const colDefs = {
   place: { ...colDef, width: 100 },
   relntype: { ...colDef, width: 100 },
   hasChildren: { ...colDef, width: 100 },
+  link: { ...colDef, width: 100, editor: "input" },
 
 }
 

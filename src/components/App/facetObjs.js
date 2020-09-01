@@ -8,7 +8,7 @@ const projectCols = "type,name,timeframe,notes,place"
 export default {
 
   all: {
-    cols: "type,name,project,notes,timeframe,place,order",
+    cols: "type,name,project,notes,timeframe,place,link,order",
     group: "type",
     query: cypher.facets.all.query,
     addQuery: cypher.facets.all.addQuery,
