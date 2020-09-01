@@ -84,6 +84,8 @@ export default function App() {
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([])
   const [items, setItems] = React.useState([])
+  const [focusId, setFocusId] = React.useState(0)
+  const [focusItem, setFocusItem] = React.useState({})
   const facetRef = React.useRef(facet) //. better way?
 
   React.useEffect(() => {
@@ -107,6 +109,29 @@ export default function App() {
       setItems(items) // this will force dependent views to redraw
     })()
   }, [])
+
+  // on change focus
+  React.useEffect(() => {
+    (async () => {
+      const query = `
+      MATCH (n)
+      WHERE id(n)=$id
+      RETURN n
+      `
+      const params = { id: focusId }
+      const session = datasource.getSession({ readOnly: true })
+      const items = []
+      console.log(query)
+      const result = await session.run(query, params)
+      for (const record of result.records) {
+        const item = record.get("n") // { identity, labels, properties }
+        items.push(item)
+      }
+      const item = items[0]
+      session.close()
+      setFocusItem(item) // this will force dependent views to redraw
+    })()
+  }, [focusId])
 
 
   // on change facet
@@ -143,6 +168,7 @@ export default function App() {
     setRows(rowsCopy)
   }, [sortBy])
 
+
   function changeFacet(e) {
     const facet = e.currentTarget.value
     setFacet(facet)
@@ -173,7 +199,7 @@ export default function App() {
 
     const query = `
     CREATE (n)
-    SET n.name="New Item"
+    SET n.name="new item"
     WITH n, labels(n) as type, id(n) as id
     RETURN n { .*, type, id }
     `
@@ -203,6 +229,13 @@ export default function App() {
     session.close()
   }
 
+  function clickItem(e) {
+    const ct = e.currentTarget
+    const id = Number(ct.dataset.id)
+    setFocusId(id)
+  }
+
+
   return (
     <div className="app">
 
@@ -214,7 +247,7 @@ export default function App() {
         </div>
 
         <div className="header-view">
-          <HeaderView item={facet} />
+          <HeaderView item={focusItem} />
         </div>
         
         <div className="app-controls">
@@ -292,7 +325,7 @@ export default function App() {
       
       <div className="app-contents">
 
-        <NavigatorView items={items} />
+        <NavigatorView items={items} clickItem={clickItem} />
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
