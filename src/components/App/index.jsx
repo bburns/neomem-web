@@ -106,6 +106,7 @@ export default function App() {
         items.push(item)
       }
       session.close()
+      items.sort((a, b) => a.name.localeCompare(b.name))
       setItems(items) // this will force dependent views to redraw
     })()
   }, [])
@@ -325,7 +326,7 @@ export default function App() {
       
       <div className="app-contents">
 
-        <NavigatorView items={items} clickItem={clickItem} />
+        <NavigatorView items={items} clickItem={clickItem} focusId={focusId} />
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}

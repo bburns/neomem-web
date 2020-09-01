@@ -1,6 +1,6 @@
 .navigator-view {
   height: 100%;
-  flex-basis: 5em;
+  flex-basis: 10em;
   flex-shrink: 0;
   overflow-y: auto;
 }
@@ -10,7 +10,12 @@
 .navigator-view-item {
   font-size: 0.8em;
   cursor: pointer;
+  /* overflow-x: hidden; */
+  white-space: nowrap;
 }
 .navigator-view-item:hover {
   background: #eee;
+}
+.navigator-view-item.focus {
+  background: lightblue;
 }
