@@ -72,6 +72,7 @@ select, option {
 .app-contents {
   height: 100%;
   overflow-y: auto;
+  display: flex;
 }
 
 

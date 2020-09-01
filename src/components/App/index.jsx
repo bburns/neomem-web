@@ -1,8 +1,5 @@
 import React from "react"
 import datasource from "../../plugins/datasources/neo4j"
-import TableView from "../../plugins/views/table"
-import DocumentView from "../../plugins/views/document"
-import HeaderView from "../../plugins/views/header"
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import getItem from '../getItem'
@@ -17,6 +14,10 @@ import { Button } from 'semantic-ui-react'
 // import { Header } from 'semantic-ui-react'
 // import { Image } from 'semantic-ui-react'
 // import { Sticky } from 'semantic-ui-react'
+import TableView from "../../plugins/views/table"
+import DocumentView from "../../plugins/views/document"
+import HeaderView from "../../plugins/views/header"
+import NavigatorView from "../../plugins/views/navigator"
 
 
 const initialFacet = "all"
@@ -265,27 +266,31 @@ export default function App() {
       </div>
     </div>
       
-    <div className="app-contents">
+      <div className="app-contents">
 
-      {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
-      <TableView
-        visible={view === "table"}
-        rows={rows}
-        groupBy={groupBy}
-        facetObj={facetObj} // for columns, addquery, params - //. better way?
-        datasource={datasource}
-        changeSort={changeSort}
-        clickNew={clickNew}
-      />
-      {/* } */}
-      {view === "document" && (
-        <DocumentView 
-          rows={rows} 
-          groupBy={groupBy} 
-          datasource={datasource} 
-        />
-      )}
+        <NavigatorView />
+
+        <div className="app-view">
+          {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
+          <TableView
+            visible={view === "table"}
+            rows={rows}
+            groupBy={groupBy}
+            facetObj={facetObj} // for columns, addquery, params - //. better way?
+            datasource={datasource}
+            changeSort={changeSort}
+            clickNew={clickNew}
+          />
+          {/* } */}
+          {view === "document" && (
+            <DocumentView 
+              rows={rows} 
+              groupBy={groupBy} 
+              datasource={datasource} 
+            />
+          )}
+        </div>
+      </div>
     </div>
-  </div>
   )
 }
