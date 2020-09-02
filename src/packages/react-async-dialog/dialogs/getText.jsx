@@ -31,7 +31,7 @@ function GetText({ title, message, defaultValue, resolve }) {
   }
 
   function handleKeyDown(event) {
-    if (event.key === "Enter" && event.metaKey) {
+    if (event.key === "Enter" && (event.metaKey || event.altKey)) {
       clickOK()
     } else if (event.key === "Escape") {
       clickCancel()
