@@ -28,15 +28,13 @@ function dataTreeStartExpanded(row, level) {
   return false
 }
 
+// format row bold if group header or has children
 function rowFormatter(row) {
   const data = row.getData()
   if (data.id===undefined || data.hasChildren) {
     row.getElement().style.fontWeight = 'bold'
   }
 }
-
-
-
 
 
 const newRow = { id:-1 }
@@ -57,8 +55,9 @@ export default function TableView({
   const tableRef = React.useRef(null)
   // const table = tableRef && tableRef.current && tableRef.current.table
 
+  // define the rclick context menu for rows
   //. don't like having to parse this each time render is called - 
-  // how get around that? 
+  // how get around that? memoize?
   const rowContextMenu = [
     {
       // label: "<i class='icon icon-edit'></i> Edit Notes...",
@@ -94,9 +93,35 @@ export default function TableView({
     },
     {
       label: "Delete Row...",
-      action: function(e, row) {
-        //. delete from db - call a callback in app?
-        row.delete()
+      action: async function(e, row) {
+        //. actually should move it to a trash bin folder
+        // hmm
+        if (window.confirm("Are you sure you want to delete this item?")) {
+          const data = row.getData()
+          const id = data.id
+          // delete from db
+          const query = `
+          MATCH (n)
+          WHERE id(n)=$id
+          DETACH DELETE n
+          RETURN count(n)
+          `
+          const params = { id }
+          const session = datasource.getSession()
+          const results = await session.run(query, params)
+          console.log(results)
+          console.log(results.records)
+          const record = results.records && results.records[0]
+          console.log(record)
+          const count = record && record.get('count(n)')
+          console.log(count)
+          // delete from table
+          if (count === 1) {
+            row.delete()
+          } else {
+            alert("Error deleting item from db - please try again")
+          }
+        }
       }
     },
   ]
@@ -184,6 +209,8 @@ export default function TableView({
   }, [facetObj, rows, groupBy])
 
   // currentId changed from parent app
+  // eg when click New btn, add a newRow to the rows list,
+  // and set currentId to newRow.id, which triggers this fn
   React.useEffect(() => {
     const table = tableRef.current.table
     table.scrollToRow(currentId)
@@ -359,7 +386,7 @@ export default function TableView({
     session.close()
   }
 
-  
+
   return (
     <div className={"table-view" + (visible ? '' : ' hidden')}>
       <ReactTabulator
