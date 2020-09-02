@@ -222,7 +222,8 @@ export default function TableView({
         // console.log(queryTemplate)
         // add a generic item
         const queryTemplate = `
-        CREATE (n)
+        MATCH (f:Folder {name:'inbox'})
+        CREATE (n)<-[r:CHILD]-(f) 
         WITH n, id(n) as id
         RETURN n { .*, id }
         `
@@ -259,6 +260,7 @@ export default function TableView({
       table.updateData([row])
     }
 
+    // update field from timeframe dropdown value
     else if (editor==='select' && field==='timeframe') {
 
       const params = { id, value, oldvalue }
@@ -288,6 +290,7 @@ export default function TableView({
       }
     }
 
+    // update field from type dropdown value
     else if (editor==='select' && field==='type') {
 
       const params = { id, value, oldvalue }
@@ -318,6 +321,7 @@ export default function TableView({
         console.log(result)
       }
 
+    // update field from project dropdown value
     } else if (editor==='select' && field==='project') {
 
       // eg oldvalue='', value='neomem'
@@ -355,6 +359,7 @@ export default function TableView({
     session.close()
   }
 
+  
   return (
     <div className={"table-view" + (visible ? '' : ' hidden')}>
       <ReactTabulator
