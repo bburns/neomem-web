@@ -3,7 +3,7 @@ import { openDialog, closeDialog } from '..'
 
 
 export default function getString(title, message, defaultValue) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     openDialog(GetString, { title, message, defaultValue, resolve })
   })
 }
@@ -11,21 +11,21 @@ export default function getString(title, message, defaultValue) {
 
 function GetString({ title, message, defaultValue, resolve }) {
   const [value, setValue] = React.useState(defaultValue)
-  const handleClickedOK = () => {
+  const clickOK = () => {
     // const el = document.getElementById("getString-input")
     // const s = el.value
     closeDialog()
     resolve({ ok: true, value })
   }
-  const handleClickedCancel = () => {
+  const clickCancel = () => {
     closeDialog()
     resolve({ ok: false })
   }
   function handleKeyDown(evt) {
     if (evt.key === "Enter") {
-      handleClickedOK()
+      clickOK()
     } else if (evt.key === "Escape") {
-      handleClickedCancel()
+      clickCancel()
     }
   }
   function changeInput(evt) {
@@ -39,8 +39,8 @@ function GetString({ title, message, defaultValue, resolve }) {
         <input autoFocus value={value} onChange={changeInput} type="text" id="getString-input" onKeyDown={handleKeyDown} />
       </div>
       <div className="getString-buttons">
-        <button id="cancel" onClick={handleClickedCancel}>Cancel</button>
-        <button id="ok" onClick={handleClickedOK}>OK</button>
+        <button id="cancel" onClick={clickCancel}>Cancel</button>
+        <button id="ok" onClick={clickOK}>OK</button>
       </div>
     </div>
   )

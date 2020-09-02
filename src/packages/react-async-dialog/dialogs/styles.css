@@ -1,0 +1,49 @@
+
+.alert {
+  background: white;
+  padding: 1em;
+  min-width: 10em;
+}
+.alert-message {
+  margin-bottom: 1em;
+}
+.alert button {
+  float: right;
+}
+
+
+.getString {
+  background: white;
+  width: 20em;
+  padding: 1em;
+}
+.getString h3 {
+  margin: 0;
+}
+.getString-buttons {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+.getString-buttons button+button {
+  margin-left: 0.5em;
+}
+
+
+
+.getText {
+  background: white;
+  width: 20em;
+  padding: 1em;
+}
+.getText h3 {
+  margin: 0;
+}
+.getText-buttons {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+.getText-buttons button+button {
+  margin-left: 0.5em;
+}

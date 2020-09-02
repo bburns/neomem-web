@@ -2,8 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import alert from  './dialogs/alert'
 import getString from  './dialogs/getString'
+import getText from  './dialogs/getText'
 import './styles.css'
-export { alert, getString } //.
+import './dialogs/styles.css'
+
+export { alert, getString, getText }
 
 
 export function openDialog(Dialog, props, clickBackground=closeDialog) {
