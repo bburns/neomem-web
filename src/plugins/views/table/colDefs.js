@@ -25,9 +25,9 @@ const headerSort = false // we handle it in app, not in tableview
 const colDef = {
   width: 100, 
   headerSort, 
-  editable: false,
   headerContextMenu,
-  cellDblClick: (e, cell) => cell.edit(true),
+  editable: false, // turn off left click to edit cell
+  cellDblClick: (e, cell) => cell.edit(true), // use double click to edit cell
 }
 
 const colDefs = {

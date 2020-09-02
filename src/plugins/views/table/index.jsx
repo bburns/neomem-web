@@ -142,11 +142,13 @@ export default function TableView({
     const colNames = cols.split(',')
     let columns = colNames.map(colName => colDefs[colName])
     columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
+    // click on column header tells parent app to resort items
     columns.forEach(column=>column.headerClick = (e, column) => changeSort(column.getField()))
     setColumns(columns)
 
     if (groupBy) {
 
+      // group the rows by the groupBy field values
       const dict = {}
       for (const row of rows) {
         let group
@@ -161,7 +163,8 @@ export default function TableView({
         }
         dict[group].push(row)
       }
-      
+
+      // organize the data into rows with _children fields for child rows
       const data = []
       const firstCol = columns[0].field // always put the group text in the first column
       for (const group of Object.keys(dict)) {
@@ -180,6 +183,7 @@ export default function TableView({
 
   }, [facetObj, rows, groupBy])
 
+  // currentId changed from parent app
   React.useEffect(() => {
     const table = tableRef.current.table
     table.scrollToRow(currentId)
@@ -190,7 +194,6 @@ export default function TableView({
     //   // table.selectCell
     //   // const row = table.getRow(currentId)  
     // })
-
   }, [currentId])
 
   // a cell was edited
