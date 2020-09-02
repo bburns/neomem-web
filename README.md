@@ -1,8 +1,6 @@
 # Neomem
 
-An information manager - a cross between a table and document editor
-
-<!-- A graph database editor -->
+An open-source information manager
 
 
 ## About
@@ -13,9 +11,9 @@ For example, tasks can have short properties like name, timeframe, order, estima
 
 Data can be filtered, grouped, and sorted as required. 
 
-All views will be developed as plugins. The backend can connect to multiple data sources, which will also be supported with plugins. 
-
 Other views are possible for the same underlying information - chart, map, calendar, kanban, graph. Multiple views could be visible at the same time. A console view could allow traversal, querying, and manipulation of items in a text console. 
+
+All views will be developed as plugins. The backend can connect to multiple data sources, which will also be supported with plugins. 
 
 
 ## Goals
@@ -33,7 +31,7 @@ Some use cases to test the app and database structure -
 
 - task manager - projects, tasks, goals, timeframe, order, estimate, actual, recurring tasks - switch between table, document, kanban, calendar, timeline views
 - art travel planner - location (continent/country/state/city/museum), artist, date, name, rating, source, size, images - switch between table, map views
-- screenplay/outline editor - acts, scenes, characters, locations - switch between table, outline, document views
+- screenplay/outline editor - acts, scenes, characters, locations
 - biographical timelines - subject, event, date, age, location - switch between table, document, map views
 - comparison shopping - make quick tables for comparison between items, with free-form notes
 - genealogy - add properties to relationships, e.g. marriage date and location
@@ -42,7 +40,7 @@ Some use cases to test the app and database structure -
 ## Inspiration
 
 - Lotus Symphony (1990) - spreadsheet, chart, and document views of same information
-- Airtable - table editor with underlying graph db (?)
+- Airtable - advanced table editor
 
 
 ## Implementation
@@ -57,6 +55,7 @@ Some use cases to test the app and database structure -
 - select text in notes, promote to item(s) with alt-m command
 - move text and items easily to other items with alt-m command
 - create new items quickly with alt-n command, put in an inbox
+- go to item quickly with alt-g command, start typing to filter list
 - clipboard monitor - paste contents when it changes
 
 
@@ -70,6 +69,7 @@ Some use cases to test the app and database structure -
 
 ## Marketing
 
-- have limited invites
+- make landing page to gather emails for mailing list
+- post to twitter, medium, reddit, neo4j community for feedback
 - launch on product hunt, hacker news, reddit
-
+- have limited invites
