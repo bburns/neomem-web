@@ -131,10 +131,46 @@ export async function updateProperty(id, field, value) {
 }
 
 
+export async function setType(id, oldvalue, value) {
+        
+  const params = { id, value, oldvalue }
+  
+  const session = getSession()
+
+  // drop existing label
+  if (oldvalue) {
+    const query = `
+    MATCH (t)
+    WHERE id(t)=$id 
+    REMOVE t:${oldvalue}
+    `
+    console.log(query)
+    const result = await session.run(query, params)
+    console.log(result)
+  }
+
+  // add new label
+  if (value) {
+    const query = `
+    MATCH (t)
+    WHERE id(t)=$id 
+    SET t:${value}
+    SET t.modified=datetime()
+    `
+    console.log(query)
+    const result = await session.run(query, params)
+    console.log(result)
+  }
+  
+  session.close()
+}
+
+
 export async function setRelation(id, field, oldvalue, value) {
 
   const type = field[0].toUpperCase() + field.slice(1)
   const relntype = field.toUpperCase()
+
   const params = { id, value, oldvalue }
   console.log(params)
 
@@ -181,36 +217,52 @@ export async function setRelation(id, field, oldvalue, value) {
 
 
 
-export async function setType(id, oldvalue, value) {
-        
-  const params = { id, value, oldvalue }
-  
+//. multiselect? single select for now?
+// eg field='project', oldvalue='', value='neomem', destType='View'
+export async function setRelation2(id, field, oldvalue, value, destType) {
+
+  // item must have a type to set this type of relationship
+  if (!destType) {
+    return false
+  }
+
+  const srcType = field[0].toUpperCase() + field.slice(1) // eg 'Project'
+  // const relntype = field.toUpperCase()
+
+  // what is relntype? it depends on the type of thing being linked to
+  // eg if data.type==='View' then relntype is VIEW
+  //. are there exceptions?
+  const RELNTYPE = destType.toUpperCase() // eg 'View' to 'VIEW'
+  const params = { id }
+  console.log(params)
+
   const session = getSession()
 
-  // drop existing label
+  // drop existing project relation
   if (oldvalue) {
     const query = `
-    MATCH (t)
-    WHERE id(t)=$id 
-    REMOVE t:${oldvalue}
+    MATCH (n)<-[r]-(m:${srcType} {name:"${oldvalue}"})
+    WHERE id(n)=$id 
+    DELETE r
     `
     console.log(query)
     const result = await session.run(query, params)
     console.log(result)
   }
 
-  // add new label
+  // add link to new project
   if (value) {
     const query = `
-    MATCH (t)
-    WHERE id(t)=$id 
-    SET t:${value}
-    SET t.modified=datetime()
+    MATCH (n), (m:${srcType} {name:"${value}"})
+    WHERE id(n)=$id
+    SET n.modified=datetime()
+    CREATE (n)<-[r:${RELNTYPE}]-(m)
     `
     console.log(query)
     const result = await session.run(query, params)
     console.log(result)
   }
-  
+
   session.close()
+  return true
 }

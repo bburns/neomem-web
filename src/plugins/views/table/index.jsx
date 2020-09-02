@@ -95,7 +95,6 @@ export default function TableView({
   const tableOptions = {
     dataTree: true, // allow grouping and hierarchies
     dataTreeStartExpanded,
-    // dataLoaded,
     rowFormatter, // format rows as bold if group header
     selectable: 1, // only 1 row is selectable at a time
     movableRows: true, // drag and drop rows
@@ -104,22 +103,6 @@ export default function TableView({
   }
 
   
-  // function dataLoaded(data) {
-  //   console.log(data) // always [] - why?
-  //   // tableRef.current.table.scrollToRow(-1)
-  // }
-  
-  
-  // React.useEffect(() => {
-  //   // update context menu
-  //   //. alternatively, define the menu within this component...
-  //   const menuItem = rowContextMenu.find(value => value.label === "Add Row...")
-  //   if (menuItem) {
-  //     menuItem.action = clickNew
-  //   }
-  // }, [])
-
-
   // facet, rows, groupby changed
   React.useEffect(() => {
 
@@ -179,6 +162,7 @@ export default function TableView({
     const table = tableRef.current.table
     table.scrollToRow(currentId)
     table.selectRow(currentId)
+    //. ?
     // .then(() => {
     //   table.selectRow(currentId)
     //   //. start editing name cell?
@@ -190,23 +174,21 @@ export default function TableView({
 
   // a cell was edited
   async function cellEdited(cell) {
+    // console.log(facetObj) //. this gets stuck in the closure
     console.log(cell)
-    console.log(facetObj) //. this gets stuck in the closure
     const table = tableRef.current.table
     const col = cell.getColumn()
     const field = col.getField() // eg 'project'
     const colDef = col.getDefinition()
     const row = cell.getRow()
     const data = row.getData()
+    console.log(data)
     let id = data.id
     const value = cell.getValue() // eg ''
     const oldvalue = cell.getOldValue() // eg 'neomem'
     const editor = colDef.editor // eg 'input', 'select'
 
-    const session = datasource.getSession()
-    
     if (editor==='input') {
-
       if (id===newRow.id) {
         const row = await datasource.addItem()
         id = row.id
@@ -224,59 +206,26 @@ export default function TableView({
       table.updateData([row])
     }
 
+    // update field from type dropdown value
+    else if (editor==='select' && field==='type') {
+      await datasource.setType(id, oldvalue, value)
+    }
+
     // update field from timeframe dropdown value
     else if (editor==='select' && field==='timeframe') {
       // timeframes are objects, so get oldvalue from { name }
       await datasource.setRelation(id, field, oldvalue.name, value)
     }
 
-    // update field from type dropdown value
-    else if (editor==='select' && field==='type') {
-      await datasource.setType(id, oldvalue, value)
-
     // update field from project dropdown value
-    } else if (editor==='select' && field==='project') {
-
-      // eg oldvalue='', value='neomem'
-      //. multiselect? single select for now?
-      //. what is relntype? it depends on the type of thing being linked to
-      // eg if data.type==='View' then relntype is VIEW
-      //. are there exceptions? 
-      const RELNTYPE = data.type.toUpperCase() // eg 'View' to 'VIEW'
-      const params = { id, value, oldvalue, RELNTYPE }
-      console.log(params)
-      // return
-
-      // drop existing project relation
-      if (oldvalue) {
-        let query = `
-        MATCH (n)<-[r]-(m:Project {name:"#oldvalue#"})
-        WHERE id(n)=$id 
-        DELETE r
-        `
-        query = substituteQueryParams(query, params)
-        console.log(query)
-        const result = await session.run(query, params)
-        console.log(result)
+    else if (editor==='select' && field==='project') {
+      // eg data.type is eg 'View' - want to use 'VIEW' for the relntype
+      const destType = data.type
+      if (!await datasource.setRelation2(id, field, oldvalue, value, destType)) {
+        alert("Error writing to database")
       }
-
-      // add link to new project
-      if (value) {
-        let query = `
-        MATCH (n), (m:Project {name:"#value#"})
-        WHERE id(n)=$id
-        SET n.modified=datetime()
-        CREATE (n)<-[r:#RELNTYPE#]-(m)
-        `
-        query = substituteQueryParams(query, params)
-        console.log(query)
-        const result = await session.run(query, params)
-        console.log(result)
-      }
-
     }
 
-    session.close()
   }
 
 
