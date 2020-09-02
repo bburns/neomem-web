@@ -6,34 +6,6 @@ import colDefs from './colDefs'
 import { getText } from '../../../packages/react-async-dialog'
 
 
-const rowContextMenu = [
-  {
-    label: "Edit Notes...",
-    action: async function(e, row) {
-      const data = row.getData()
-      const ret = await getText("Edit Notes", "", data.notes)
-      if (ret.ok) {
-        //. write to db
-        alert(ret.value)
-      }
-    }
-  },
-  {
-    label: "Add Row...",
-    action: function(e, row) {
-      // leave this blank - useEffect will bind the clickNew fn into it
-      // clickNew()
-    }
-  },
-  {
-    label: "Delete Row...",
-    action: function(e, row) {
-      //. delete from db - call a callback in app?
-      row.delete()
-    }
-  },
-]
-
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
     const value = params[key]
@@ -63,17 +35,6 @@ function rowFormatter(row) {
   }
 }
 
-const tableOptions = {
-  dataTree: true,
-  dataTreeStartExpanded,
-  dataSorting,
-  dataSorted,
-  rowFormatter,
-  movableRows: true,
-  rowContextMenu,
-  cellContext: e => e.preventDefault(), // prevent browser's context menu
-}
-
 
 
 
@@ -94,14 +55,56 @@ export default function TableView({
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
 
+  
+  const rowContextMenu = [
+    {
+      // label: "<i class='icon icon-edit'></i> Edit Notes...",
+      label: "Edit Notes...",
+      action: async function(e, row) {
+        const data = row.getData()
+        const ret = await getText("Edit Notes", "", data.notes)
+        if (ret.ok) {
+          //. write to db
+          alert(ret.value)
+        }
+      }
+    },
+    {
+      label: "Add Row...",
+      action: function(e, row) {
+        // leave this blank - useEffect will bind the clickNew fn into it
+        clickNew()
+      }
+    },
+    {
+      label: "Delete Row...",
+      action: function(e, row) {
+        //. delete from db - call a callback in app?
+        row.delete()
+      }
+    },
+  ]
 
-  React.useEffect(() => {
-    // update context menu
-    const menuItem = rowContextMenu.find(value => value.label === "Add Row...")
-    if (menuItem) {
-      menuItem.action = clickNew
-    }
-  }, [])
+  const tableOptions = {
+    dataTree: true,
+    dataTreeStartExpanded,
+    dataSorting,
+    dataSorted,
+    rowFormatter,
+    movableRows: true,
+    rowContextMenu,
+    cellContext: e => e.preventDefault(), // prevent browser's context menu
+  }
+  
+
+  // React.useEffect(() => {
+  //   // update context menu
+  //   //. alternatively, define the menu within this component...
+  //   const menuItem = rowContextMenu.find(value => value.label === "Add Row...")
+  //   if (menuItem) {
+  //     menuItem.action = clickNew
+  //   }
+  // }, [])
 
 
   // facet, rows, groupby changed

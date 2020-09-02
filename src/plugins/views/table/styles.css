@@ -7,6 +7,14 @@
 
 
 
+.icon.icon-edit {
+  background-image: url(../../../assets/logo256.png);
+  height: 1em;
+  width: 1em;
+}
+
+
+
 
 
 /* //. override defaults here. better way? */
