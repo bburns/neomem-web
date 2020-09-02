@@ -97,16 +97,16 @@ export default function App() {
 
   const facetRef = React.useRef(facet) //. better way?
 
-  const newOptions = [
-    { key: 'item', icon: 'file outline', text: 'New Item', value: 'item', onClick: clickNewItem },
-    { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
-  ]
+  //. new button options - incl add new link
+  // const newOptions = [
+  //   { key: 'item', icon: 'file outline', text: 'New Item', value: 'item', onClick: clickNewItem },
+  //   { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
+  // ]
   
-  // initial query
-  //. what? oh this was for the nav view
+  // // initial query
+  // // this is for the nav view
   // React.useEffect(() => {
   //   (async () => {
-
   //     const query = `
   //     MATCH (n)
   //     WITH n, id(n) as id
@@ -127,28 +127,29 @@ export default function App() {
   //   })()
   // }, [])
 
-  // on change focus
-  React.useEffect(() => {
-    (async () => {
-      const query = `
-      MATCH (n)
-      WHERE id(n)=$id
-      RETURN n
-      `
-      const params = { id: focusId }
-      const session = datasource.getSession({ readOnly: true })
-      const items = []
-      console.log(query, params)
-      const result = await session.run(query, params)
-      for (const record of result.records) {
-        const item = record.get("n") // { identity, labels, properties }
-        items.push(item)
-      }
-      const item = items[0]
-      session.close()
-      setFocusItem(item) // this will force dependent views to redraw
-    })()
-  }, [focusId])
+  // // on change focusId
+  // // for the nav view
+  // React.useEffect(() => {
+  //   (async () => {
+  //     const query = `
+  //     MATCH (n)
+  //     WHERE id(n)=$id
+  //     RETURN n
+  //     `
+  //     const params = { id: focusId }
+  //     const session = datasource.getSession({ readOnly: true })
+  //     const items = []
+  //     console.log(query, params)
+  //     const result = await session.run(query, params)
+  //     for (const record of result.records) {
+  //       const item = record.get("n") // { identity, labels, properties }
+  //       items.push(item)
+  //     }
+  //     const item = items[0]
+  //     session.close()
+  //     setFocusItem(item) // this will force dependent views to redraw
+  //   })()
+  // }, [focusId])
 
 
   // on change facet
@@ -258,16 +259,17 @@ export default function App() {
     setCurrentId(newRow.id)
   }
 
-
+  //. let user choose an item to link to via a dialog?
   function clickNewLink() {
     alert('lkmlkm')
   }
 
-  function clickItem(e) {
-    const ct = e.currentTarget
-    const id = Number(ct.dataset.id)
-    setFocusId(id)
-  }
+  // //. set focus to an item - callback for nav view
+  // function clickItem(e) {
+  //   const ct = e.currentTarget
+  //   const id = Number(ct.dataset.id)
+  //   setFocusId(id)
+  // }
 
 
   return (
@@ -385,6 +387,7 @@ export default function App() {
       
       <div className="app-contents">
 
+        {/* //. nav view */}
         {/* <NavigatorView items={items} clickItem={clickItem} focusId={focusId} /> */}
 
         <div className="app-view">
