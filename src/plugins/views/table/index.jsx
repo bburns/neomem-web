@@ -208,7 +208,8 @@ export default function TableView({
     if (editor==='input') {
 
       if (id===newRow.id) {
-        const row = datasource.addItem()
+        const row = await datasource.addItem()
+        id = row.id
         if (row) {
           // delete the blank 'new' row
           table.updateData([{ id:newRow.id,  [field]: undefined }])
@@ -217,10 +218,9 @@ export default function TableView({
           table.addRow(row)
           // optionally add another blank 'new' row
           // table.addRow(newRow)
-          id = row.id
         }
       }
-      const row = datasource.updateProperty(id, field, value)
+      const row = await datasource.updateProperty(id, field, value)
       table.updateData([row])
     }
 

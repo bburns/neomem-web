@@ -106,6 +106,7 @@ export async function addItem() {
   session.close()
   const record = result.records[0]
   const row = record.get('n')
+  console.log(row)
   return row
 }
 
