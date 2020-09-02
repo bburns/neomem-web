@@ -227,17 +227,16 @@ export default function TableView({
   // a cell was edited
   async function cellEdited(cell) {
     console.log(cell)
-    console.log(facetObj) //. this gets stuck in the __
+    console.log(facetObj) //. this gets stuck in the closure
     const table = tableRef.current.table
     const col = cell.getColumn()
-    const field = col.getField() // eg 'timeframe'
+    const field = col.getField() // eg 'project'
     const colDef = col.getDefinition()
     const row = cell.getRow()
     const data = row.getData()
     let id = data.id
-    const value = cell.getValue() // eg 'week'
-    // const oldvalue = cell.getOldValue() // eg 'month'
-    const oldvalue = cell.getOldValue().name // eg 'month'
+    const value = cell.getValue() // eg ''
+    const oldvalue = cell.getOldValue() // eg 'neomem'
     const editor = colDef.editor // eg 'input', 'select'
 
     const session = datasource.getSession()
@@ -293,7 +292,8 @@ export default function TableView({
     // update field from timeframe dropdown value
     else if (editor==='select' && field==='timeframe') {
 
-      const params = { id, value, oldvalue }
+      // timeframes are objects, so get oldvalue from { name }
+      const params = { id, value, oldvalue: oldvalue.name }
       console.log(params)
 
       // drop any existing relation

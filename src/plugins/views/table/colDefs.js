@@ -135,7 +135,7 @@ function objectFormatter(cell, formatterParams, onRendered) {
   // cell - the cell component
   // formatterParams - parameters set for the column
   // onRendered - function to call when the formatter has been rendered
-  // return "Mr" + cell.getValue(); //return the contents of the cell;
+  // return "Mr" + cell.getValue()
   const value = cell.getValue()
   // console.log(cell.getColumn().getField())
   // console.log(cell,value, typeof(value))
