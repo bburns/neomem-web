@@ -320,17 +320,16 @@ export default function App() {
                   {sort.text}
                 </option>
               ))}
-              {/* <option value="">(none)</option> */}
             </select>
           </span>
 
-          <span className="app-controls-view">
+          {/* <span className="app-controls-view">
             <span>View:&nbsp;</span>
             <select name="view" id="view" value={view} onChange={changeView}>
               <option value="table">table</option>
               <option value="document">document</option>
             </select>
-          </span>
+          </span> */}
 
           {/* <span>
             <Dropdown
