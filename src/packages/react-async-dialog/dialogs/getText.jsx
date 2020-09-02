@@ -31,10 +31,9 @@ function GetText({ title, message, defaultValue, resolve }) {
   }
 
   function handleKeyDown(event) {
-    // if (event.key === "Enter") {
-    //   clickOK()
-    // } else 
-    if (event.key === "Escape") {
+    if (event.key === "Enter" && event.metaKey) {
+      clickOK()
+    } else if (event.key === "Escape") {
       clickCancel()
     }
   }
@@ -55,8 +54,8 @@ function GetText({ title, message, defaultValue, resolve }) {
         onKeyDown={handleKeyDown} 
       />
       <div className="getText-buttons">
-        <button id="cancel" onClick={clickCancel}>Cancel</button>
-        <button id="ok" onClick={clickOK}>OK</button>
+        <button id="cancel" onClick={clickCancel}>Cancel (Esc)</button>
+        <button id="ok" onClick={clickOK}>OK (cmd-Enter)</button>
       </div>
     </div>
   )
