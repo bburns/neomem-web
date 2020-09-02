@@ -11,7 +11,6 @@ export default function getText(title, message, defaultValue) {
 
 function GetText({ title, message, defaultValue, resolve }) {
 
-  // const [value, setValue] = React.useState(defaultValue)
   const [dirty, setDirty] = React.useState(false)
 
   function clickOK() {
@@ -22,7 +21,11 @@ function GetText({ title, message, defaultValue, resolve }) {
   }
 
   function clickCancel() {
-    //. check for dirty state
+    if (dirty) {
+      if (!window.confirm("Discard changes to notes?")) {
+        return
+      }
+    }
     closeDialog()
     resolve({ ok: false })
   }
