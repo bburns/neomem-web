@@ -63,6 +63,8 @@ export default function TableView({
             const table = tableRef.current.table
             const row = { id: data.id, notes: ret.value }
             table.updateData([row])
+          } else {
+            alert("Error updating notes")
           }
         }
       }
@@ -80,25 +82,7 @@ export default function TableView({
         // hmm
         if (window.confirm("Are you sure you want to delete this item?")) {
           const data = row.getData()
-          const id = data.id
-          // delete from db
-          const query = `
-          MATCH (n)
-          WHERE id(n)=$id
-          DETACH DELETE n
-          RETURN count(n)
-          `
-          const params = { id }
-          const session = datasource.getSession()
-          const results = await session.run(query, params)
-          console.log(results)
-          console.log(results.records)
-          const record = results.records && results.records[0]
-          console.log(record)
-          const count = record && record.get('count(n)')
-          console.log(count)
-          // delete from table
-          if (count === 1) {
+          if (datasource.deleteItem(data.id)) {
             row.delete()
           } else {
             alert("Error deleting item from db - please try again")
@@ -224,48 +208,19 @@ export default function TableView({
     if (editor==='input') {
 
       if (id===newRow.id) {
-        // const queryTemplate = facetObj.addQuery
-        // const params = facetObj.params || {}
-        // console.log(queryTemplate)
-        // add a generic item and add link to inbox
-        const queryTemplate = `
-        MATCH (f:Folder {name:'inbox'})
-        CREATE (n)<-[r:CHILD]-(f) 
-        SET n.created=datetime(), n.modified=datetime()
-        WITH n, id(n) as id
-        RETURN n { .*, id }
-        `
-        const params = {}
-        const query = substituteQueryParams(queryTemplate, params)
-        console.log('run', query, params)
-        const result = await session.run(query, params)
-        console.log(result)
-        const record = result.records[0]
-        console.log(record)
-        const row = record.get('n')
-        console.log('row', row)
-        // now delete the blank 'new' row
-        table.updateData([{ id:newRow.id,  [field]: undefined }])
-        table.deleteRow(newRow.id)
-        // and add the new item
-        table.addRow(row)
-        // add another blank 'new' row
-        // table.addRow(newRow)
-        id = row.id
+        const row = datasource.addItem()
+        if (row) {
+          // delete the blank 'new' row
+          table.updateData([{ id:newRow.id,  [field]: undefined }])
+          table.deleteRow(newRow.id)
+          // add the new item
+          table.addRow(row)
+          // optionally add another blank 'new' row
+          // table.addRow(newRow)
+          id = row.id
+        }
       }
-
-      // update the string/number field value
-      const query = `
-      MATCH (n) 
-      WHERE id(n)=$id 
-      SET n.modified=datetime()
-      SET n.${field}=$value
-      `
-      const params = { id, value }
-      const result = await session.run(query, params)
-      console.log(result)
-      const row = { id, [field]: value }
-      console.log(row)
+      const row = datasource.updateProperty(id, field, value)
       table.updateData([row])
     }
 
