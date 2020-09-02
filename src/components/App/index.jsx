@@ -91,8 +91,10 @@ export default function App() {
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([])
   const [items, setItems] = React.useState([])
-  const [focusId, setFocusId] = React.useState(0)
+  const [focusId, setFocusId] = React.useState(-2) // ~ facet
   const [focusItem, setFocusItem] = React.useState({})
+  const [currentId, setCurrentId] = React.useState() // eg row in table
+
   const facetRef = React.useRef(facet) //. better way?
 
   const newOptions = [
@@ -135,7 +137,7 @@ export default function App() {
       const params = { id: focusId }
       const session = datasource.getSession({ readOnly: true })
       const items = []
-      console.log(query)
+      console.log(query, params)
       const result = await session.run(query, params)
       for (const record of result.records) {
         const item = record.get("n") // { identity, labels, properties }
@@ -180,7 +182,7 @@ export default function App() {
       rowsCopy.sort((a, b) => (a[sortBy]||'zzz').localeCompare(b[sortBy]||'zzz'))
     }
     setRows(rowsCopy)
-  }, [sortBy])
+  }, [sortBy]) // react gives warning that needs rows here, but causes infinite loop!
 
 
   function changeFacet(e) {
@@ -250,6 +252,8 @@ export default function App() {
     //. add new row to end of rows
     const rowsCopy = [...rows, newRow]
     setRows(rowsCopy)
+    // tableRef.current.table.scrollToRow(-1)
+    // setCurrentId(-1)
   }
 
 
@@ -392,6 +396,7 @@ export default function App() {
             datasource={datasource}
             changeSort={changeSort}
             clickNew={clickNewItem}
+            currentId={currentId}
           />
           {/* } */}
           {view === "document" && (

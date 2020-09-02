@@ -39,7 +39,7 @@ function rowFormatter(row) {
 
 
 
-const emptyRow = { id:-1 }
+const newRow = { id:-1 }
 
 
 export default function TableView({ 
@@ -50,12 +50,14 @@ export default function TableView({
   datasource, 
   changeSort,
   clickNew,
+  currentId,
 }) {
 
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
 
-  
+  //. don't like having to parse this each time render is called - 
+  // how get around that? 
   const rowContextMenu = [
     {
       // label: "<i class='icon icon-edit'></i> Edit Notes...",
@@ -103,13 +105,20 @@ export default function TableView({
     dataTreeStartExpanded,
     dataSorting,
     dataSorted,
+    // dataLoaded,
     rowFormatter,
     movableRows: true,
     rowContextMenu,
     cellContext: e => e.preventDefault(), // prevent browser's context menu
   }
-  
 
+  
+  // function dataLoaded(data) {
+  //   console.log(data) // always [] - why?
+  //   // tableRef.current.table.scrollToRow(-1)
+  // }
+  
+  
   // React.useEffect(() => {
   //   // update context menu
   //   //. alternatively, define the menu within this component...
@@ -169,6 +178,9 @@ export default function TableView({
 
   }, [facetObj, rows, groupBy])
 
+  // React.useEffect(() => {
+  //   tableRef.current.table.scrollToRow(-1)
+  // }, [rows])
 
   // a cell was edited
   async function cellEdited(cell) {
@@ -187,7 +199,7 @@ export default function TableView({
     const session = datasource.getSession()
     
     if (editor==='input') {
-      // if (id===-1) {
+      // if (id===newRow.id) {
       //   // const facetObj = facetObjs[facet]
       //   const queryTemplate = facetObj.addQuery
       //   const params = facetObj.params || {}
@@ -200,10 +212,10 @@ export default function TableView({
       //   console.log(record)
       //   const row = record.get('n')
       //   console.log('row', row)
-      //   table.updateData([{ id:-1,  [field]: undefined }])
+      //   table.updateData([{ id:newRow.id,  [field]: undefined }])
       //   table.deleteRow(0) //?
       //   table.addRow(row)
-      //   table.addRow(emptyRow)
+      //   table.addRow(newRow)
       //   id = row.id
       // }
       const query = `
