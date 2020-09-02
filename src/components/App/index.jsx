@@ -247,9 +247,9 @@ export default function App() {
           <span>Neomem</span>
         </div>
 
-        <div className="header-view">
+        {/* <div className="header-view">
           <HeaderView item={focusItem} />
-        </div>
+        </div> */}
         
         <div className="app-controls">
 
@@ -326,7 +326,7 @@ export default function App() {
       
       <div className="app-contents">
 
-        <NavigatorView items={items} clickItem={clickItem} focusId={focusId} />
+        {/* <NavigatorView items={items} clickItem={clickItem} focusId={focusId} /> */}
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
