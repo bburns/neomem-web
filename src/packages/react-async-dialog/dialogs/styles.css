@@ -33,11 +33,15 @@
 
 .getText {
   background: white;
-  width: 20em;
+  width: 90%;
+  max-width: 40em;
   padding: 1em;
 }
 .getText h3 {
   margin: 0;
+}
+.getText-input {
+  width: 100%;
 }
 .getText-buttons {
   margin-top: 1em;

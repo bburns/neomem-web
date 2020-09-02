@@ -11,7 +11,7 @@ const rowContextMenu = [
     label: "Edit Notes...",
     action: async function(e, row) {
       const data = row.getData()
-      const ret = await getText("Edit Notes", "Enter new value for notes field:", data.notes)
+      const ret = await getText("Edit Notes", "", data.notes)
       if (ret.ok) {
         //. write to db
         alert(ret.value)

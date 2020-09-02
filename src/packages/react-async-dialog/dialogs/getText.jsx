@@ -12,7 +12,7 @@ export default function getText(title, message, defaultValue) {
 function GetText({ title, message, defaultValue, resolve }) {
   // const [value, setValue] = React.useState(defaultValue)
   const clickOK = () => {
-    const textarea = document.querySelector('#getText-input')
+    const textarea = document.querySelector('.getText-input')
     const value = textarea.value
     closeDialog()
     resolve({ ok: true, value })
@@ -42,7 +42,7 @@ function GetText({ title, message, defaultValue, resolve }) {
           // value={value} 
           // onChange={changeInput} 
           // type="text" 
-          id="getText-input" 
+          className="getText-input" 
           // onKeyDown={handleKeyDown} 
         />
       </div>
