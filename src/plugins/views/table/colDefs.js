@@ -27,7 +27,15 @@ const colDef = {
   headerSort, 
   headerContextMenu,
   editable: false, // turn off left click to edit cell
-  cellDblClick: (e, cell) => cell.edit(true), // use double click to edit cell
+  cellDblClick: (e, cell) => { 
+    const col = cell.getColumn()
+    const colDef = col.getDefinition()
+    if (colDef.editor) {
+      cell.edit(true)
+    } else {
+      alert("Cell is not editable")
+    }
+  }, // use double click to edit cell
 }
 
 const colDefs = {
@@ -109,6 +117,8 @@ const colDefs = {
   relntype: { ...colDef, width: 100 },
   hasChildren: { ...colDef, width: 100 },
   link: { ...colDef, width: 100, editor: "input" },
+  created: { ...colDef, width: 150 },
+  modified: { ...colDef, width: 150 },
 
 }
 
