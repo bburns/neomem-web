@@ -2,7 +2,7 @@
 
 Open a modal dialog with async/await
 
-Version 2020-01-01
+Version 2020-09
 
 
 ## Example Usage
