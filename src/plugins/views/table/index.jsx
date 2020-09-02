@@ -45,7 +45,6 @@ export default function TableView({
 
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
-  // const table = tableRef && tableRef.current && tableRef.current.table
 
   // define the rclick context menu for rows
   //. don't like having to parse this each time render is called - 
@@ -59,21 +58,12 @@ export default function TableView({
         const ret = await getText("Edit Notes", "", data.notes)
         if (ret.ok) {
           // update db
-          const query = `
-          MATCH (n)
-          WHERE id(n)=$id
-          SET n.notes=$notes
-          `
-          const params = { id: data.id, notes: ret.value }
-          const session = datasource.getSession()
-          console.log(query, params)
-          const result = await session.run(query, params)
-          console.log(result)
-          session.close()
-          // update table
-          const row = params
-          const table = tableRef.current.table
-          table.updateData([row])
+          if (datasource.updateNotes(data.id, ret.value)) {
+            // update table
+            const table = tableRef.current.table
+            const row = { id: data.id, notes: ret.value }
+            table.updateData([row])
+          }
         }
       }
     },

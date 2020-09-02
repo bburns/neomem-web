@@ -14,7 +14,7 @@ const driver = neo4j.driver(uri,
 )
 
 
-function getSession({ readOnly=false }={}) {
+export function getSession({ readOnly=false }={}) {
   if (readOnly) {
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
     return session
@@ -24,9 +24,9 @@ function getSession({ readOnly=false }={}) {
 }
 
 
-export default {
-  getSession,
-}
+// export default {
+//   getSession,
+// }
 
 // ;(async function() {
 //   const session = driver.session()
@@ -52,4 +52,20 @@ async function getTypes() {
   session.close()
   const types = results.records.map(record => record.get('label')).sort()
   return types
+}
+
+
+export async function updateNotes(id, notes) {
+  const query = `
+  MATCH (n)
+  WHERE id(n)=$id
+  SET n.notes=$notes
+  `
+  const params = { id, notes }
+  console.log(query, params)
+  const session = getSession()
+  const result = await session.run(query, params)
+  session.close()
+  console.log(result)
+  return true
 }

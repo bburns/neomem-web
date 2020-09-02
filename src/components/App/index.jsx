@@ -1,13 +1,11 @@
 import React from "react"
-import datasource from "../../plugins/datasources/neo4j"
+import * as datasource from "../../plugins/datasources/neo4j"
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
-import getItem from '../getItem'
 import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
 import { Button } from 'semantic-ui-react'
-// import GetItem2 from '../getItem2'
-import { Dropdown } from 'semantic-ui-react'
+// import { Dropdown } from 'semantic-ui-react'
 // import { Input } from 'semantic-ui-react'
 // import { Menu } from 'semantic-ui-react'
 // import { Container } from 'semantic-ui-react'
@@ -16,8 +14,10 @@ import { Dropdown } from 'semantic-ui-react'
 // import { Sticky } from 'semantic-ui-react'
 import TableView from "../../plugins/views/table"
 import DocumentView from "../../plugins/views/document"
-import HeaderView from "../../plugins/views/header"
-import NavigatorView from "../../plugins/views/navigator"
+// import HeaderView from "../../plugins/views/header"
+// import NavigatorView from "../../plugins/views/navigator"
+// import getItem from '../getItem' // get item dialog
+// import GetItem2 from '../getItem2'
 
 
 const initialFacet = "all"
