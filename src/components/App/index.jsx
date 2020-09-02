@@ -7,7 +7,7 @@ import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
 import { Button } from 'semantic-ui-react'
 // import GetItem2 from '../getItem2'
-// import { Dropdown } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 // import { Input } from 'semantic-ui-react'
 // import { Menu } from 'semantic-ui-react'
 // import { Container } from 'semantic-ui-react'
@@ -22,6 +22,7 @@ import NavigatorView from "../../plugins/views/navigator"
 
 const initialFacet = "all"
 // const emptyRow = { id: -1 }
+
 
 function substituteQueryParams(query, params) {
   for (const key of Object.keys(params)) {
@@ -88,6 +89,12 @@ export default function App() {
   const [focusItem, setFocusItem] = React.useState({})
   const facetRef = React.useRef(facet) //. better way?
 
+  const newOptions = [
+    { key: 'item', icon: 'document', text: 'New Item', value: 'item', onClick: clickNewItem },
+    { key: 'link', icon: 'link', text: 'New Link', value: 'link', onClick: clickNewLink },
+  ]
+  
+  
   React.useEffect(() => {
     (async () => {
 
@@ -194,7 +201,7 @@ export default function App() {
     setView(view)
   }
 
-  async function clickNew() {
+  async function clickNewItem() {
 
     const session = datasource.getSession()
     const query = `
@@ -229,6 +236,10 @@ export default function App() {
       console.log(result)
     }
 
+  }
+
+  function clickNewLink() {
+    alert('lkmlkm')
   }
 
   function clickItem(e) {
@@ -315,7 +326,22 @@ export default function App() {
           </span> */}
 
           <span className="app-controls-new">
-            <Button basic color='green' size='mini' onClick={clickNew}>New</Button>
+            
+            {/* <Button basic color='green' size='mini' onClick={clickNew}>
+              New
+            </Button> */}
+
+            <Button.Group color='green' size='mini'>
+              <Button onClick={clickNewItem}>New</Button>
+              <Dropdown
+                size='mini'
+                className='button icon'
+                floating
+                options={newOptions}
+                trigger={<></>}
+                // onLabelClick={clickNew}
+              />
+            </Button.Group>
           </span>
 
           {/* <span className="app-controls-new">
@@ -338,7 +364,7 @@ export default function App() {
             facetObj={facetObj} // for columns, addquery, params - //. better way?
             datasource={datasource}
             changeSort={changeSort}
-            clickNew={clickNew}
+            clickNew={clickNewItem}
           />
           {/* } */}
           {view === "document" && (
