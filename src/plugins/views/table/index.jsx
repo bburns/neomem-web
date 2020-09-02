@@ -183,13 +183,20 @@ export default function TableView({
   React.useEffect(() => {
     const table = tableRef.current.table
     table.scrollToRow(currentId)
-    //. start editing name cell?
-    // table.
+    table.selectRow(currentId)
+    // .then(() => {
+    //   table.selectRow(currentId)
+    //   //. start editing name cell?
+    //   // table.selectCell
+    //   // const row = table.getRow(currentId)  
+    // })
+
   }, [currentId])
 
   // a cell was edited
   async function cellEdited(cell) {
     console.log(cell)
+    console.log(facetObj)
     const table = tableRef.current.table
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
@@ -204,25 +211,34 @@ export default function TableView({
     const session = datasource.getSession()
     
     if (editor==='input') {
-      // if (id===newRow.id) {
-      //   // const facetObj = facetObjs[facet]
-      //   const queryTemplate = facetObj.addQuery
-      //   const params = facetObj.params || {}
-      //   console.log(queryTemplate)
-      //   const query = substituteQueryParams(queryTemplate, params)
-      //   console.log('run', query, params)
-      //   const result = await session.run(query, params)
-      //   console.log(result)
-      //   const record = result.records[0]
-      //   console.log(record)
-      //   const row = record.get('n')
-      //   console.log('row', row)
-      //   table.updateData([{ id:newRow.id,  [field]: undefined }])
-      //   table.deleteRow(0) //?
-      //   table.addRow(row)
-      //   table.addRow(newRow)
-      //   id = row.id
-      // }
+
+      if (id===newRow.id) {
+        // const queryTemplate = facetObj.addQuery
+        // const params = facetObj.params || {}
+        // console.log(queryTemplate)
+        const queryTemplate = `
+        CREATE (n)
+        WITH n, id(n) as id
+        RETURN n { .*, id }
+        `
+        const params = {}
+        const query = substituteQueryParams(queryTemplate, params)
+        console.log('run', query, params)
+        const result = await session.run(query, params)
+        console.log(result)
+        const record = result.records[0]
+        console.log(record)
+        const row = record.get('n')
+        console.log('row', row)
+        // table.updateData([{ id:newRow.id,  [field]: undefined }])
+        // table.deleteRow(newRow.id) //?
+        // table.addRow(row)
+        // table.addRow(newRow)
+        id = row.id
+      }
+
+      //. handle type column differently - assign a label
+
       const query = `
       MATCH (n) 
       WHERE id(n)=$id 

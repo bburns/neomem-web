@@ -102,29 +102,30 @@ export default function App() {
     { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
   ]
   
-  
-  React.useEffect(() => {
-    (async () => {
+  // initial query
+  //. what? oh this was for the nav view
+  // React.useEffect(() => {
+  //   (async () => {
 
-      const query = `
-      MATCH (n)
-      WITH n, id(n) as id
-      RETURN n { .name, id }
-      `
-      const params = {}
-      const session = datasource.getSession({ readOnly: true })
-      const items = []
-      console.log(query)
-      const result = await session.run(query, params)
-      for (const record of result.records) {
-        const item = record.get("n")
-        items.push(item)
-      }
-      session.close()
-      items.sort((a, b) => a.name.localeCompare(b.name))
-      setItems(items) // this will force dependent views to redraw
-    })()
-  }, [])
+  //     const query = `
+  //     MATCH (n)
+  //     WITH n, id(n) as id
+  //     RETURN n { .name, id }
+  //     `
+  //     const params = {}
+  //     const session = datasource.getSession({ readOnly: true })
+  //     const items = []
+  //     console.log(query)
+  //     const result = await session.run(query, params)
+  //     for (const record of result.records) {
+  //       const item = record.get("n")
+  //       items.push(item)
+  //     }
+  //     session.close()
+  //     items.sort((a, b) => a.name.localeCompare(b.name))
+  //     setItems(items) // this will force dependent views to redraw
+  //   })()
+  // }, [])
 
   // on change focus
   React.useEffect(() => {
@@ -155,7 +156,8 @@ export default function App() {
     
     facetRef.current = facet
     const facetObj = facetObjs[facet]
-    setFacetObj(facetObj)
+    console.log(facetObj)
+    setFacetObj(facetObj) // pass to dependent views
 
     const queryTemplate = facetObj.query
     const params = facetObj.params || {}
@@ -249,11 +251,11 @@ export default function App() {
   // }
 
   function clickNewItem() {
-    //. add new row to end of rows
+    // add new row to end of rows
     const rowsCopy = [...rows, newRow]
     setRows(rowsCopy)
-    //. now scroll that row into view and start editing name cell
-    setCurrentId(-1)
+    // now scroll that row into view and start editing name cell
+    setCurrentId(newRow.id)
   }
 
 
@@ -364,14 +366,13 @@ export default function App() {
 
             <Button.Group color='green' size='mini' basic>
               <Button onClick={clickNewItem}>New</Button>
-              <Dropdown
+              {/* <Dropdown
                 size='mini'
                 className='button icon'
                 floating
                 options={newOptions}
                 trigger={<></>}
-                // onLabelClick={clickNew}
-              />
+              /> */}
             </Button.Group>
           </span>
 

@@ -36,6 +36,10 @@
 .tabulator-row.tabulator-selectable:hover {
   background: #f2f2f2 !important;
 }
+.tabulator-row.tabulator-selected {
+  /* background: #9ABCEA; default */
+  background: #cbdff8;
+}
 
 .tabulator-row .tabulator-cell {
   padding: 0px 4px;
