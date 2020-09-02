@@ -226,68 +226,13 @@ export default function TableView({
 
     // update field from timeframe dropdown value
     else if (editor==='select' && field==='timeframe') {
-
       // timeframes are objects, so get oldvalue from { name }
-      const params = { id, value, oldvalue: oldvalue.name }
-      console.log(params)
-
-      // drop any existing relation
-      if (oldvalue) {
-        const query = `
-        MATCH (t)-[r:TIMEFRAME]->(u:Timeframe {name: $oldvalue})
-        WHERE id(t)=$id 
-        DELETE r
-        `
-        console.log(query)
-        const result = await session.run(query, params)
-        console.log(result)
-      }
-
-      // add new relation
-      if (value) {
-        const query = `
-        MATCH (t), (u:Timeframe {name: $value}) 
-        WHERE id(t)=$id 
-        SET t.modified=datetime()
-        CREATE (t)-[:TIMEFRAME]->(u)
-        `
-        console.log(query)
-        const result = await session.run(query, params)
-        console.log(result)
-      }
+      await datasource.setRelation(id, field, oldvalue.name, value)
     }
 
     // update field from type dropdown value
     else if (editor==='select' && field==='type') {
-
-      const params = { id, value, oldvalue }
-
-      // drop existing label
-      if (oldvalue) {
-        let query = `
-        MATCH (t)
-        WHERE id(t)=$id 
-        REMOVE t:#oldvalue#
-        `
-        query = substituteQueryParams(query, params)
-        console.log(query)
-        const result = await session.run(query, params)
-        console.log(result)
-      }
-
-      // add new label
-      if (value) {
-        let query = `
-        MATCH (t)
-        WHERE id(t)=$id 
-        SET t:#value#
-        SET t.modified=datetime()
-        `
-        query = substituteQueryParams(query, params)
-        console.log(query)
-        const result = await session.run(query, params)
-        console.log(result)
-      }
+      await datasource.setType(id, oldvalue, value)
 
     // update field from project dropdown value
     } else if (editor==='select' && field==='project') {

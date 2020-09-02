@@ -1,4 +1,4 @@
-import neo4j from 'neo4j-driver'
+import neo4j, { session } from 'neo4j-driver'
 
 
 const uri = process.env.REACT_APP_NEO4J_URI
@@ -128,4 +128,89 @@ export async function updateProperty(id, field, value) {
   const row = { id, [field]: value }
   console.log(row)
   return row
+}
+
+
+export async function setRelation(id, field, oldvalue, value) {
+
+  const type = field[0].toUpperCase() + field.slice(1)
+  const relntype = field.toUpperCase()
+  const params = { id, value, oldvalue }
+  console.log(params)
+
+  const session = getSession()
+
+  // drop any existing relation
+  if (oldvalue) {
+    // const query = `
+    // MATCH (t)-[r:TIMEFRAME]->(u:Timeframe {name: $oldvalue})
+    // WHERE id(t)=$id 
+    // DELETE r
+    // `
+    const query = `
+    MATCH (t)-[r:${relntype}]->(u:${type} {name: $oldvalue})
+    WHERE id(t)=$id 
+    DELETE r
+    `
+    console.log(query)
+    const result = await session.run(query, params)
+    console.log(result)
+  }
+
+  // add new relation
+  if (value) {
+    // const query = `
+    // MATCH (t), (u:Timeframe {name: $value}) 
+    // WHERE id(t)=$id 
+    // SET t.modified=datetime()
+    // CREATE (t)-[:TIMEFRAME]->(u)
+    // `
+    const query = `
+    MATCH (t), (u:${type} {name: $value}) 
+    WHERE id(t)=$id 
+    SET t.modified=datetime()
+    CREATE (t)-[:${relntype}]->(u)
+    `
+    console.log(query)
+    const result = await session.run(query, params)
+    console.log(result)
+  }
+
+  session.close()
+}
+
+
+
+export async function setType(id, oldvalue, value) {
+        
+  const params = { id, value, oldvalue }
+  
+  const session = getSession()
+
+  // drop existing label
+  if (oldvalue) {
+    const query = `
+    MATCH (t)
+    WHERE id(t)=$id 
+    REMOVE t:${oldvalue}
+    `
+    console.log(query)
+    const result = await session.run(query, params)
+    console.log(result)
+  }
+
+  // add new label
+  if (value) {
+    const query = `
+    MATCH (t)
+    WHERE id(t)=$id 
+    SET t:${value}
+    SET t.modified=datetime()
+    `
+    console.log(query)
+    const result = await session.run(query, params)
+    console.log(result)
+  }
+  
+  session.close()
 }
