@@ -102,16 +102,16 @@ export default function TableView({
   ]
 
   const tableOptions = {
-    dataTree: true,
+    dataTree: true, // allow grouping and hierarchies
     dataTreeStartExpanded,
     dataSorting,
     dataSorted,
     // dataLoaded,
-    rowFormatter,
-    selectable: 1,
-    movableRows: true,
-    rowContextMenu,
-    cellContext: e => e.preventDefault(), // prevent browser's context menu
+    rowFormatter, // format rows as bold if group header
+    selectable: 1, // only 1 row is selectable at a time
+    movableRows: true, // drag and drop rows
+    rowContextMenu, // right click on row context menu
+    cellContext: e => e.preventDefault(), // prevent browser's rclick context menu
   }
 
   
@@ -196,10 +196,11 @@ export default function TableView({
     // })
   }, [currentId])
 
+
   // a cell was edited
   async function cellEdited(cell) {
     console.log(cell)
-    console.log(facetObj)
+    console.log(facetObj) //. this gets stuck in the __
     const table = tableRef.current.table
     const col = cell.getColumn()
     const field = col.getField() // eg 'timeframe'
@@ -219,6 +220,7 @@ export default function TableView({
         // const queryTemplate = facetObj.addQuery
         // const params = facetObj.params || {}
         // console.log(queryTemplate)
+        // add a generic item
         const queryTemplate = `
         CREATE (n)
         WITH n, id(n) as id
@@ -233,15 +235,17 @@ export default function TableView({
         console.log(record)
         const row = record.get('n')
         console.log('row', row)
-        // table.updateData([{ id:newRow.id,  [field]: undefined }])
-        // table.deleteRow(newRow.id) //?
-        // table.addRow(row)
+        // now delete the blank 'new' row
+        table.updateData([{ id:newRow.id,  [field]: undefined }])
+        table.deleteRow(newRow.id)
+        // and add the new item
+        table.addRow(row)
+        // add another blank 'new' row
         // table.addRow(newRow)
         id = row.id
       }
 
-      //. handle type column differently - assign a label
-
+      // update the string/number field value
       const query = `
       MATCH (n) 
       WHERE id(n)=$id 
@@ -251,6 +255,7 @@ export default function TableView({
       const result = await session.run(query, params)
       console.log(result)
       const row = { id, [field]: value }
+      console.log(row)
       table.updateData([row])
     }
 
