@@ -5,14 +5,14 @@ import './styles.css'
 import { Button } from 'semantic-ui-react'
 
 
-export default function getItem({ title, message, item }) {
+export default function getItem({ title, message, item, datasource }) {
   return new Promise(resolve => {
-    openDialog(GetItem, { title, message, item, resolve })
+    openDialog(GetItem, { title, message, item, datasource, resolve })
   })
 }
 
 
-function GetItem({ title, message, item, resolve }) {
+function GetItem({ title, message, item, datasource, resolve }) {
   // const [value, setValue] = React.useState(defaultValue)
   const clickOK = () => {
     closeDialog()
@@ -36,7 +36,7 @@ function GetItem({ title, message, item, resolve }) {
     <div className='getItem'>
       <h3>{title}</h3>
       <p>{message}</p>
-      <PropertyView item={item} />
+      <PropertyView item={item} datasource={datasource} />
       <div className="getItem-buttons">
         <Button onClick={clickCancel}>Cancel</Button>
         <Button onClick={clickOK}>OK</Button>

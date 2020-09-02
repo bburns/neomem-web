@@ -197,7 +197,6 @@ export default function App() {
   async function clickNew() {
 
     const session = datasource.getSession()
-
     const query = `
     CREATE (n)
     SET n.name="new item"
@@ -207,12 +206,13 @@ export default function App() {
     const result = await session.run(query)
     const record = result.records[0]
     const item = record.get('n')
+    session.close()
 
-    item.description = ''
-    item.project = ''
-    item.timeline = ''
+    item.notes = ''
+    // item.project = ''
+    // item.timeline = ''
 
-    const ret = await getItem({ item }) // bring up dialog
+    const ret = await getItem({ item, datasource }) // bring up dialog
 
     if (ret.ok) {
       // add new item to rows, which will update the views
@@ -223,11 +223,12 @@ export default function App() {
     } else {
       // delete the new item
       const query = `MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n`
+      const session = datasource.getSession()
       const result = await session.run(query)
+      session.close()
       console.log(result)
     }
 
-    session.close()
   }
 
   function clickItem(e) {
