@@ -166,6 +166,7 @@ export async function setType(id, oldvalue, value) {
 }
 
 
+//. merge with setRelation2
 export async function setRelation(id, field, oldvalue, value) {
 
   const type = field[0].toUpperCase() + field.slice(1)
@@ -216,7 +217,7 @@ export async function setRelation(id, field, oldvalue, value) {
 }
 
 
-
+//. merge with setRelation
 //. multiselect? single select for now?
 // eg field='project', oldvalue='', value='neomem', destType='View'
 export async function setRelation2(id, field, oldvalue, value, destType) {
