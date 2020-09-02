@@ -14,6 +14,12 @@ export default {
     addQuery: cypher.facets.all.addQuery,
   },
 
+  inbox: {
+    cols: "type,name,notes,timeframe,place,project",
+    query: cypher.facets.inbox.query,
+    // addQuery: cypher.facets.inbox.addQuery,
+  },
+
   projects: {
     cols: "type,name,notes,timeframe,client",
     group: "type",

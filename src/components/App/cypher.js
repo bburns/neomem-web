@@ -70,6 +70,20 @@ export const facets = {
     addQuery: genericAddQuery,
   },
 
+  inbox: {
+    query: `
+    MATCH (n)<-[]-(f:Folder {name:'inbox'}) 
+    OPTIONAL MATCH (n)-[]->(t:Timeframe)
+    OPTIONAL MATCH (n)-[]->(place:Place)
+    OPTIONAL MATCH (n)<-[]-(p:Project)
+    WITH n, labels(n) as type, collect(t) as timeframe,
+    collect(place.name) as place, collect(p.name) as project, 
+    id(n) as id
+    RETURN n { .*, type, timeframe, place, project, id }
+    `,
+    // addQuery: genericAddQuery,
+  },
+
   projects: {
     query: `
     MATCH (n:Project) 
