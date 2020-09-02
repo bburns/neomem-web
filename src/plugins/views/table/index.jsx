@@ -55,6 +55,7 @@ export default function TableView({
 
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
+  // const table = tableRef && tableRef.current && tableRef.current.table
 
   //. don't like having to parse this each time render is called - 
   // how get around that? 
@@ -107,6 +108,7 @@ export default function TableView({
     dataSorted,
     // dataLoaded,
     rowFormatter,
+    selectable: 1,
     movableRows: true,
     rowContextMenu,
     cellContext: e => e.preventDefault(), // prevent browser's context menu
@@ -178,9 +180,12 @@ export default function TableView({
 
   }, [facetObj, rows, groupBy])
 
-  // React.useEffect(() => {
-  //   tableRef.current.table.scrollToRow(-1)
-  // }, [rows])
+  React.useEffect(() => {
+    const table = tableRef.current.table
+    table.scrollToRow(currentId)
+    //. start editing name cell?
+    // table.
+  }, [currentId])
 
   // a cell was edited
   async function cellEdited(cell) {

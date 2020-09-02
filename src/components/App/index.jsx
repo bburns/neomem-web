@@ -252,8 +252,8 @@ export default function App() {
     //. add new row to end of rows
     const rowsCopy = [...rows, newRow]
     setRows(rowsCopy)
-    // tableRef.current.table.scrollToRow(-1)
-    // setCurrentId(-1)
+    //. now scroll that row into view and start editing name cell
+    setCurrentId(-1)
   }
 
 

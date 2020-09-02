@@ -29,8 +29,9 @@
 .tabulator-row .tabulator-cell {
   border-right: 1px solid #ddd !important;
 }
-.tabulator-row.tabulator-row-even {
+.tabulator-row.tabulator-row-even:not(.tabulator-selected) {
   background: none;
+  /* background: white; */
 }
 .tabulator-row.tabulator-selectable:hover {
   background: #f2f2f2 !important;
