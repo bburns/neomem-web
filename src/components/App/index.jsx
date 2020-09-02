@@ -90,8 +90,8 @@ export default function App() {
   const facetRef = React.useRef(facet) //. better way?
 
   const newOptions = [
-    { key: 'item', icon: 'document', text: 'New Item', value: 'item', onClick: clickNewItem },
-    { key: 'link', icon: 'link', text: 'New Link', value: 'link', onClick: clickNewLink },
+    { key: 'item', icon: 'file outline', text: 'New Item', value: 'item', onClick: clickNewItem },
+    { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
   ]
   
   
@@ -331,7 +331,7 @@ export default function App() {
               New
             </Button> */}
 
-            <Button.Group color='green' size='mini'>
+            <Button.Group color='green' size='mini' basic>
               <Button onClick={clickNewItem}>New</Button>
               <Dropdown
                 size='mini'
