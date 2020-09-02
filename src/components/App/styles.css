@@ -78,6 +78,12 @@ select, option {
   background: gray;
 }
 
+.app-view {
+  width: 100%;
+}
+
+
+
 
 /* semantic-ui overrides */
 .ui.menu {
