@@ -64,6 +64,7 @@ export default function TableView({
         const data = row.getData()
         const ret = await getText("Edit Notes", "", data.notes)
         if (ret.ok) {
+          // update db
           const query = `
           MATCH (n)
           WHERE id(n)=$id
@@ -75,7 +76,7 @@ export default function TableView({
           const result = await session.run(query, params)
           console.log(result)
           session.close()
-          // row.setData()
+          // update table
           const row = params
           const table = tableRef.current.table
           table.updateData([row])

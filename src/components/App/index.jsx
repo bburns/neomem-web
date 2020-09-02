@@ -21,7 +21,7 @@ import NavigatorView from "../../plugins/views/navigator"
 
 
 const initialFacet = "all"
-// const emptyRow = { id: -1 }
+const newRow = { id: -1 }
 
 
 function substituteQueryParams(query, params) {
@@ -208,42 +208,50 @@ export default function App() {
     setView(view)
   }
 
-  async function clickNewItem() {
+  // //. dialog version - save for october
+  // async function clickNewItem() {
 
-    const session = datasource.getSession()
-    const query = `
-    CREATE (n)
-    SET n.name="new item"
-    WITH n, labels(n) as type, id(n) as id
-    RETURN n { .*, type, id }
-    `
-    const result = await session.run(query)
-    const record = result.records[0]
-    const item = record.get('n')
-    session.close()
+  //   const session = datasource.getSession()
+  //   const query = `
+  //   CREATE (n)
+  //   SET n.name="new item"
+  //   WITH n, labels(n) as type, id(n) as id
+  //   RETURN n { .*, type, id }
+  //   `
+  //   const result = await session.run(query)
+  //   const record = result.records[0]
+  //   const item = record.get('n')
+  //   session.close()
 
-    item.notes = ''
-    // item.project = ''
-    // item.timeline = ''
+  //   item.notes = ''
+  //   // item.project = ''
+  //   // item.timeline = ''
 
-    const ret = await getItem({ item, datasource }) // bring up dialog
+  //   const ret = await getItem({ item, datasource }) // bring up dialog
 
-    if (ret.ok) {
-      // add new item to rows, which will update the views
-      const rowsCopy = [...rows, ret.item]
-      setRows(rowsCopy)
-      //. also tell them we selected that item
-      // setSelection(ret.item)
-    } else {
-      // delete the new item
-      const query = `MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n`
-      const session = datasource.getSession()
-      const result = await session.run(query)
-      session.close()
-      console.log(result)
-    }
+  //   if (ret.ok) {
+  //     // add new item to rows, which will update the views
+  //     const rowsCopy = [...rows, ret.item]
+  //     setRows(rowsCopy)
+  //     //. also tell them we selected that item
+  //     // setSelection(ret.item)
+  //   } else {
+  //     // delete the new item
+  //     const query = `MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n`
+  //     const session = datasource.getSession()
+  //     const result = await session.run(query)
+  //     session.close()
+  //     console.log(result)
+  //   }
 
+  // }
+
+  function clickNewItem() {
+    //. add new row to end of rows
+    const rowsCopy = [...rows, newRow]
+    setRows(rowsCopy)
   }
+
 
   function clickNewLink() {
     alert('lkmlkm')
