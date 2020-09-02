@@ -15,14 +15,6 @@ function substituteQueryParams(query, params) {
 }
 
 
-
-function dataSorting(sorters) {
-  //. remove last row
-}
-function dataSorted(sorters, rows) {
-  //. re-add last row
-}
-
 function dataTreeStartExpanded(row, level) {
   // return true // nowork
   return false
@@ -129,8 +121,6 @@ export default function TableView({
   const tableOptions = {
     dataTree: true, // allow grouping and hierarchies
     dataTreeStartExpanded,
-    dataSorting,
-    dataSorted,
     // dataLoaded,
     rowFormatter, // format rows as bold if group header
     selectable: 1, // only 1 row is selectable at a time
