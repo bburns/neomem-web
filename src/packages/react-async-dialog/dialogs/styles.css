@@ -35,13 +35,17 @@
   background: white;
   width: 90%;
   max-width: 40em;
+  height: 90%;
   padding: 1em;
+  display: flex;
+  flex-direction: column;
 }
 .getText h3 {
   margin: 0;
 }
 .getText-input {
   width: 100%;
+  height: 100%;
 }
 .getText-buttons {
   margin-top: 1em;
