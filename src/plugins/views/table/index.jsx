@@ -236,7 +236,8 @@ export default function TableView({
     const data = row.getData()
     let id = data.id
     const value = cell.getValue() // eg 'week'
-    const oldvalue = cell.getOldValue() // eg 'month'
+    // const oldvalue = cell.getOldValue() // eg 'month'
+    const oldvalue = cell.getOldValue().name // eg 'month'
     const editor = colDef.editor // eg 'input', 'select'
 
     const session = datasource.getSession()
@@ -247,10 +248,11 @@ export default function TableView({
         // const queryTemplate = facetObj.addQuery
         // const params = facetObj.params || {}
         // console.log(queryTemplate)
-        // add a generic item
+        // add a generic item and add link to inbox
         const queryTemplate = `
         MATCH (f:Folder {name:'inbox'})
         CREATE (n)<-[r:CHILD]-(f) 
+        SET n.created=datetime(), n.modified=datetime()
         WITH n, id(n) as id
         RETURN n { .*, id }
         `
@@ -277,6 +279,7 @@ export default function TableView({
       const query = `
       MATCH (n) 
       WHERE id(n)=$id 
+      SET n.modified=datetime()
       SET n.${field}=$value
       `
       const params = { id, value }
@@ -291,6 +294,7 @@ export default function TableView({
     else if (editor==='select' && field==='timeframe') {
 
       const params = { id, value, oldvalue }
+      console.log(params)
 
       // drop any existing relation
       if (oldvalue) {
@@ -309,6 +313,7 @@ export default function TableView({
         const query = `
         MATCH (t), (u:Timeframe {name: $value}) 
         WHERE id(t)=$id 
+        SET t.modified=datetime()
         CREATE (t)-[:TIMEFRAME]->(u)
         `
         console.log(query)
@@ -341,6 +346,7 @@ export default function TableView({
         MATCH (t)
         WHERE id(t)=$id 
         SET t:#value#
+        SET t.modified=datetime()
         `
         query = substituteQueryParams(query, params)
         console.log(query)
@@ -353,12 +359,18 @@ export default function TableView({
 
       // eg oldvalue='', value='neomem'
       //. multiselect? single select for now?
-      const params = { id, value, oldvalue, RELNTYPE: 'TIP' }
+      //. what is relntype? it depends on the type of thing being linked to
+      // eg if data.type==='View' then relntype is VIEW
+      //. are there exceptions? 
+      const RELNTYPE = data.type.toUpperCase() // eg 'View' to 'VIEW'
+      const params = { id, value, oldvalue, RELNTYPE }
+      console.log(params)
+      // return
 
-      // drop any existing project
+      // drop existing project relation
       if (oldvalue) {
         let query = `
-        MATCH (n)<-[r]-(m:Project {name:#oldvalue#})
+        MATCH (n)<-[r]-(m:Project {name:"#oldvalue#"})
         WHERE id(n)=$id 
         DELETE r
         `
@@ -373,6 +385,7 @@ export default function TableView({
         let query = `
         MATCH (n), (m:Project {name:"#value#"})
         WHERE id(n)=$id
+        SET n.modified=datetime()
         CREATE (n)<-[r:#RELNTYPE#]-(m)
         `
         query = substituteQueryParams(query, params)

@@ -27,6 +27,7 @@ const colDef = {
   headerSort, 
   headerContextMenu,
   editable: false, // turn off left click to edit cell
+  // use double click to edit cell
   cellDblClick: (e, cell) => { 
     const col = cell.getColumn()
     const colDef = col.getDefinition()
@@ -35,7 +36,7 @@ const colDef = {
     } else {
       alert("Cell is not editable")
     }
-  }, // use double click to edit cell
+  },
 }
 
 const colDefs = {
@@ -64,7 +65,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: { 
-      values: "personal,neomem,tallieo,facemate,lockheed,ccs,pyvoyager".split(',').sort(),
+      values: ",personal,neomem,tallieo,facemate,lockheed,ccs,pyvoyager".split(',').sort(),
     },
   },
   
@@ -74,7 +75,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: { 
-      values: "Author,Tip,Folder,Component,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
+      values: ",Author,Tip,Folder,Component,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
     },
   },
   
@@ -84,7 +85,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: {
-      values: "now,today,tonight,weekend,week,month,quarter,year,decade,life,nevermind,done".split(','),
+      values: ",now,today,tonight,weekend,week,month,quarter,year,decade,life,nevermind,done".split(','),
     },
     formatter: objectFormatter,
   },
@@ -94,7 +95,7 @@ const colDefs = {
     ...colDef,
     width: 100, 
     editor: "select", 
-    editorParams: { values: "me,MRIIOT".split(',').sort() },
+    editorParams: { values: ",me,MRIIOT".split(',').sort() },
   },
   
   //.
@@ -103,7 +104,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: {
-      values: "tolkien,pkdick,tanithlee".split(','),
+      values: ",tolkien,pkdick,tanithlee".split(','),
     }, 
     multiselect: true, 
   },
