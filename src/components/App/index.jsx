@@ -46,6 +46,12 @@ const sorts = '(none),project,type,name,notes,order,timeframe'.split(',')
 const sortOptions = sorts.map(sort => ({ key:sort, text:sort, value:sort }))
 sortOptions[0].value = ''
 
+//. how get value? doesn't get assigned to the div?
+// const viewOptions = [
+//   { key: 'table', icon: 'table', text: 'table', value: 'table' },
+//   { key: 'document', icon: 'file alternate outline', text: 'document', value: 'document' },
+// ]
+
 
 async function getChildren(query, params) {
   const session = datasource.getSession({ readOnly: true })
@@ -197,6 +203,7 @@ export default function App() {
   }
 
   function changeView(e) {
+    console.log(e.currentTarget)
     const view = e.currentTarget.value
     setView(view)
   }
@@ -324,6 +331,19 @@ export default function App() {
               <option value="document">document</option>
             </select>
           </span>
+
+          {/* <span>
+            <Dropdown
+              size='mini'
+              className='button icon'
+              floating
+              button
+              value={view}
+              options={viewOptions}
+              trigger={<>{view}</>}
+              onChange={changeView}
+            />
+          </span> */}
 
           <span className="app-controls-new">
             
