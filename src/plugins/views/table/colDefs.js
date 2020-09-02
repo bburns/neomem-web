@@ -66,7 +66,7 @@ const colDefs = {
     width: 100, 
     editor: "select", 
     editorParams: { 
-      values: "Author,Tip,Component,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
+      values: "Author,Tip,Folder,Component,Book,Person,Task,Project,Timeframe,Risk,Note,Datasource,View,Idea,Show,Movie".split(',').sort(), 
     },
   },
   

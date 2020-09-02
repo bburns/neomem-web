@@ -64,15 +64,27 @@ export default function TableView({
         const data = row.getData()
         const ret = await getText("Edit Notes", "", data.notes)
         if (ret.ok) {
-          //. write to db
-          alert(ret.value)
+          const query = `
+          MATCH (n)
+          WHERE id(n)=$id
+          SET n.notes=$notes
+          `
+          const params = { id: data.id, notes: ret.value }
+          const session = datasource.getSession()
+          console.log(query, params)
+          const result = await session.run(query, params)
+          console.log(result)
+          session.close()
+          // row.setData()
+          const row = params
+          const table = tableRef.current.table
+          table.updateData([row])
         }
       }
     },
     {
       label: "Add Row...",
       action: function(e, row) {
-        // leave this blank - useEffect will bind the clickNew fn into it
         clickNew()
       }
     },
