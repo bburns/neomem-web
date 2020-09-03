@@ -1,4 +1,10 @@
-import neo4j, { session } from 'neo4j-driver'
+// neomem neo4j datasource
+
+//. use this to evolve a universalish data api
+
+
+
+import neo4j from 'neo4j-driver'
 
 
 const uri = process.env.REACT_APP_NEO4J_URI
@@ -22,22 +28,6 @@ export function getSession({ readOnly=false }={}) {
   const session = driver.session()
   return session
 }
-
-
-// export default {
-//   getSession,
-// }
-
-// ;(async function() {
-//   const session = driver.session()
-//   const query = "call db.labels()"
-//   const results = await session.run(query)
-//   console.log(results)
-//   const foo = results.records.map(record => record.get('label')).sort()
-//   console.log(foo)
-//   session.close()
-// })()
-
 
 
 // # Show vertex types in Cypher method 1
@@ -73,25 +63,9 @@ export async function deleteItem(id) {
 }
 
 
-export async function updateNotes(id, notes) {
-  const query = `
-  MATCH (n)
-  WHERE id(n)=$id
-  SET n.notes=$notes
-  RETURN true as ret
-  `
-  const params = { id, notes }
-  const session = getSession()
-  const results = await session.run(query, params)
-  session.close()
-  const record = results.records && results.records[0]
-  const ret = record && record.get('ret')
-  return ret
-}
-
-
 // add a generic item and add link to inbox
-//. make link to inbox optional
+//. merge with 
+//. make link to inbox optional or better a separate call to addLink
 export async function addItem() {
   const query = `
   MATCH (f:Folder {name:'inbox'})
@@ -111,13 +85,31 @@ export async function addItem() {
 }
 
 
+export async function updateNotes(id, notes) {
+  const query = `
+  MATCH (n)
+  WHERE id(n)=$id
+  SET n.notes=$notes
+  SET n.modified=datetime()
+  RETURN true as ok
+  `
+  const params = { id, notes }
+  const session = getSession()
+  const results = await session.run(query, params)
+  session.close()
+  const record = results.records && results.records[0]
+  const ok = record && record.get('ok')
+  return ok
+}
+
+
 export async function updateProperty(id, field, value) {
   // update the string/number field value
   const query = `
   MATCH (n)
   WHERE id(n)=$id
-  SET n.modified=datetime()
   SET n.${field}=$value
+  SET n.modified=datetime()
   `
   const params = { id, value }
   console.log(query, params)
@@ -132,7 +124,7 @@ export async function updateProperty(id, field, value) {
 
 
 export async function setType(id, oldvalue, value) {
-        
+
   const params = { id, value, oldvalue }
   
   const session = getSession()
@@ -194,8 +186,8 @@ export async function setRelation(id, field, oldvalue, value) {
     const query = `
     MATCH (n), (m:${type} {name: $value}) 
     WHERE id(n)=$id 
-    SET n.modified=datetime()
     CREATE (n)-[:${relntype}]->(m)
+    SET n.modified=datetime()
     `
     console.log(query)
     const result = await session.run(query, params)
@@ -246,8 +238,8 @@ export async function setRelation2(id, field, oldvalue, value, destType) {
     const query = `
     MATCH (n), (m:${srcType} {name:$value})
     WHERE id(n)=$id
-    SET n.modified=datetime()
     CREATE (n)<-[r:${RELNTYPE}]-(m)
+    SET n.modified=datetime()
     `
     console.log(query)
     const result = await session.run(query, params)

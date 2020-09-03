@@ -1,5 +1,10 @@
 // facet definitions
 
+//. these will be replaced by being able to focus on any item in db
+// but will want to store similar info with each item -
+// views: { table: { cols, group } }
+
+
 import * as cypher from './cypher'
 
 const projectCols = "type,name,timeframe,notes,place"
