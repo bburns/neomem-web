@@ -179,14 +179,9 @@ export async function setRelation(id, field, oldvalue, value) {
 
   // drop any existing relation
   if (oldvalue) {
-    // const query = `
-    // MATCH (t)-[r:TIMEFRAME]->(u:Timeframe {name: $oldvalue})
-    // WHERE id(t)=$id 
-    // DELETE r
-    // `
     const query = `
-    MATCH (t)-[r:${relntype}]->(u:${type} {name: $oldvalue})
-    WHERE id(t)=$id 
+    MATCH (n)-[r:${relntype}]->(m:${type} {name: $oldvalue})
+    WHERE id(n)=$id 
     DELETE r
     `
     console.log(query)
@@ -196,17 +191,11 @@ export async function setRelation(id, field, oldvalue, value) {
 
   // add new relation
   if (value) {
-    // const query = `
-    // MATCH (t), (u:Timeframe {name: $value}) 
-    // WHERE id(t)=$id 
-    // SET t.modified=datetime()
-    // CREATE (t)-[:TIMEFRAME]->(u)
-    // `
     const query = `
-    MATCH (t), (u:${type} {name: $value}) 
-    WHERE id(t)=$id 
-    SET t.modified=datetime()
-    CREATE (t)-[:${relntype}]->(u)
+    MATCH (n), (m:${type} {name: $value}) 
+    WHERE id(n)=$id 
+    SET n.modified=datetime()
+    CREATE (n)-[:${relntype}]->(m)
     `
     console.log(query)
     const result = await session.run(query, params)
@@ -214,6 +203,7 @@ export async function setRelation(id, field, oldvalue, value) {
   }
 
   session.close()
+  return true
 }
 
 
@@ -222,27 +212,27 @@ export async function setRelation(id, field, oldvalue, value) {
 // eg field='project', oldvalue='', value='neomem', destType='View'
 export async function setRelation2(id, field, oldvalue, value, destType) {
 
+  const srcType = field[0].toUpperCase() + field.slice(1) // eg 'Project'
+  // const relntype = field.toUpperCase()
+
   // item must have a type to set this type of relationship
   if (!destType) {
     return false
   }
-
-  const srcType = field[0].toUpperCase() + field.slice(1) // eg 'Project'
-  // const relntype = field.toUpperCase()
-
   // what is relntype? it depends on the type of thing being linked to
   // eg if data.type==='View' then relntype is VIEW
   //. are there exceptions?
   const RELNTYPE = destType.toUpperCase() // eg 'View' to 'VIEW'
-  const params = { id }
+
+  const params = { id, oldvalue, value }
   console.log(params)
 
   const session = getSession()
 
-  // drop existing project relation
+  // drop any existing relation
   if (oldvalue) {
     const query = `
-    MATCH (n)<-[r]-(m:${srcType} {name:"${oldvalue}"})
+    MATCH (n)<-[r]-(m:${srcType} {name:$oldvalue})
     WHERE id(n)=$id 
     DELETE r
     `
@@ -251,10 +241,10 @@ export async function setRelation2(id, field, oldvalue, value, destType) {
     console.log(result)
   }
 
-  // add link to new project
+  // add link to item
   if (value) {
     const query = `
-    MATCH (n), (m:${srcType} {name:"${value}"})
+    MATCH (n), (m:${srcType} {name:$value})
     WHERE id(n)=$id
     SET n.modified=datetime()
     CREATE (n)<-[r:${RELNTYPE}]-(m)
