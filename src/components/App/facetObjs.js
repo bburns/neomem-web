@@ -1,8 +1,14 @@
 // facet definitions
 
 //. these will be replaced by being able to focus on any item in db
-// but will want to store similar info with each item -
-// views: { table: { cols, group } }
+// but will want to store similar info with each item - sthing like
+// _views: { 
+//   common: { },
+//   table: { cols, group, filter, sort },
+//   document: { }, 
+//   graph: { },
+//   kanban: { },
+// }
 
 
 import * as cypher from './cypher'

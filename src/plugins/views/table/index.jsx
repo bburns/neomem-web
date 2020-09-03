@@ -6,17 +6,9 @@ import colDefs from './colDefs'
 import { getText } from '../../../packages/react-async-dialog'
 
 
-function substituteQueryParams(query, params) {
-  for (const key of Object.keys(params)) {
-    const value = params[key]
-    query = query.replace('#' + key + '#', value)
-  }  
-  return query
-}
-
 
 function dataTreeStartExpanded(row, level) {
-  // return true // nowork
+  // return true //. nowork - why?
   return false
 }
 
@@ -29,6 +21,7 @@ function rowFormatter(row) {
 }
 
 
+//. what if wanted lots of blank rows by default, eg at bottom of table?
 const newRow = { id:-1 }
 
 
@@ -70,13 +63,13 @@ export default function TableView({
       }
     },
     {
-      label: "Add Row...",
+      label: "Add Item...",
       action: function(e, row) {
         clickNew()
       }
     },
     {
-      label: "Delete Row...",
+      label: "Delete Item...",
       action: async function(e, row) {
         //. actually should move it to a trash bin folder
         // hmm
@@ -115,6 +108,7 @@ export default function TableView({
     let columns = colNames.map(colName => colDefs[colName])
     columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
     // click on column header tells parent app to resort items
+    //. and save it in the focused item's _views settings object
     columns.forEach(column=>column.headerClick = (e, column) => changeSort(column.getField()))
     setColumns(columns)
 

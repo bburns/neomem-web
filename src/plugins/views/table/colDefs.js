@@ -1,13 +1,14 @@
 
-//. put coldefs into db eventually
+//. put this all into db eventually
 
 
 const headerContextMenu = [
   {
     label: "Insert Column",
     action: function(e, column) {
-      // column.hide()
-      alert('kjnkjn')
+      console.log(e, column)
+      // alert('kjnkjn')
+      //. bring up dialog with list of columns to choose from, with button for New Column...
     }
   },
   {
@@ -18,6 +19,7 @@ const headerContextMenu = [
   },
 ]
 
+
 const headerSort = false // we handle it in app, not in tableview
 
 
@@ -26,8 +28,8 @@ const colDef = {
   width: 100, 
   headerSort, 
   headerContextMenu,
-  editable: false, // turn off left click to edit cell
-  // use double click to edit cell
+  editable: false, // turn off left click to edit cell - use dblclick
+  // double click cell to edit
   cellDblClick: (e, cell) => { 
     const col = cell.getColumn()
     const colDef = col.getDefinition()
@@ -38,6 +40,7 @@ const colDef = {
     }
   },
 }
+
 
 const colDefs = {
 
@@ -50,7 +53,7 @@ const colDefs = {
     ...colDef,
     width: 250, 
     editor: 'input', 
-    formatter: objectFormatter,
+    formatter: objectFormatter, //?
   },
 
   notes: { 
@@ -59,7 +62,9 @@ const colDefs = {
     editor: 'input', 
   },
   
-  //. singleselect
+  //. this will need to have the available projects loaded when user clicks on it -
+  // or cache them and dirty the cache when project is added or removed or renamed etc
+  //. singleselect? multiselect?
   project: { 
     ...colDef,
     width: 100, 
@@ -68,7 +73,8 @@ const colDefs = {
       values: ",personal,neomem,tallieo,facemate,lockheed,ccs,pyvoyager".split(',').sort(),
     },
   },
-  
+
+  //. get the list from the db on click, excluding system types if needed
   //. multiselect? single?
   type: { 
     ...colDef,
