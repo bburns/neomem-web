@@ -64,15 +64,15 @@ Some use cases to test the app and database structure -
 
 ## Milestones
 
-Do monthly releases - like tabulator. Track in Trello or github project, then Neomem. 
+Do monthly releases - like tabulator. Track in Trello or github project, then eventually Neomem kanban. 
 
-- September - table view, neo4j datasource, task domain - refactor code, get good architecture for plugins and db, investigate sharing/security for future
+- September - table view, neo4j datasource, task domain - refactor code, get good architecture for plugins and db, investigate sharing/security
 
 - October - document view, xml datasource
 - November - kanban view, host in cloud, investigate scalability and costs
 - December - website, onboarding/payment/hosting process, first public release
 - January - setup online marketplace for views, datasources, packages
-- February - sharing items / collaborative editing
+- February - sharing items / collaborative editing / live views of db
 
 
 
@@ -80,8 +80,8 @@ Do monthly releases - like tabulator. Track in Trello or github project, then Ne
 
 - bootstrap - start simple - table view only, then document and outline
 - set up paid hosting plans - store data in the cloud to access from any location with secure backup
-- set up plugin marketplace for views and data sources - free/paid plugins
-- setup github sponsor account, paypal, patreon etc
+- set up plugin marketplace for viewsm datasources, domains - free/paid plugins
+- setup github sponsor account, paypal, patreon, etc
 
 
 ## Marketing
