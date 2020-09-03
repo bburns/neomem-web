@@ -67,7 +67,6 @@ Some use cases to test the app and database structure -
 Do monthly releases - like tabulator. Track in Trello or github project, then eventually Neomem kanban. 
 
 - September - table view, neo4j datasource, task domain - refactor code, get good architecture for plugins and db, investigate sharing/security
-
 - October - document view, xml datasource
 - November - kanban view, host in cloud, investigate scalability and costs
 - December - website, onboarding/payment/hosting process, first public release
