@@ -11,18 +11,20 @@ For example, tasks can have short properties like name, timeframe, order, estima
 
 Data can be filtered, grouped, and sorted as required. 
 
-Other views are possible for the same underlying information - chart, map, calendar, kanban, graph. Multiple views could be visible at the same time. A console view could allow traversal, querying, and manipulation of items in a text console. 
+Other views are possible for the same underlying information - chart, map, calendar, kanban, graph. Multiple views could be visible at the same time. A console view could allow exploration and manipulation of items in a text console. 
 
-All views will be developed as plugins. The backend can connect to multiple data sources, which will also be supported with plugins. 
+All views will be developed as plugins. The backend can connect to multiple data sources, which will also be supported with plugins. Different overlapping domains can be modelled. A plugin ecosystem will allow sharing and development of them all as npm packages. 
 
 
 ## Goals
 
 - clutter-free ui that gets out of the way, leaves room for editing
-- document, table, and outline views of same information
-- all views are plugins - document, table, outline, map, calendar, kanban, chart, graph, timeline, console
+- different views of same information - document, table, outline, map, calendar, kanban, chart, graph, timeline, console
+- handle different datasources - neo4j db, xml, filesystem, email, github
+- handle different overlapping domains with simple and extensible datamodels - task management, collection management
+- all views, datasources, and domains are npm packages
 - open source with paid hosting plans
-- plugin ecosystem for views and data sources - free/paid
+- online plugin ecosystem/marketplace for views, datasources, and domains - free/paid
 
 
 ## Use Cases
@@ -30,10 +32,10 @@ All views will be developed as plugins. The backend can connect to multiple data
 Some use cases to test the app and database structure -
 
 - task manager - projects, tasks, goals, timeframe, estimate, actual, recurring tasks - switch between table, document, kanban, calendar, timeline views
+- comparison shopping - make quick tables for comparison between items, with free-form notes
 - art travel planner - location (continent/country/state/city/museum), artist, date, name, rating, source, size, images - switch between table, map views
 - screenplay/outline editor - acts, scenes, characters, locations
 - biographical timelines - subject, event, date, age, location - switch between table, document, map views
-- comparison shopping - make quick tables for comparison between items, with free-form notes
 - genealogy - add properties to relationships, e.g. marriage date and location
 
 
@@ -41,6 +43,7 @@ Some use cases to test the app and database structure -
 
 - Lotus Symphony (1990) - spreadsheet, chart, and document views of same information
 - Airtable - advanced table editor
+- Apple II, Zork, Linux cli, IPython - for console interface
 
 
 ## Implementation
@@ -63,11 +66,14 @@ Some use cases to test the app and database structure -
 
 Do monthly releases - like tabulator. Track in Trello or github project, then Neomem. 
 
-- September - table view, neo4j datasource, task package - refactor code, get good architecture for plugins
+- September - table view, neo4j datasource, task domain - refactor code, get good architecture for plugins and db, investigate sharing/security for future
+
 - October - document view, xml datasource
 - November - kanban view, host in cloud, investigate scalability and costs
 - December - website, onboarding/payment/hosting process, first public release
 - January - setup online marketplace for views, datasources, packages
+- February - sharing items / collaborative editing
+
 
 
 ## Business Plan
