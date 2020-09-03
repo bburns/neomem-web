@@ -29,7 +29,7 @@ All views will be developed as plugins. The backend can connect to multiple data
 
 Some use cases to test the app and database structure -
 
-- task manager - projects, tasks, goals, timeframe, order, estimate, actual, recurring tasks - switch between table, document, kanban, calendar, timeline views
+- task manager - projects, tasks, goals, timeframe, estimate, actual, recurring tasks - switch between table, document, kanban, calendar, timeline views
 - art travel planner - location (continent/country/state/city/museum), artist, date, name, rating, source, size, images - switch between table, map views
 - screenplay/outline editor - acts, scenes, characters, locations
 - biographical timelines - subject, event, date, age, location - switch between table, document, map views
@@ -59,6 +59,17 @@ Some use cases to test the app and database structure -
 - clipboard monitor - paste contents when it changes
 
 
+## Milestones
+
+Do monthly releases - like tabulator. Track in Trello or github project, then Neomem. 
+
+- September - table view, neo4j datasource, task package - refactor code, get good architecture for plugins
+- October - document view, xml datasource
+- November - kanban view, host in cloud, investigate scalability and costs
+- December - website, onboarding/payment/hosting process, first public release
+- January - setup online marketplace for views, datasources, packages
+
+
 ## Business Plan
 
 - bootstrap - start simple - table view only, then document and outline
@@ -72,4 +83,4 @@ Some use cases to test the app and database structure -
 - make landing page to gather emails for mailing list
 - post to twitter, medium, reddit, neo4j community for feedback
 - launch on product hunt, hacker news, reddit
-- have limited invites
+- have limited invites so can scale up slowly
