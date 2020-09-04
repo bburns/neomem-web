@@ -184,10 +184,9 @@ export default function TableView({
 
     if (editor==='input') {
       if (id===newRow.id) {
-        //. wrap in if
         const row = await datasource.addItem()
-        id = row.id
         if (row) {
+          id = row.id
           // delete the blank 'new' row
           table.updateData([{ id:newRow.id,  [field]: undefined }])
           table.deleteRow(newRow.id)
@@ -205,7 +204,7 @@ export default function TableView({
 
     // update field from type dropdown value
     else if (editor==='select' && field==='type') {
-      await datasource.setType(id, oldvalue, value)
+      await datasource.setType(id, value, oldvalue)
     }
 
     // update field from timeframe dropdown value

@@ -42,7 +42,36 @@ export async function run(query, params) {
   }
 }
 
+// pass a name like 'labelsAdded' - will obtain from the hidden property _stats.
+// the Java interface has methods to obtain these values, 
+// but they're not (currently) exposed in js -
+// https://neo4j.com/docs/java-reference/current/javadocs/org/neo4j/graphdb/QueryStatistics.html
+// so this might break in future.
+// one of -
+// constraintsAdded
+// constraintsRemoved
+// indexesAdded
+// indexesRemoved
+// labelsAdded
+// labelsRemoved
+// nodesCreated
+// nodesDeleted
+// propertiesSet
+// relationshipsCreated
+// relationshipsDeleted
 function getStats(result, name) {
+  const value = result && result.summary.updateStatistics._stats[name]
+  return value
+}
+
+// function expectStats(result, name, expectedValue) {
+//   const value = getStats(result, name)
+//   if (value !== expectedValue) throw new Error(`Expected ${name} to be ${expectedValue}`)
+// }
+
+function checkStats(result, name, expectedValue) {
+  const value = getStats(result, name)
+  return value === expectedValue
 }
 
 function getRecord(result, name) {
@@ -88,58 +117,61 @@ export async function deleteItem(id) {
   MATCH (n)
   WHERE id(n)=$id
   DETACH DELETE n
-  RETURN count(n)
   `
   const params = { id }
   const result = await run(query, params)
-  const count = getRecord(result, 'count(n)')
-  return count===1
+  // const count = getRecord(result, 'count(n)')
+  // return count===1
+  // expectStats(result, 'nodesDeleted', 1)
+  // return true
+  // or
+  return checkStats(result, 'nodesDeleted', 1)
 }
 
 
-export async function setType(id, oldvalue, value) {
-  const params = { id, value, oldvalue }
+export async function setType(id, value, oldvalue) {
+  const params = { id, oldvalue, value }
 
   // drop existing label
-  //. can use t:$oldvalue ?
+  //. handle labels like "Foo Bar" - wrap in '' ?
   if (oldvalue) {
     const query = `
-    MATCH (t)
-    WHERE id(t)=$id 
-    REMOVE t:${oldvalue}
+    MATCH (node)
+    WHERE id(node)=$id 
+    REMOVE node:${oldvalue}
     `
     const result = await run(query, params)
-    if (!result) return
+    if (!checkStats(result, 'labelsRemoved', 1)) return false
   }
 
   // add new label
-  //. can use t:$value ?
   if (value) {
     const query = `
-    MATCH (t)
-    WHERE id(t)=$id 
-    SET t:${value}
-    SET t.modified=datetime()
+    MATCH (node)
+    WHERE id(node)=$id 
+    SET node:${value}
+    SET node.modified=datetime()
     `
     const result = await run(query, params)
-    if (!result) return
+    if (!checkStats(result, 'labelsAdded', 1)) return false
   }
   return true
 }
 
 
 // update a string/number field value
-export async function setPropertyValue(id, field, value) {
-  //. can cypher do n.$field ?
+export async function setPropertyValue(id, property, value) {
+  // note: cypher can't do node.$property so use substitution
+  // backticks to handle spaces in property names
   const query = `
-  MATCH (n)
-  WHERE id(n)=$id
-  SET n.${field}=$value
-  SET n.modified=datetime()
+  MATCH (node)
+  WHERE id(node)=$id
+  SET node.\`${property}\`=$value
+  SET node.modified=datetime()
   `
-  const params = { id, value }
+  const params = { id, property, value }
   const result = await run(query, params)
-  return getStats(result, 'updated')
+  return checkStats(result, 'propertiesSet', 2)
 }
 
 
