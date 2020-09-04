@@ -64,15 +64,15 @@ function getStats(result, name) {
   return value
 }
 
-// function expectStats(result, name, expectedValue) {
-//   const value = getStats(result, name)
-//   if (value !== expectedValue) throw new Error(`Expected ${name} to be ${expectedValue}`)
-// }
-
 function checkStats(result, name, expectedValue) {
   const value = getStats(result, name)
   return value === expectedValue
 }
+
+// function expectStats(result, name, expectedValue) {
+//   const value = getStats(result, name)
+//   if (value !== expectedValue) throw new Error(`Expected ${name} to be ${expectedValue}`)
+// }
 
 function getRecord(result, name) {
   const record = result.records && result.records[0]
@@ -86,7 +86,7 @@ function getRecords(result, name) {
 }
 
 
-async function getTypes() {
+export async function getTypes() {
   const query = "call db.labels()" // or MATCH (n) RETURN DISTINCT labels(n)
   const result = await run(query)
   const types = getRecords(result, 'label').sort()
@@ -95,8 +95,8 @@ async function getTypes() {
 
 
 
-// add a generic item and optionally add link to inbox
-export async function addItem(folder) {
+// add a generic item
+export async function addItem() {
   const query = `
   CREATE (node)
   SET node.created=datetime()
@@ -106,26 +106,29 @@ export async function addItem(folder) {
   `
   const result = await run(query)
   const node = getRecord(result, 'node')
-  //.
+  //. how check results but also return the node/item?
   // checkStats(result, 'nodesCreated', 1)
   // checkStats(result, 'propertiesSet', 2)
 
+  // ditch all this - let ui handle it?
   // const query2 = `
   // MATCH (node), (folder:Folder {name:'inbox'})
   // CREATE (node)<-[r:CHILD]-(f)
   // `
-  if (node && folder) {
-    //. what if setRelation took an id(number) or string for Type:name ?
-    //. what about oldvalue? 
-    //. append 'Of' to relation name to indicate reverse direction?
-    //. or 
-    // a folder has many children
-    // setRelation(node.id, 'childOf', 'Folder:inbox')
-    //. also consider making this something easily translatable to tests and console ui
-    // eg it.childOf=Folder:inbox   or sthing?
-    // ie createItem then do that?
-    // setRelation3('Folder:inbox', 'child', node.id) //. call it addRelation, since one to many?
-  }
+  // if (node && linkToTypeName) {
+  //   //. what if setRelation took an id(number) or string for Type:name ?
+  //   //. what about oldvalue? 
+  //   //. append 'Of' to relation name to indicate reverse direction?
+  //   //. or 
+  //   // a folder has many children
+  //   // setRelation(node.id, 'childOf', 'Folder:inbox')
+  //   //. also consider making this something easily translatable to tests and console ui
+  //   // eg it.childOf=Folder:inbox ? which would add it to the Folder:inbox.child array
+  //   // or it.parent = Folder:inbox ? which would set the reverse relation
+  //   // ie createItem then do that?
+  //   // setRelation3('Folder:inbox', 'child', node.id) //. call it addRelation, since one to many?
+  //   // setRelation3(linkToTypeName, 'child', node.id)
+  // }
   return node
 }
 

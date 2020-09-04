@@ -181,43 +181,48 @@ export default function TableView({
     const oldvalue = cell.getOldValue() // eg 'neomem'
     const editor = colDef.editor // eg 'input', 'select'
 
-    // handle string values
-    if (editor==='input') {
-      if (id===newRow.id) {
-        const row = await datasource.addItem()
-        //. make link to inbox a separate call to setRelation
-        // MATCH (f:Folder {name:'inbox'})
-        // CREATE (n)<-[r:CHILD]-(f)
-        // await datasource.setRelation(row.id, 'childOf', 'Folder:inbox')
-        if (row) {
-          id = row.id
-          // delete the blank 'new' row
-          table.updateData([{ id:newRow.id,  [field]: undefined }])
-          table.deleteRow(newRow.id)
-          // add the new item
-          table.addRow(row)
-          // optionally add another blank 'new' row
-          // table.addRow(newRow)
-        }
+    // create new item if edited the blank 'new' row
+    if (id===newRow.id) {
+      const row = await datasource.addItem()
+      //. make link to inbox a separate call to setRelation
+      // MATCH (f:Folder {name:'inbox'})
+      // CREATE (n)<-[r:CHILD]-(f)
+      // await datasource.setRelation(row.id, 'childOf', 'Folder:inbox')
+      if (row) {
+        id = row.id
+        // delete the blank 'new' row
+        table.updateData([{ id:newRow.id, [field]: undefined }])
+        table.deleteRow(newRow.id)
+        // add the new item
+        table.addRow(row)
+        // optionally add another blank 'new' row
+        // table.addRow(newRow)
       }
+    }
+
+    // update string value
+    if (editor==='input') {
       if (await datasource.setPropertyValue(id, field, value)) {
         const row = { id, [field]: value }
         table.updateData([row])
       }
     }
 
-    // update field from type dropdown value
+    // update type
     else if (editor==='select' && field==='type') {
-      await datasource.setType(id, value, oldvalue)
+      if (await datasource.setType(id, value, oldvalue)) {
+        const row = { id, [field]: value }
+        table.updateData([row])
+      }
     }
 
-    // update field from timeframe dropdown value
+    // update timeframe
     else if (editor==='select' && field==='timeframe') {
       // timeframes are objects, so get oldvalue from { name }
       await datasource.setRelation(id, field, value, oldvalue.name)
     }
 
-    // update field from project dropdown value
+    // update project
     else if (editor==='select' && field==='project') {
       // eg data.type is eg 'View' - want to use 'VIEW' for the relntype
       const destType = data.type
