@@ -184,6 +184,7 @@ export default function TableView({
 
     if (editor==='input') {
       if (id===newRow.id) {
+        //. wrap in if
         const row = await datasource.addItem()
         id = row.id
         if (row) {
@@ -196,8 +197,10 @@ export default function TableView({
           // table.addRow(newRow)
         }
       }
-      const row = await datasource.setPropertyValue(id, field, value)
-      table.updateData([row])
+      if (await datasource.setPropertyValue(id, field, value)) {
+        const row = { id, [field]: value }
+        table.updateData([row])
+      }
     }
 
     // update field from type dropdown value

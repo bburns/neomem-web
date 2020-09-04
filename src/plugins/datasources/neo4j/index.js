@@ -86,22 +86,22 @@ export async function addItem() {
 }
 
 
-export async function updateNotes(id, notes) {
-  const query = `
-  MATCH (n)
-  WHERE id(n)=$id
-  SET n.notes=$notes
-  SET n.modified=datetime()
-  RETURN true as ok
-  `
-  const params = { id, notes }
-  const session = getSession()
-  const result = await session.run(query, params)
-  session.close()
-  const record = result.records && result.records[0]
-  const ok = record && record.get('ok')
-  return ok
-}
+// export async function updateNotes(id, notes) {
+//   const query = `
+//   MATCH (n)
+//   WHERE id(n)=$id
+//   SET n.notes=$notes
+//   SET n.modified=datetime()
+//   RETURN true as ok
+//   `
+//   const params = { id, notes }
+//   const session = getSession()
+//   const result = await session.run(query, params)
+//   session.close()
+//   const record = result.records && result.records[0]
+//   const ok = record && record.get('ok')
+//   return ok
+// }
 
 
 // update a string/number field value
@@ -112,16 +112,16 @@ export async function setPropertyValue(id, field, value) {
   WHERE id(n)=$id
   SET n.${field}=$value
   SET n.modified=datetime()
+  RETURN true as ok
   `
   const params = { id, value }
   //. put this trio in a fncall with logging
   const session = getSession()
   const result = await session.run(query, params)
   session.close()
-  console.log(result)
-  const row = { id, [field]: value }
-  console.log(row)
-  return row
+  const record = result.records && result.records[0]
+  const ok = record && record.get('ok')
+  return ok
 }
 
 
