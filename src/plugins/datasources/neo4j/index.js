@@ -2,8 +2,6 @@
 
 //. use this to evolve a universalish data api
 
-
-
 import neo4j from 'neo4j-driver'
 
 
@@ -19,7 +17,6 @@ const driver = neo4j.driver(uri,
   { disableLosslessIntegers: true },
 )
 
-
 // get neo4j session - be sure to call session.close() when done
 export function getSession({ readOnly=false }={}) {
   if (readOnly) {
@@ -30,7 +27,7 @@ export function getSession({ readOnly=false }={}) {
   return session
 }
 
-
+// run a query with error handling and logging
 export async function run(query, params) {
   console.log('run', query, params)
   const session = getSession()
@@ -45,26 +42,25 @@ export async function run(query, params) {
   }
 }
 
-// for queries that return `true as ok`
-function getOk(result) {
+function getStats(result, name) {
+}
+
+function getRecord(result, name) {
   const record = result.records && result.records[0]
-  const ok = record && record.get('ok')
-  return ok
+  const value = record && record.get(name)
+  return value
+}
+
+function getRecords(result, name) {
+  const values = result.records.map(record => record.get(name))
+  return values
 }
 
 
-// # Show vertex types in Cypher method 1
-// MATCH (n) 
-// RETURN DISTINCT labels(n)
-// # Show vertex types in Cypher method 2
-// CALL db.labels();
 async function getTypes() {
-  const query = "call db.labels()"
-  // const session = driver.session()
-  // const result = await session.run(query)
-  // session.close()
+  const query = "call db.labels()" // or MATCH (n) RETURN DISTINCT labels(n)
   const result = await run(query)
-  const types = result.records.map(record => record.get('label')).sort()
+  const types = getRecords(result, 'label').sort()
   return types
 }
 
@@ -73,18 +69,18 @@ async function getTypes() {
 // add a generic item and add link to inbox
 //. merge with 
 //. make link to inbox a separate call to addLink
+// MATCH (f:Folder {name:'inbox'})
+// CREATE (n)<-[r:CHILD]-(f)
 export async function addItem() {
   const query = `
-  MATCH (f:Folder {name:'inbox'})
-  CREATE (n)<-[r:CHILD]-(f) 
+  CREATE (n)
   SET n.created=datetime(), n.modified=datetime()
   WITH n, id(n) as id
   RETURN n { .*, id }
   `
   const result = await run(query)
-  const record = result.records[0]
-  const row = record.get('n')
-  return row
+  const node = getRecord(result, 'n')
+  return node
 }
 
 
@@ -93,15 +89,12 @@ export async function deleteItem(id) {
   MATCH (n)
   WHERE id(n)=$id
   DETACH DELETE n
-  // RETURN count(n)
-  RETURN true as ok
+  RETURN count(n)
   `
   const params = { id }
   const result = await run(query, params)
-  // const record = result.records && result.records[0]
-  // const count = record && record.get('count(n)')
-  // return count===1
-  return getOk(result)
+  const count = getRecord(result, 'count(n)')
+  return count===1
 }
 
 
@@ -109,6 +102,7 @@ export async function setType(id, oldvalue, value) {
   const params = { id, value, oldvalue }
 
   // drop existing label
+  //. can use t:$oldvalue ?
   if (oldvalue) {
     const query = `
     MATCH (t)
@@ -120,6 +114,7 @@ export async function setType(id, oldvalue, value) {
   }
 
   // add new label
+  //. can use t:$value ?
   if (value) {
     const query = `
     MATCH (t)
@@ -136,17 +131,16 @@ export async function setType(id, oldvalue, value) {
 
 // update a string/number field value
 export async function setPropertyValue(id, field, value) {
-  //. can cypher do n.$field ? would be better
+  //. can cypher do n.$field ?
   const query = `
   MATCH (n)
   WHERE id(n)=$id
   SET n.${field}=$value
   SET n.modified=datetime()
-  RETURN true as ok
   `
   const params = { id, value }
   const result = await run(query, params)
-  return getOk(result)
+  return getStats(result, 'updated')
 }
 
 
