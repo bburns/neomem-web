@@ -4,6 +4,7 @@ import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
+import * as lib from '../../lib'
 import { Button } from 'semantic-ui-react'
 // import { Dropdown } from 'semantic-ui-react'
 // import { Input } from 'semantic-ui-react'
@@ -23,14 +24,6 @@ import DocumentView from "../../plugins/views/document"
 const initialFacet = "all"
 const newRow = { id: -1 }
 
-
-function substituteQueryParams(query, params) {
-  for (const key of Object.keys(params)) {
-    const value = params[key]
-    query = query.replace("#" + key + "#", value)
-  }
-  return query
-}
 
 
 
@@ -53,6 +46,7 @@ sortOptions[0].value = ''
 // ]
 
 
+// run query recursively
 async function getChildren(query, params) {
   const session = datasource.getSession({ readOnly: true })
   const rows = []
@@ -97,7 +91,7 @@ export default function App() {
 
   const facetRef = React.useRef(facet) //. better way?
 
-  //. new button options - incl add new link
+  //. new button dropdown options - incl add new link
   // const newOptions = [
   //   { key: 'item', icon: 'file outline', text: 'New Item', value: 'item', onClick: clickNewItem },
   //   { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
@@ -162,7 +156,7 @@ export default function App() {
 
     const queryTemplate = facetObj.query
     const params = facetObj.params || {}
-    const query = substituteQueryParams(queryTemplate, params)
+    const query = lib.substituteQueryParams(queryTemplate, params)
     if (!query) return;
     
     (async () => {
@@ -193,10 +187,10 @@ export default function App() {
     setFacet(facet)
   }
 
-  function changeFilter(e) {
-    const filterBy = e.currentTarget.value
-    setFilterBy(filterBy)
-  }
+  // function changeFilter(e) {
+  //   const filterBy = e.currentTarget.value
+  //   setFilterBy(filterBy)
+  // }
 
   function changeGroup(e) {
     const groupBy = e.currentTarget.value
@@ -207,11 +201,11 @@ export default function App() {
     setSortBy(sortBy)
   }
 
-  function changeView(e) {
-    console.log(e.currentTarget)
-    const view = e.currentTarget.value
-    setView(view)
-  }
+  // function changeView(e) {
+  //   console.log(e.currentTarget)
+  //   const view = e.currentTarget.value
+  //   setView(view)
+  // }
 
   // //. dialog version - save for october
   // async function clickNewItem() {
@@ -259,10 +253,10 @@ export default function App() {
     setCurrentId(newRow.id)
   }
 
-  //. let user choose an item to link to via a dialog?
-  function clickNewLink() {
-    alert('lkmlkm')
-  }
+  // //. let user choose an item to link to via a dialog with filterlist
+  // function clickNewLink() {
+  //   alert('lkmlkm')
+  // }
 
   // //. set focus to an item - callback for nav view
   // function clickItem(e) {
@@ -324,7 +318,6 @@ export default function App() {
                   {group.text}
                 </option>
               ))}
-              {/* <option value="">(none)</option> */}
             </select>
           </span>
 
@@ -396,7 +389,7 @@ export default function App() {
             visible={view === "table"}
             rows={rows}
             groupBy={groupBy}
-            facetObj={facetObj} // for columns, addquery, params - //. better way?
+            facetObj={facetObj} // for columns, addquery, params
             datasource={datasource}
             changeSort={changeSort}
             clickNew={clickNewItem}
