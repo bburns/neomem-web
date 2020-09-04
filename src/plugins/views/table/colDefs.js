@@ -20,6 +20,22 @@ const headerContextMenu = [
 ]
 
 
+function objectFormatter(cell, formatterParams, onRendered) {
+  // cell - the cell component
+  // formatterParams - parameters set for the column
+  // onRendered - function to call when the formatter has been rendered
+  // return "Mr" + cell.getValue()
+  const value = cell.getValue()
+  // console.log(cell.getColumn().getField())
+  // console.log(cell,value, typeof(value))
+  if (typeof(value)==='object') {
+    // return value ? value.name : ''
+    return value.name
+  }
+  return value
+}
+
+
 const headerSort = false // we handle it in app, not in tableview
 
 
@@ -53,7 +69,7 @@ const colDefs = {
     ...colDef,
     width: 250, 
     editor: 'input', 
-    formatter: objectFormatter, //?
+    // formatter: objectFormatter, //?
   },
 
   notes: { 
@@ -136,21 +152,6 @@ Object.keys(colDefs).forEach(key => {
 
 export default colDefs
 
-
-function objectFormatter(cell, formatterParams, onRendered) {
-  // cell - the cell component
-  // formatterParams - parameters set for the column
-  // onRendered - function to call when the formatter has been rendered
-  // return "Mr" + cell.getValue()
-  const value = cell.getValue()
-  // console.log(cell.getColumn().getField())
-  // console.log(cell,value, typeof(value))
-  if (typeof(value)==='object') {
-    // return value ? value.name : ''
-    return value.name
-  }
-  return value
-}
 
 // avail table column types - cool - eg progress, star, tickCross
 // const columns = [

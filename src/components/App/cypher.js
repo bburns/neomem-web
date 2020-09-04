@@ -41,17 +41,12 @@ WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
 
-// const genericQuery = `
-// MATCH (n:#label#)
-// WITH n, labels(n) as type, id(n) as id
-// RETURN n { .*, type, id }
-// `
-// const genericCols = "id,type,name,description"
 const genericAddQuery = `
 CREATE (n:#label#)
 WITH n, labels(n) as type, id(n) as id
 RETURN n { .*, type, id }
 `
+// const genericCols = "id,type,name,description"
 
 
 export const facets = {

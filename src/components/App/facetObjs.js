@@ -1,10 +1,10 @@
 // facet definitions
 
-//. these will be replaced by being able to focus on any item in db
-// but will want to store similar info with each item - sthing like
+//. these will be replaced by being able to focus on any item in db.
+// will want to store similar info with each item - sthing like
 // _views: { 
 //   common: { },
-//   table: { cols, group, filter, sort },
+//   table: { cols:[], group, filter, sort },
 //   document: { }, 
 //   graph: { },
 //   kanban: { },
