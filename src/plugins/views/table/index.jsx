@@ -56,15 +56,22 @@ export default function TableView({
             const table = tableRef.current.table
             const row = { id: data.id, notes: ret.value }
             table.updateData([row])
-          } else {
-            alert("Error updating notes")
           }
+          //. should we handle all errors like this? 
+          //. what if pass a ui object to the datasource fns,
+          // and it could show an error message that way?
+          // ie it could call ui.show(error) or sthing, and diff ui's could
+          // interpret it as they needed.
+          //  else {
+          //   alert("Error updating notes")
+          // }
         }
       }
     },
     {
       label: "Add Item...",
       action: function(e, row) {
+        //. insert item at current location
         clickNew()
       }
     },
@@ -77,9 +84,10 @@ export default function TableView({
           const data = row.getData()
           if (datasource.deleteItem(data.id)) {
             row.delete()
-          } else {
-            alert("Error deleting item from db - please try again")
           }
+          //  else {
+          //   alert("Error deleting item from db - please try again")
+          // }
         }
       }
     },
