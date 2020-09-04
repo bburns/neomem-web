@@ -20,6 +20,7 @@ const driver = neo4j.driver(uri,
 )
 
 
+// get neo4j session - be sure to call session.close() when done
 export function getSession({ readOnly=false }={}) {
   if (readOnly) {
     const session = driver.session({ defaultAccessMode: neo4j.session.READ })
@@ -36,8 +37,8 @@ export function getSession({ readOnly=false }={}) {
 // # Show vertex types in Cypher method 2
 // CALL db.labels();
 async function getTypes() {
-  const session = driver.session()
   const query = "call db.labels()"
+  const session = driver.session()
   const results = await session.run(query)
   session.close()
   const types = results.records.map(record => record.get('label')).sort()
@@ -65,7 +66,7 @@ export async function deleteItem(id) {
 
 // add a generic item and add link to inbox
 //. merge with 
-//. make link to inbox optional or better a separate call to addLink
+//. make link to inbox a separate call to addLink
 export async function addItem() {
   const query = `
   MATCH (f:Folder {name:'inbox'})
