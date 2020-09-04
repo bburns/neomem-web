@@ -33,8 +33,8 @@ export function getSession({ readOnly=false }={}) {
 
 export async function run(query, params) {
   console.log('run', query, params)
+  const session = getSession()
   try {
-    const session = getSession()
     const result = await session.run(query, params)
     session.close()  
     console.log('result', result)
@@ -70,6 +70,24 @@ async function getTypes() {
 
 
 
+// add a generic item and add link to inbox
+//. merge with 
+//. make link to inbox a separate call to addLink
+export async function addItem() {
+  const query = `
+  MATCH (f:Folder {name:'inbox'})
+  CREATE (n)<-[r:CHILD]-(f) 
+  SET n.created=datetime(), n.modified=datetime()
+  WITH n, id(n) as id
+  RETURN n { .*, id }
+  `
+  const result = await run(query)
+  const record = result.records[0]
+  const row = record.get('n')
+  return row
+}
+
+
 export async function deleteItem(id) {
   const query = `
   MATCH (n)
@@ -83,40 +101,6 @@ export async function deleteItem(id) {
   // const record = result.records && result.records[0]
   // const count = record && record.get('count(n)')
   // return count===1
-  return getOk(result)
-}
-
-
-// add a generic item and add link to inbox
-//. merge with 
-//. make link to inbox a separate call to addLink
-export async function addItem() {
-  const query = `
-  MATCH (f:Folder {name:'inbox'})
-  CREATE (n)<-[r:CHILD]-(f) 
-  SET n.created=datetime(), n.modified=datetime()
-  WITH n, id(n) as id
-  RETURN n { .*, id }
-  `
-  const result = await run(query, params)
-  const record = result.records[0]
-  const row = record.get('n')
-  return row
-}
-
-
-// update a string/number field value
-export async function setPropertyValue(id, field, value) {
-  //. can cypher do n.$field ? would be better
-  const query = `
-  MATCH (n)
-  WHERE id(n)=$id
-  SET n.${field}=$value
-  SET n.modified=datetime()
-  RETURN true as ok
-  `
-  const params = { id, value }
-  const result = await run(query, params)
   return getOk(result)
 }
 
@@ -147,6 +131,22 @@ export async function setType(id, oldvalue, value) {
     if (!result) return
   }
   return true
+}
+
+
+// update a string/number field value
+export async function setPropertyValue(id, field, value) {
+  //. can cypher do n.$field ? would be better
+  const query = `
+  MATCH (n)
+  WHERE id(n)=$id
+  SET n.${field}=$value
+  SET n.modified=datetime()
+  RETURN true as ok
+  `
+  const params = { id, value }
+  const result = await run(query, params)
+  return getOk(result)
 }
 
 
@@ -205,8 +205,6 @@ export async function setRelation2(id, field, oldvalue, value, destType) {
   const params = { id, oldvalue, value }
   console.log(params)
 
-  const session = getSession()
-
   // drop any existing relation
   if (oldvalue) {
     const query = `
@@ -214,9 +212,8 @@ export async function setRelation2(id, field, oldvalue, value, destType) {
     WHERE id(n)=$id 
     DELETE r
     `
-    console.log(query)
-    const result = await session.run(query, params)
-    console.log(result)
+    const result = await run(query, params)
+    if (!result) return
   }
 
   // add link to item
@@ -227,11 +224,9 @@ export async function setRelation2(id, field, oldvalue, value, destType) {
     CREATE (n)<-[r:${RELNTYPE}]-(m)
     SET n.modified=datetime()
     `
-    console.log(query)
-    const result = await session.run(query, params)
-    console.log(result)
+    const result = await run(query, params)
+    if (!result) return
   }
 
-  session.close()
   return true
 }
