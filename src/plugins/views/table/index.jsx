@@ -211,14 +211,14 @@ export default function TableView({
     // update field from timeframe dropdown value
     else if (editor==='select' && field==='timeframe') {
       // timeframes are objects, so get oldvalue from { name }
-      await datasource.setRelation(id, field, oldvalue.name, value)
+      await datasource.setRelation(id, field, value, oldvalue.name)
     }
 
     // update field from project dropdown value
     else if (editor==='select' && field==='project') {
       // eg data.type is eg 'View' - want to use 'VIEW' for the relntype
       const destType = data.type
-      if (!await datasource.setRelation2(id, field, oldvalue, value, destType)) {
+      if (!await datasource.setRelation2(id, field, value, oldvalue, destType)) {
         alert("Error writing to database")
       }
     }

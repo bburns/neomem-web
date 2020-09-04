@@ -67,8 +67,7 @@ async function getTypes() {
 
 
 // add a generic item and add link to inbox
-//. merge with 
-//. make link to inbox a separate call to addLink
+//. make link to inbox a separate call to setRelation
 // MATCH (f:Folder {name:'inbox'})
 // CREATE (n)<-[r:CHILD]-(f)
 export async function addItem() {
@@ -145,7 +144,7 @@ export async function setPropertyValue(id, field, value) {
 
 
 //. merge with setRelation2
-export async function setRelation(id, field, oldvalue, value) {
+export async function setRelation(id, field, value, oldvalue) {
 
   const type = field[0].toUpperCase() + field.slice(1)
   const relntype = field.toUpperCase()
@@ -182,7 +181,7 @@ export async function setRelation(id, field, oldvalue, value) {
 //. merge with setRelation
 //. multiselect? single select for now?
 // eg field='project', oldvalue='', value='neomem', destType='View'
-export async function setRelation2(id, field, oldvalue, value, destType) {
+export async function setRelation2(id, field, value, oldvalue, destType) {
 
   const srcType = field[0].toUpperCase() + field.slice(1) // eg 'Project'
   // const relntype = field.toUpperCase()
