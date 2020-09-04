@@ -98,34 +98,11 @@ export async function addItem() {
   WITH n, id(n) as id
   RETURN n { .*, id }
   `
-  // console.log(query)
-  // const session = getSession()
-  // const result = await session.run(query)
-  // session.close()
   const result = await run(query, params)
   const record = result.records[0]
   const row = record.get('n')
-  // console.log(row)
   return row
 }
-
-
-// export async function updateNotes(id, notes) {
-//   const query = `
-//   MATCH (n)
-//   WHERE id(n)=$id
-//   SET n.notes=$notes
-//   SET n.modified=datetime()
-//   RETURN true as ok
-//   `
-//   const params = { id, notes }
-//   const session = getSession()
-//   const result = await session.run(query, params)
-//   session.close()
-//   const record = result.records && result.records[0]
-//   const ok = record && record.get('ok')
-//   return ok
-// }
 
 
 // update a string/number field value
@@ -145,10 +122,7 @@ export async function setPropertyValue(id, field, value) {
 
 
 export async function setType(id, oldvalue, value) {
-
   const params = { id, value, oldvalue }
-  
-  // const session = getSession()
 
   // drop existing label
   if (oldvalue) {
@@ -157,10 +131,8 @@ export async function setType(id, oldvalue, value) {
     WHERE id(t)=$id 
     REMOVE t:${oldvalue}
     `
-    // console.log(query)
-    // const result = await session.run(query, params)
-    // console.log(result)
     const result = await run(query, params)
+    if (!result) return
   }
 
   // add new label
@@ -171,13 +143,10 @@ export async function setType(id, oldvalue, value) {
     SET t:${value}
     SET t.modified=datetime()
     `
-    // console.log(query)
-    // const result = await session.run(query, params)
-    // console.log(result)
     const result = await run(query, params)
+    if (!result) return
   }
-  
-  // session.close()
+  return true
 }
 
 
@@ -188,9 +157,6 @@ export async function setRelation(id, field, oldvalue, value) {
   const relntype = field.toUpperCase()
 
   const params = { id, value, oldvalue }
-  console.log(params)
-
-  const session = getSession()
 
   // drop any existing relation
   if (oldvalue) {
@@ -199,9 +165,8 @@ export async function setRelation(id, field, oldvalue, value) {
     WHERE id(n)=$id 
     DELETE r
     `
-    console.log(query)
-    const result = await session.run(query, params)
-    console.log(result)
+    const result = await run(query, params)
+    if (!result) return
   }
 
   // add new relation
@@ -212,12 +177,10 @@ export async function setRelation(id, field, oldvalue, value) {
     CREATE (n)-[:${relntype}]->(m)
     SET n.modified=datetime()
     `
-    console.log(query)
-    const result = await session.run(query, params)
-    console.log(result)
+    const result = await run(query, params)
+    if (!result) return
   }
 
-  session.close()
   return true
 }
 
