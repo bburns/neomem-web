@@ -39,9 +39,9 @@ export function getSession({ readOnly=false }={}) {
 async function getTypes() {
   const query = "call db.labels()"
   const session = driver.session()
-  const results = await session.run(query)
+  const result = await session.run(query)
   session.close()
-  const types = results.records.map(record => record.get('label')).sort()
+  const types = result.records.map(record => record.get('label')).sort()
   return types
 }
 
@@ -56,9 +56,9 @@ export async function deleteItem(id) {
   `
   const params = { id }
   const session = getSession()
-  const results = await session.run(query, params)
+  const result = await session.run(query, params)
   session.close()
-  const record = results.records && results.records[0]
+  const record = result.records && result.records[0]
   const count = record && record.get('count(n)')
   return count===1
 }
@@ -96,16 +96,17 @@ export async function updateNotes(id, notes) {
   `
   const params = { id, notes }
   const session = getSession()
-  const results = await session.run(query, params)
+  const result = await session.run(query, params)
   session.close()
-  const record = results.records && results.records[0]
+  const record = result.records && result.records[0]
   const ok = record && record.get('ok')
   return ok
 }
 
 
-export async function updateProperty(id, field, value) {
-  // update the string/number field value
+// update a string/number field value
+export async function setPropertyValue(id, field, value) {
+  //. can cypher do n.$field ? would be better
   const query = `
   MATCH (n)
   WHERE id(n)=$id
@@ -113,7 +114,7 @@ export async function updateProperty(id, field, value) {
   SET n.modified=datetime()
   `
   const params = { id, value }
-  console.log(query, params)
+  //. put this trio in a fncall with logging
   const session = getSession()
   const result = await session.run(query, params)
   session.close()

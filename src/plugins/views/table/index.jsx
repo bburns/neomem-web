@@ -51,7 +51,7 @@ export default function TableView({
         const ret = await getText("Edit Notes", "", data.notes)
         if (ret.ok) {
           // update db
-          if (datasource.updateNotes(data.id, ret.value)) {
+          if (datasource.setPropertyValue(data.id, 'notes', ret.value)) {
             // update table
             const table = tableRef.current.table
             const row = { id: data.id, notes: ret.value }
@@ -196,7 +196,7 @@ export default function TableView({
           // table.addRow(newRow)
         }
       }
-      const row = await datasource.updateProperty(id, field, value)
+      const row = await datasource.setPropertyValue(id, field, value)
       table.updateData([row])
     }
 
