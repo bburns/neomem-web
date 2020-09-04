@@ -185,6 +185,9 @@ export default function TableView({
     if (editor==='input') {
       if (id===newRow.id) {
         const row = await datasource.addItem()
+        //. make link to inbox a separate call to setRelation
+        // MATCH (f:Folder {name:'inbox'})
+        // CREATE (n)<-[r:CHILD]-(f)
         if (row) {
           id = row.id
           // delete the blank 'new' row

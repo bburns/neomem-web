@@ -95,19 +95,34 @@ async function getTypes() {
 
 
 
-// add a generic item and add link to inbox
-//. make link to inbox a separate call to setRelation
-// MATCH (f:Folder {name:'inbox'})
-// CREATE (n)<-[r:CHILD]-(f)
-export async function addItem() {
+// add a generic item and optionally add link to inbox
+export async function addItem(folder) {
   const query = `
-  CREATE (n)
-  SET n.created=datetime(), n.modified=datetime()
-  WITH n, id(n) as id
-  RETURN n { .*, id }
+  CREATE (node)
+  SET node.created=datetime()
+  SET node.modified=datetime()
+  WITH node, id(node) as id
+  RETURN node { .*, id }
   `
   const result = await run(query)
-  const node = getRecord(result, 'n')
+  const node = getRecord(result, 'node')
+  //.
+  // checkStats(result, 'nodesCreated', 1)
+  // checkStats(result, 'propertiesSet', 2)
+
+  // const query2 = `
+  // MATCH (node), (folder:Folder {name:'inbox'})
+  // CREATE (node)<-[r:CHILD]-(f)
+  // `
+  if (node && folder) {
+    //. what if setRelation took an id(number) or string for Type:name ?
+    //. what about oldvalue? 
+    //. append 'Of' to relation name to indicate reverse direction?
+    //. or 
+    // a folder has many children
+    // setRelation(node.id, 'childOf', 'Folder:inbox')
+    setRelation('Folder:inbox', 'child', node.id) 
+  }
   return node
 }
 
@@ -120,25 +135,19 @@ export async function deleteItem(id) {
   `
   const params = { id }
   const result = await run(query, params)
-  // const count = getRecord(result, 'count(n)')
-  // return count===1
-  // expectStats(result, 'nodesDeleted', 1)
-  // return true
-  // or
   return checkStats(result, 'nodesDeleted', 1)
 }
 
 
 export async function setType(id, value, oldvalue) {
-  const params = { id, oldvalue, value }
+  const params = { id }
 
-  // drop existing label
-  //. handle labels like "Foo Bar" - wrap in '' ?
+  // drop any existing label
   if (oldvalue) {
     const query = `
     MATCH (node)
     WHERE id(node)=$id 
-    REMOVE node:${oldvalue}
+    REMOVE node:\`${oldvalue}\`
     `
     const result = await run(query, params)
     if (!checkStats(result, 'labelsRemoved', 1)) return false
@@ -149,7 +158,7 @@ export async function setType(id, value, oldvalue) {
     const query = `
     MATCH (node)
     WHERE id(node)=$id 
-    SET node:${value}
+    SET node:\`${value}\`
     SET node.modified=datetime()
     `
     const result = await run(query, params)
@@ -161,8 +170,8 @@ export async function setType(id, value, oldvalue) {
 
 // update a string/number field value
 export async function setPropertyValue(id, property, value) {
-  // note: cypher can't do node.$property so use substitution
-  // backticks to handle spaces in property names
+  // note: cypher can't do node.$property so use substitution.
+  // backticks to handle spaces in property names.
   const query = `
   MATCH (node)
   WHERE id(node)=$id
