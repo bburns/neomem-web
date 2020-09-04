@@ -121,7 +121,10 @@ export async function addItem(folder) {
     //. or 
     // a folder has many children
     // setRelation(node.id, 'childOf', 'Folder:inbox')
-    setRelation('Folder:inbox', 'child', node.id) 
+    //. also consider making this something easily translatable to tests and console ui
+    // eg it.childOf=Folder:inbox   or sthing?
+    // ie createItem then do that?
+    setRelation3('Folder:inbox', 'child', node.id) //. call it addRelation, since one to many?
   }
   return node
 }

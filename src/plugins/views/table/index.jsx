@@ -169,7 +169,6 @@ export default function TableView({
   // a cell was edited
   async function cellEdited(cell) {
     // console.log(facetObj) //. this gets stuck in the closure
-    console.log(cell)
     const table = tableRef.current.table
     const col = cell.getColumn()
     const field = col.getField() // eg 'project'
@@ -182,12 +181,14 @@ export default function TableView({
     const oldvalue = cell.getOldValue() // eg 'neomem'
     const editor = colDef.editor // eg 'input', 'select'
 
+    // handle string values
     if (editor==='input') {
       if (id===newRow.id) {
         const row = await datasource.addItem()
         //. make link to inbox a separate call to setRelation
         // MATCH (f:Folder {name:'inbox'})
         // CREATE (n)<-[r:CHILD]-(f)
+        // await datasource.setRelation(row.id, 'childOf', 'Folder:inbox')
         if (row) {
           id = row.id
           // delete the blank 'new' row
