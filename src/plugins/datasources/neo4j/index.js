@@ -31,6 +31,28 @@ export function getSession({ readOnly=false }={}) {
 }
 
 
+export async function run(query, params) {
+  console.log('run', query, params)
+  try {
+    const session = getSession()
+    const result = await session.run(query, params)
+    session.close()  
+    console.log('result', result)
+    return result
+  } catch(error) {
+    console.error(error)
+    session.close()  
+  }
+}
+
+// for queries that return `true as ok`
+function getOk(result) {
+  const record = result.records && result.records[0]
+  const ok = record && record.get('ok')
+  return ok
+}
+
+
 // # Show vertex types in Cypher method 1
 // MATCH (n) 
 // RETURN DISTINCT labels(n)
@@ -38,9 +60,10 @@ export function getSession({ readOnly=false }={}) {
 // CALL db.labels();
 async function getTypes() {
   const query = "call db.labels()"
-  const session = driver.session()
-  const result = await session.run(query)
-  session.close()
+  // const session = driver.session()
+  // const result = await session.run(query)
+  // session.close()
+  const result = await run(query)
   const types = result.records.map(record => record.get('label')).sort()
   return types
 }
@@ -52,15 +75,15 @@ export async function deleteItem(id) {
   MATCH (n)
   WHERE id(n)=$id
   DETACH DELETE n
-  RETURN count(n)
+  // RETURN count(n)
+  RETURN true as ok
   `
   const params = { id }
-  const session = getSession()
-  const result = await session.run(query, params)
-  session.close()
-  const record = result.records && result.records[0]
-  const count = record && record.get('count(n)')
-  return count===1
+  const result = await run(query, params)
+  // const record = result.records && result.records[0]
+  // const count = record && record.get('count(n)')
+  // return count===1
+  return getOk(result)
 }
 
 
@@ -75,13 +98,14 @@ export async function addItem() {
   WITH n, id(n) as id
   RETURN n { .*, id }
   `
-  console.log(query)
-  const session = getSession()
-  const result = await session.run(query)
-  session.close()
+  // console.log(query)
+  // const session = getSession()
+  // const result = await session.run(query)
+  // session.close()
+  const result = await run(query, params)
   const record = result.records[0]
   const row = record.get('n')
-  console.log(row)
+  // console.log(row)
   return row
 }
 
@@ -115,13 +139,8 @@ export async function setPropertyValue(id, field, value) {
   RETURN true as ok
   `
   const params = { id, value }
-  //. put this trio in a fncall with logging
-  const session = getSession()
-  const result = await session.run(query, params)
-  session.close()
-  const record = result.records && result.records[0]
-  const ok = record && record.get('ok')
-  return ok
+  const result = await run(query, params)
+  return getOk(result)
 }
 
 
@@ -129,7 +148,7 @@ export async function setType(id, oldvalue, value) {
 
   const params = { id, value, oldvalue }
   
-  const session = getSession()
+  // const session = getSession()
 
   // drop existing label
   if (oldvalue) {
@@ -138,9 +157,10 @@ export async function setType(id, oldvalue, value) {
     WHERE id(t)=$id 
     REMOVE t:${oldvalue}
     `
-    console.log(query)
-    const result = await session.run(query, params)
-    console.log(result)
+    // console.log(query)
+    // const result = await session.run(query, params)
+    // console.log(result)
+    const result = await run(query, params)
   }
 
   // add new label
@@ -151,12 +171,13 @@ export async function setType(id, oldvalue, value) {
     SET t:${value}
     SET t.modified=datetime()
     `
-    console.log(query)
-    const result = await session.run(query, params)
-    console.log(result)
+    // console.log(query)
+    // const result = await session.run(query, params)
+    // console.log(result)
+    const result = await run(query, params)
   }
   
-  session.close()
+  // session.close()
 }
 
 
