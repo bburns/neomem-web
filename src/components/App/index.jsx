@@ -170,9 +170,11 @@ export default function App() {
   React.useEffect(() => {
     const rowsCopy = [...rows]
     console.log('sortby', sortBy, rows)
+    //. get propdef.datatype to switch on here
     if (sortBy === "timeframe") { //.
       rowsCopy.sort((a, b) => a[sortBy].order - b[sortBy].order)
-    } else if (sortBy === "order") { //. ie numeric
+    // } else if (sortBy === "order") { //. ie numeric
+    } else if (sortBy==="order" || sortBy==='created' || sortBy==='modified') { //. numeric
       rowsCopy.sort((a, b) => (a[sortBy]||Infinity) - (b[sortBy]||Infinity))
     } else {
       //. sort undefineds at the end - klunky - better way?
