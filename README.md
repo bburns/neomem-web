@@ -20,11 +20,12 @@ All views will be developed as plugins. The backend can connect to multiple data
 
 - clutter-free ui that gets out of the way, leaves room for editing
 - different views of same information - document, table, outline, map, calendar, kanban, chart, graph, timeline, console
-- handle different datasources - neo4j db, xml, filesystem, email, github
+- handle different data sources - neo4j graph database, xml, filesystem, email, github, calendar
 - handle different overlapping domains with simple and extensible datamodels - task management, collection management
-- all views, datasources, and domains are npm packages
+- all views, sources, and domains are npm packages
+- different ui's could be implemented - a pure console ui, a web ui, an electron (desktop) ui, etc
 - open source with paid hosting plans
-- online plugin ecosystem/marketplace for views, datasources, and domains - free/paid
+- online plugin ecosystem/marketplace for views, sources, domains, and ui's - free/paid
 
 
 ## Use Cases
@@ -42,15 +43,15 @@ Some use cases to test the app and database structure -
 ## Inspiration
 
 - Lotus Symphony (1990) - spreadsheet, chart, and document views of same information
-- Airtable - advanced table editor
 - Apple II, Zork, Linux cli, IPython - for console interface
+- Airtable - advanced table editor
 
 
 ## Implementation
 
 - react frontend ui with view plugins
-- graphql api with plugins for different data sources
 - native data stored to neo4j in google cloud - access data anywhere
+- graphql api with plugins for different data sources
 
 
 ## Features
@@ -64,9 +65,9 @@ Some use cases to test the app and database structure -
 
 ## Milestones
 
-Do monthly releases - like tabulator. Track in Trello or github project, then eventually Neomem kanban. 
+Do monthly releases - track in Trello or github project, then eventually with Neomem kanban view. 
 
-- September - table view, neo4j datasource, task domain - refactor code, get good architecture for plugins and db, investigate sharing/security
+- September - table view, neo4j datasource, task domain. refactor code until get good architecture for plugins and db. investigate sharing/security. command architecture with undo/redo. unified datasource api, console ui / repl. filesystem plugin to test api. 
 - October - document view, xml datasource
 - November - kanban view, host in cloud, investigate scalability and costs
 - December - website, onboarding/payment/hosting process, first public release
