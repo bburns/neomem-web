@@ -42,6 +42,63 @@ export async function run(query, params) {
   }
 }
 
+
+
+export async function listAll() {
+  const query = `
+  MATCH (n) 
+  OPTIONAL MATCH (n)<-[]-(p:Project)
+  OPTIONAL MATCH (n)-[]->(t:Timeframe)
+  OPTIONAL MATCH (n)-[]->(place:Place)
+  WITH n, labels(n) as type, collect(p.name) as project, collect(t) as timeframe, id(n) as id,
+  collect(place.name) as place
+  RETURN n { .*, type, project, timeframe, id, place }
+  ` 
+}
+
+
+// translate a generic query object into a neo4j cypher query,
+// run it, and return results. 
+export async function list(queryObject) {
+  const query = `
+  MATCH (n) 
+  OPTIONAL MATCH (n)<-[]-(p:Project)
+  OPTIONAL MATCH (n)-[]->(t:Timeframe)
+  OPTIONAL MATCH (n)-[]->(place:Place)
+  WITH n, labels(n) as type, collect(p.name) as project, 
+    collect(t) as timeframe, id(n) as id, collect(place.name) as place
+  RETURN n { .*, type, project, timeframe, id, place }
+  `
+  const params = {}
+  const result = await run(query, params)
+
+  const rows = []
+  for (const record of result.records) {
+    const row = record.get("n")
+    // join any array fields into a comma-separated string
+    Object.keys(row).forEach((key) => {
+      if (key === "timeframe") { //. make generic
+        row[key] = row[key][0]
+          ? row[key][0].properties // this includes { name, order, notes, ... }
+          : { name: "", order: 10 } //.
+      } else if (Array.isArray(row[key])) {
+        row[key] = row[key].join(", ")
+      }
+    })
+    // // recurse if item has children
+    // //. generalize more
+    // if (row.hasChildren) {
+    //   row._children = await getChildren(query, {parentId:row.id})
+    // }
+    rows.push(row)
+  }
+
+  return rows
+}
+
+
+
+
 // pass a name like 'labelsAdded' - will obtain from the hidden property _stats.
 // the Java interface has methods to obtain these values, 
 // but they're not (currently) exposed in js -

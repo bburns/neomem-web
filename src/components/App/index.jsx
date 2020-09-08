@@ -162,7 +162,8 @@ export default function App() {
     if (!query) return;
     
     (async () => {
-      const rows = await getChildren(query, params) // recursive query
+      // const rows = await getChildren(query, params) // recursive query
+      const rows = await datasource.list()
       setRows(rows) // this will force dependent views to redraw
     })()
     
