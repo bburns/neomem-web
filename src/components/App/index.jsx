@@ -1,6 +1,6 @@
 import React from "react"
-// import * as datasource from "../../plugins/source/neo4j"
-import datasource from 'neomem-source'
+// import * as source from "../../plugins/source/neo4j"
+import source from 'neomem-source'
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import 'semantic-ui-css/semantic.min.css'
@@ -51,7 +51,7 @@ sortOptions[0].value = ''
 
 // // run query recursively
 // async function getChildren(query, params) {
-//   const session = datasource.getSession({ readOnly: true })
+//   const session = source.getSession({ readOnly: true })
 //   const rows = []
 //   const result = await session.run(query, params)
 //   for (const record of result.records) {
@@ -110,7 +110,7 @@ export default function App() {
   //     RETURN n { .name, id }
   //     `
   //     const params = {}
-  //     const session = datasource.getSession({ readOnly: true })
+  //     const session = source.getSession({ readOnly: true })
   //     const items = []
   //     console.log(query)
   //     const result = await session.run(query, params)
@@ -134,7 +134,7 @@ export default function App() {
   //     RETURN n
   //     `
   //     const params = { id: focusId }
-  //     const session = datasource.getSession({ readOnly: true })
+  //     const session = source.getSession({ readOnly: true })
   //     const items = []
   //     console.log(query, params)
   //     const result = await session.run(query, params)
@@ -164,7 +164,7 @@ export default function App() {
     
     (async () => {
       // const rows = await getChildren(query, params) // recursive query
-      const rows = await datasource.list()
+      const rows = await source.list()
       setRows(rows) // this will force dependent views to redraw
     })()
     
@@ -216,7 +216,7 @@ export default function App() {
   // //. dialog version - save for october
   // async function clickNewItem() {
 
-  //   const session = datasource.getSession()
+  //   const session = source.getSession()
   //   const query = `
   //   CREATE (n)
   //   SET n.name="new item"
@@ -232,7 +232,7 @@ export default function App() {
   //   // item.project = ''
   //   // item.timeline = ''
 
-  //   const ret = await getItem({ item, datasource }) // bring up dialog
+  //   const ret = await getItem({ item, source }) // bring up dialog
 
   //   if (ret.ok) {
   //     // add new item to rows, which will update the views
@@ -243,7 +243,7 @@ export default function App() {
   //   } else {
   //     // delete the new item
   //     const query = `MATCH (n) WHERE id(n)=${item.id} DETACH DELETE n`
-  //     const session = datasource.getSession()
+  //     const session = source.getSession()
   //     const result = await session.run(query)
   //     session.close()
   //     console.log(result)
@@ -396,7 +396,7 @@ export default function App() {
             rows={rows}
             groupBy={groupBy}
             facetObj={facetObj} // for columns, addquery, params
-            datasource={datasource}
+            datasource={source}
             changeSort={changeSort}
             clickNew={clickNewItem}
             currentId={currentId}
@@ -406,7 +406,7 @@ export default function App() {
             <DocumentView 
               rows={rows} 
               groupBy={groupBy} 
-              datasource={datasource} 
+              datasource={source} 
             />
           )}
         </div>
