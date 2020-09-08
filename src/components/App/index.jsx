@@ -1,5 +1,6 @@
 import React from "react"
-import * as datasource from "../../plugins/source/neo4j"
+// import * as datasource from "../../plugins/source/neo4j"
+import datasource from 'neomem-source'
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import 'semantic-ui-css/semantic.min.css'
