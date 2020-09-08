@@ -148,10 +148,17 @@ export default function App() {
   //   })()
   // }, [focusId])
 
+  React.useEffect(() => {
+    // (async function() {
+    //   await source.init()
+    // })()
+    source.init()
+  }, [])
+
 
   // on change facet
   React.useEffect(() => {
-    
+
     facetRef.current = facet
     const facetObj = facetObjs[facet]
     console.log(facetObj)
