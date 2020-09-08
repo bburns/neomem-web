@@ -32,6 +32,7 @@ export async function run(query, params) {
   console.log('run', query, params)
   const session = getSession()
   try {
+    //. handle recursion here?
     const result = await session.run(query, params)
     session.close()  
     console.log('result', result)

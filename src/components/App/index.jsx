@@ -1,5 +1,5 @@
 import React from "react"
-import * as datasource from "../../plugins/datasources/neo4j"
+import * as datasource from "../../plugins/source/neo4j"
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
 import 'semantic-ui-css/semantic.min.css'
@@ -48,33 +48,33 @@ sortOptions[0].value = ''
 // ]
 
 
-// run query recursively
-async function getChildren(query, params) {
-  const session = datasource.getSession({ readOnly: true })
-  const rows = []
-  const result = await session.run(query, params)
-  for (const record of result.records) {
-    const row = record.get("n")
-    // join any array fields into a comma-separated string
-    Object.keys(row).forEach((key) => {
-      if (key === "timeframe") { //. make generic
-        row[key] = row[key][0]
-          ? row[key][0].properties // this includes { name, order, notes, ... }
-          : { name: "", order: 10 } //.
-      } else if (Array.isArray(row[key])) {
-        row[key] = row[key].join(", ")
-      }
-    })
-    // recurse if item has children
-    //. generalize more
-    if (row.hasChildren) {
-      row._children = await getChildren(query, {parentId:row.id})
-    }
-    rows.push(row)
-  }
-  session.close()
-  return rows
-}
+// // run query recursively
+// async function getChildren(query, params) {
+//   const session = datasource.getSession({ readOnly: true })
+//   const rows = []
+//   const result = await session.run(query, params)
+//   for (const record of result.records) {
+//     const row = record.get("n")
+//     // join any array fields into a comma-separated string
+//     Object.keys(row).forEach((key) => {
+//       if (key === "timeframe") { //. make generic
+//         row[key] = row[key][0]
+//           ? row[key][0].properties // this includes { name, order, notes, ... }
+//           : { name: "", order: 10 } //.
+//       } else if (Array.isArray(row[key])) {
+//         row[key] = row[key].join(", ")
+//       }
+//     })
+//     // recurse if item has children
+//     //. generalize more
+//     if (row.hasChildren) {
+//       row._children = await getChildren(query, {parentId:row.id})
+//     }
+//     rows.push(row)
+//   }
+//   session.close()
+//   return rows
+// }
 
 
 export default function App() {
