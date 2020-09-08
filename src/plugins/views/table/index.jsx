@@ -3,6 +3,8 @@ import { ReactTabulator } from 'react-tabulator'
 import 'react-tabulator/css/tabulator.css'
 import './styles.css'
 import colDefs from './colDefs'
+
+//. this will be a package
 import { getText } from '../../../packages/react-async-dialog'
 
 

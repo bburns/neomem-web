@@ -13,6 +13,8 @@ import { Button } from 'semantic-ui-react'
 // import { Header } from 'semantic-ui-react'
 // import { Image } from 'semantic-ui-react'
 // import { Sticky } from 'semantic-ui-react'
+
+//. these will be plugin packages eg neomem-view-table
 import TableView from "../../plugins/views/table"
 import DocumentView from "../../plugins/views/document"
 // import HeaderView from "../../plugins/views/header"
