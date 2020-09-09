@@ -88,7 +88,7 @@ export default function App() {
   const [sortBy, setSortBy] = React.useState("")
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([]) // for table/doc views
-  const [items, setItems] = React.useState([]) // for nav view
+  const [navRows, setNavRows] = React.useState([]) // for nav view
   const [focusId, setFocusId] = React.useState(-2) // ~ facet
   const [focusItem, setFocusItem] = React.useState({})
   const [currentId, setCurrentId] = React.useState() // eg row in table
@@ -111,7 +111,7 @@ export default function App() {
     (async () => {
       const items = await source.list()
       // items.sort((a, b) => a.name.localeCompare(b.name))
-      setItems(items) // this will force dependent views to redraw
+      setNavRows(items) // this will force dependent views to redraw
     })()
   }, [])
 
@@ -381,7 +381,7 @@ export default function App() {
         {/* <NavigatorView items={items} clickItem={clickItem} focusId={focusId} /> */}
         <TableView
           visible
-          rows={items}
+          rows={navRows}
           colDefs={colDefs}
           cols={['name','type']}
           clickItem={clickItem}
