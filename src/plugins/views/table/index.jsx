@@ -1,11 +1,9 @@
 import React from 'react'
 import { ReactTabulator } from 'react-tabulator'
 import 'react-tabulator/css/tabulator.css'
-import './styles.css'
 import './tabulator.css'
-// import colDefs from './colDefs'
+import './styles.css'
 import { getText } from '../../../packages/react-async-dialog'
-
 
 
 function dataTreeStartExpanded(row, level) {
