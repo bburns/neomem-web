@@ -3,9 +3,7 @@ import { ReactTabulator } from 'react-tabulator'
 import 'react-tabulator/css/tabulator.css'
 import './styles.css'
 import './tabulator.css'
-import colDefs from './colDefs'
-
-//. this will be a package
+// import colDefs from './colDefs'
 import { getText } from '../../../packages/react-async-dialog'
 
 
@@ -33,6 +31,7 @@ export default function TableView({
   rows, 
   groupBy, 
   // facetObj, 
+  colDefs,
   datasource, 
   changeSort,
   clickNew,

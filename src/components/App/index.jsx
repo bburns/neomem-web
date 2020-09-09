@@ -6,6 +6,7 @@ import facetObjs from './facetObjs'
 import 'semantic-ui-css/semantic.min.css'
 import "./styles.css"
 import * as lib from '../../lib'
+import colDefs from './colDefs'
 import { Button } from 'semantic-ui-react'
 // import { Dropdown } from 'semantic-ui-react'
 // import { Input } from 'semantic-ui-react'
@@ -399,6 +400,7 @@ export default function App() {
         <TableView
           visible
           rows={items}
+          colDefs={colDefs}
           clickItem={clickItem}
           focusId={focusId}
         />
@@ -410,6 +412,7 @@ export default function App() {
             rows={rows}
             groupBy={groupBy}
             facetObj={facetObj} // for columns, addquery, params
+            colDefs={colDefs}
             datasource={source}
             changeSort={changeSort}
             clickNew={clickNewItem}
