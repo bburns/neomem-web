@@ -100,29 +100,37 @@ export default function App() {
   //   { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
   // ]
   
-  // // initial query
-  // // this is for the nav view
-  // React.useEffect(() => {
-  //   (async () => {
-  //     const query = `
-  //     MATCH (n)
-  //     WITH n, id(n) as id
-  //     RETURN n { .name, id }
-  //     `
-  //     const params = {}
-  //     const session = source.getSession({ readOnly: true })
-  //     const items = []
-  //     console.log(query)
-  //     const result = await session.run(query, params)
-  //     for (const record of result.records) {
-  //       const item = record.get("n")
-  //       items.push(item)
-  //     }
-  //     session.close()
-  //     items.sort((a, b) => a.name.localeCompare(b.name))
-  //     setItems(items) // this will force dependent views to redraw
-  //   })()
-  // }, [])
+  React.useEffect(() => {
+    // (async function() {
+    //   await source.init()
+    // })()
+    source.init()
+  }, [])
+
+  // initial query
+  // this is for the nav view
+  React.useEffect(() => {
+    (async () => {
+      const items = source.list()
+      // const query = `
+      // MATCH (n)
+      // WITH n, id(n) as id
+      // RETURN n { .name, id }
+      // `
+      // const params = {}
+      // const session = source.getSession({ readOnly: true })
+      // const items = []
+      // console.log(query)
+      // const result = await session.run(query, params)
+      // for (const record of result.records) {
+      //   const item = record.get("n")
+      //   items.push(item)
+      // }
+      // session.close()
+      items.sort((a, b) => a.name.localeCompare(b.name))
+      setItems(items) // this will force dependent views to redraw
+    })()
+  }, [])
 
   // // on change focusId
   // // for the nav view
@@ -147,13 +155,6 @@ export default function App() {
   //     setFocusItem(item) // this will force dependent views to redraw
   //   })()
   // }, [focusId])
-
-  React.useEffect(() => {
-    // (async function() {
-    //   await source.init()
-    // })()
-    source.init()
-  }, [])
 
 
   // on change facet
