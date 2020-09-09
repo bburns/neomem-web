@@ -3,7 +3,7 @@ import { ReactTabulator } from 'react-tabulator'
 import 'react-tabulator/css/tabulator.css'
 import './tabulator.css'
 import './styles.css'
-import { getText } from '../../../packages/react-async-dialog'
+import { getText } from 'react-async-dialog'
 
 
 function dataTreeStartExpanded(row, level) {
