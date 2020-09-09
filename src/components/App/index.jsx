@@ -87,8 +87,8 @@ export default function App() {
   const [groupBy, setGroupBy] = React.useState("")
   const [sortBy, setSortBy] = React.useState("")
   const [view, setView] = React.useState("table")
-  const [rows, setRows] = React.useState([])
-  const [items, setItems] = React.useState([])
+  const [rows, setRows] = React.useState([]) // for table/doc views
+  const [items, setItems] = React.useState([]) // for nav view
   const [focusId, setFocusId] = React.useState(-2) // ~ facet
   const [focusItem, setFocusItem] = React.useState({})
   const [currentId, setCurrentId] = React.useState() // eg row in table
@@ -102,9 +102,6 @@ export default function App() {
   // ]
   
   React.useEffect(() => {
-    // (async function() {
-    //   await source.init()
-    // })()
     source.init()
   }, [])
 
@@ -112,29 +109,14 @@ export default function App() {
   // this is for the nav view
   React.useEffect(() => {
     (async () => {
-      const items = source.list()
-      // const query = `
-      // MATCH (n)
-      // WITH n, id(n) as id
-      // RETURN n { .name, id }
-      // `
-      // const params = {}
-      // const session = source.getSession({ readOnly: true })
-      // const items = []
-      // console.log(query)
-      // const result = await session.run(query, params)
-      // for (const record of result.records) {
-      //   const item = record.get("n")
-      //   items.push(item)
-      // }
-      // session.close()
-      items.sort((a, b) => a.name.localeCompare(b.name))
+      const items = await source.list()
+      // items.sort((a, b) => a.name.localeCompare(b.name))
       setItems(items) // this will force dependent views to redraw
     })()
   }, [])
 
   // // on change focusId
-  // // for the nav view
+  // // for the header view when nav focus changes
   // React.useEffect(() => {
   //   (async () => {
   //     const query = `
@@ -173,7 +155,7 @@ export default function App() {
     
     (async () => {
       // const rows = await getChildren(query, params) // recursive query
-      const rows = await source.list()
+      const rows = await source.list() // recursive query
       setRows(rows) // this will force dependent views to redraw
     })()
     
