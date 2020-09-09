@@ -32,6 +32,7 @@ export default function TableView({
   groupBy, 
   // facetObj, 
   colDefs,
+  cols,
   datasource, 
   changeSort,
   clickNew,
@@ -114,8 +115,9 @@ export default function TableView({
 
     // get columns
     // const cols = facetObj.cols || 'name' //.
-    const cols = 'name'
-    const colNames = cols.split(',')
+    // const cols = 'name'
+    // const colNames = cols.split(',')
+    const colNames = cols
     let columns = colNames.map(colName => colDefs[colName])
     columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
     // click on column header tells parent app to resort items

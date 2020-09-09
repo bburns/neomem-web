@@ -383,6 +383,7 @@ export default function App() {
           visible
           rows={items}
           colDefs={colDefs}
+          cols={['name','type']}
           clickItem={clickItem}
           focusId={focusId}
         />
