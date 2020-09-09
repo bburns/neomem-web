@@ -19,11 +19,12 @@
   background: none;
   /* background: white; */
 }
-.tabulator-row.tabulator-selectable:hover {
+.tabulator-row.tabulator-selectable:hover:not(.tabulator-selected) {
   background: #f2f2f2 !important;
 }
-.tabulator-row.tabulator-selected {
-  /* background: #9ABCEA; default */
+.tabulator-row.tabulator-selected,
+.tabulator-row.tabulator-selected:hover {
+    /* background: #9ABCEA; default */
   background: #cbdff8;
 }
 
