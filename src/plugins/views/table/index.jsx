@@ -32,7 +32,7 @@ export default function TableView({
   visible, 
   rows, 
   groupBy, 
-  facetObj, 
+  // facetObj, 
   datasource, 
   changeSort,
   clickNew,
@@ -114,7 +114,8 @@ export default function TableView({
     table.clearData()
 
     // get columns
-    const cols = facetObj.cols || 'name'
+    // const cols = facetObj.cols || 'name' //.
+    const cols = 'name'
     const colNames = cols.split(',')
     let columns = colNames.map(colName => colDefs[colName])
     columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
@@ -158,7 +159,8 @@ export default function TableView({
       table.addData(rows)
     }
 
-  }, [facetObj, rows, groupBy])
+  // }, [facetObj, rows, groupBy])
+  }, [rows, groupBy])
 
   // currentId changed from parent app
   // eg when click New btn, add a newRow to the rows list,

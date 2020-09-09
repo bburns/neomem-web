@@ -16,10 +16,10 @@ import { Button } from 'semantic-ui-react'
 // import { Sticky } from 'semantic-ui-react'
 
 //. these will be plugin packages eg neomem-view-table
-// import TableView from "../../plugins/views/table"
+import TableView from "../../plugins/views/table"
 // import DocumentView from "../../plugins/views/document"
 // import HeaderView from "../../plugins/views/header"
-import NavigatorView from "../../plugins/views/navigator"
+// import NavigatorView from "../../plugins/views/navigator"
 // import getItem from '../getItem' // get item dialog
 // import GetItem2 from '../getItem2'
 
@@ -395,7 +395,13 @@ export default function App() {
       <div className="app-contents">
 
         {/* //. nav view */}
-        <NavigatorView items={items} clickItem={clickItem} focusId={focusId} />
+        {/* <NavigatorView items={items} clickItem={clickItem} focusId={focusId} /> */}
+        <TableView
+          visible
+          rows={items}
+          clickItem={clickItem}
+          focusId={focusId}
+        />
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
