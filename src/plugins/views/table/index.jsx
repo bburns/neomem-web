@@ -96,6 +96,10 @@ export default function TableView({
     },
   ]
 
+  function dataTreeRowExpanded(row, level) {
+    // alert('pok')
+  }
+
   const tableOptions = {
     dataTree: true, // allow grouping and hierarchies
     dataTreeStartExpanded,
@@ -104,6 +108,7 @@ export default function TableView({
     movableRows: true, // drag and drop rows
     rowContextMenu, // right click on row context menu
     cellContext: e => e.preventDefault(), // prevent browser's rclick context menu
+    dataTreeRowExpanded,
   }
 
   
