@@ -16,17 +16,17 @@ import { Button } from 'semantic-ui-react'
 // import { Sticky } from 'semantic-ui-react'
 
 //. these will be plugin packages eg neomem-view-table
-import TableView from "../../plugins/views/table"
-import DocumentView from "../../plugins/views/document"
+// import TableView from "../../plugins/views/table"
+// import DocumentView from "../../plugins/views/document"
 // import HeaderView from "../../plugins/views/header"
-// import NavigatorView from "../../plugins/views/navigator"
+import NavigatorView from "../../plugins/views/navigator"
 // import getItem from '../getItem' // get item dialog
 // import GetItem2 from '../getItem2'
 
 
 const initialFacet = "all"
 const newRow = { id: -1 }
-
+const showControls = false
 
 
 
@@ -271,12 +271,12 @@ export default function App() {
   //   alert('lkmlkm')
   // }
 
-  // //. set focus to an item - callback for nav view
-  // function clickItem(e) {
-  //   const ct = e.currentTarget
-  //   const id = Number(ct.dataset.id)
-  //   setFocusId(id)
-  // }
+  //. set focus to an item - callback for nav view
+  function clickItem(e) {
+    const ct = e.currentTarget
+    const id = Number(ct.dataset.id)
+    setFocusId(id)
+  }
 
 
   return (
@@ -293,7 +293,7 @@ export default function App() {
           <HeaderView item={focusItem} />
         </div> */}
         
-        <div className="app-controls">
+        {showControls && <div className="app-controls">
 
           <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
@@ -388,17 +388,17 @@ export default function App() {
             <GetItem2 />
           </span> */}
 
-      </div>
+      </div>}
     </div>
       
       <div className="app-contents">
 
         {/* //. nav view */}
-        {/* <NavigatorView items={items} clickItem={clickItem} focusId={focusId} /> */}
+        <NavigatorView items={items} clickItem={clickItem} focusId={focusId} />
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
-          <TableView
+          {/* <TableView
             visible={view === "table"}
             rows={rows}
             groupBy={groupBy}
@@ -407,15 +407,15 @@ export default function App() {
             changeSort={changeSort}
             clickNew={clickNewItem}
             currentId={currentId}
-          />
+          /> */}
           {/* } */}
-          {view === "document" && (
+          {/* {view === "document" && (
             <DocumentView 
               rows={rows} 
               groupBy={groupBy} 
               datasource={source} 
             />
-          )}
+          )} */}
         </div>
       </div>
     </div>
