@@ -58,7 +58,7 @@ export async function listAll() {
 }
 
 
-// translate a generic query object into a neo4j cypher query,
+//. translate a generic query object into a neo4j cypher query,
 // run it, and return results. 
 export async function list(queryObject) {
   const query = `

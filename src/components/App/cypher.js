@@ -29,9 +29,9 @@ MATCH (n)<-[r]-(m:Project {name:$projectName})
 OPTIONAL MATCH (n)-[:TIMEFRAME]->(t:Timeframe)
 OPTIONAL MATCH (n)-[:PLACE]->(place)
 WITH n, labels(n) as type, type(r) as relntype, collect(t) as timeframe, 
-$projectName as project, 
-collect(place.name) as place,
-id(n) as id
+  $projectName as project, 
+  collect(place.name) as place,
+  id(n) as id
 RETURN n { .*, type, timeframe, project, id, relntype, place }
 `
 const projectAddQuery = `
@@ -63,8 +63,8 @@ export const facets = {
     OPTIONAL MATCH (n)<-[]-(p:Project)
     OPTIONAL MATCH (n)-[]->(t:Timeframe)
     OPTIONAL MATCH (n)-[]->(place:Place)
-    WITH n, labels(n) as type, collect(p.name) as project, collect(t) as timeframe, id(n) as id,
-    collect(place.name) as place
+    WITH n, labels(n) as type, collect(p.name) as project, 
+      collect(t) as timeframe, id(n) as id, collect(place.name) as place
     RETURN n { .*, type, project, timeframe, id, place }
     `,
     addQuery: genericAddQuery,
@@ -77,8 +77,8 @@ export const facets = {
     OPTIONAL MATCH (n)-[]->(place:Place)
     OPTIONAL MATCH (n)<-[]-(p:Project)
     WITH n, labels(n) as type, collect(t) as timeframe,
-    collect(place.name) as place, collect(p.name) as project, 
-    id(n) as id
+      collect(place.name) as place, collect(p.name) as project, 
+      id(n) as id
     RETURN n { .*, type, timeframe, place, project, id }
     `,
     // addQuery: genericAddQuery,
@@ -90,11 +90,12 @@ export const facets = {
     OPTIONAL MATCH (n)-[:CLIENT]->(c)
     OPTIONAL MATCH (n)-[:TIMEFRAME]->(t)
     WITH n, labels(n) as type, id(n) as id,
-    collect(c.name) as client, 
-    collect(t.name) as timeframe
+      collect(c.name) as client, 
+      collect(t.name) as timeframe
     RETURN n { .*, type, id, timeframe, client }
     `,
-    addQuery: `CREATE (n:Project)
+    addQuery: `
+    CREATE (n:Project)
     WITH n, labels(n) as type, id(n) as id
     RETURN n { .*, type, id }
     `,
@@ -142,7 +143,7 @@ export const facets = {
     MATCH (n)-[:TIMEFRAME]->(t) 
     OPTIONAL MATCH (n)<-[]-(m:Project)
     WITH n, labels(n) AS type, collect(m.name) AS project, 
-    collect(t) AS timeframe, id(n) as id
+      collect(t) AS timeframe, id(n) as id
     RETURN n {.*, type, project, timeframe, id }`,
   },
 
