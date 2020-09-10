@@ -166,6 +166,28 @@ export default function App() {
     
   // }, [facet])
 
+
+  // on change path
+  React.useEffect(() => {
+
+    // facetRef.current = facet
+    // const facetObj = facetObjs[facet]
+    // console.log(facetObj)
+    // setFacetObj(facetObj) // pass to dependent views
+
+    // const queryTemplate = facetObj.query
+    // const params = facetObj.params || {}
+    // const query = lib.substituteQueryParams(queryTemplate, params)
+    // if (!query) return;
+    
+    (async () => {
+      // const rows = await getChildren(query, params) // recursive query
+      const rows = await source.list() // recursive query
+      setRows(rows) // this will force dependent views to redraw
+    })()
+    
+  }, [path])
+
   // on change sort
   React.useEffect(() => {
     const rowsCopy = [...rows]
@@ -392,17 +414,18 @@ export default function App() {
 
         <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
-          {/* <TableView
+          <TableView
             visible={view === "table"}
             rows={rows}
             groupBy={groupBy}
+            cols={navCols}
             facetObj={facetObj} // for columns, addquery, params
             colDefs={colDefs}
             source={source}
             changeSort={changeSort}
             clickNew={clickNewItem}
-            currentId={currentId}
-          /> */}
+            // currentId={currentId}
+          />
           {/* } */}
           {/* {view === "document" && (
             <DocumentView 
