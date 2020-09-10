@@ -6,6 +6,38 @@ import './styles.css'
 import { getText } from 'react-async-dialog'
 
 
+function groupRows(rows, groupBy, columns) {
+  // group the rows by the groupBy field values
+  const dict = {}
+  for (const row of rows) {
+    let group
+    if (groupBy==='timeframe') { //.
+      group = row.timeframe ? row.timeframe.name : ''
+      row.timeframeOrder = row.timeframe ? row.timeframe.order : 100 //.
+    } else {
+      group = row[groupBy]
+    }
+    if (!dict[group]) {
+      dict[group] = []
+    }
+    dict[group].push(row)
+  }
+
+  // organize the data into rows with _children fields for child rows
+  const data = []
+  const firstCol = columns[0].field // always put the group text in the first column
+  for (const group of Object.keys(dict)) {
+    const row = { [firstCol]:group, _children:dict[group] }
+    data.push(row)
+  }
+  if (groupBy==='timeframe') { //.
+    data.sort((a,b)=>a.timeframeOrder - b.timeframeOrder)
+  } else {
+    data.sort((a,b)=>a[firstCol].localeCompare(b[firstCol]))
+  }
+}
+
+
 function dataTreeStartExpanded(row, level) {
   // return true //. nowork - why?
   return false
@@ -94,23 +126,24 @@ export default function TableView({
     },
   ]
 
+  // user clicked + to expand a row
+  //. use this to try to implement dynamic tree
   function dataTreeRowExpanded(row, level) {
-    // alert('pok')
   }
 
   const tableOptions = {
     dataTree: true, // allow grouping and hierarchies
-    dataTreeStartExpanded,
+    dataTreeStartExpanded, // nowork
     rowFormatter, // format rows as bold if group header
     selectable: 1, // only 1 row is selectable at a time
     movableRows: true, // drag and drop rows
     rowContextMenu, // right click on row context menu
     cellContext: e => e.preventDefault(), // prevent browser's rclick context menu
-    dataTreeRowExpanded,
+    dataTreeRowExpanded, // callback on click +
   }
 
   
-  // facet, rows, groupby changed
+  // rows, groupby changed
   React.useEffect(() => {
 
     const table = tableRef.current.table
@@ -128,43 +161,15 @@ export default function TableView({
     columns.forEach(column=>column.headerClick = (e, column) => changeSort(column.getField()))
     setColumns(columns)
 
+    // handle grouping
     if (groupBy) {
-
-      // group the rows by the groupBy field values
-      const dict = {}
-      for (const row of rows) {
-        let group
-        if (groupBy==='timeframe') {
-          group = row.timeframe ? row.timeframe.name : ''
-          row.timeframeOrder = row.timeframe ? row.timeframe.order : 100
-        } else {
-          group = row[groupBy]
-        }
-        if (!dict[group]) {
-          dict[group] = []
-        }
-        dict[group].push(row)
-      }
-
-      // organize the data into rows with _children fields for child rows
-      const data = []
-      const firstCol = columns[0].field // always put the group text in the first column
-      for (const group of Object.keys(dict)) {
-        const row = { [firstCol]:group, _children:dict[group] }
-        data.push(row)
-      }
-      if (groupBy==='timeframe') {
-        data.sort((a,b)=>a.timeframeOrder - b.timeframeOrder)
-      } else {
-        data.sort((a,b)=>a[firstCol].localeCompare(b[firstCol]))
-      }
+      const data = groupRows(rows, groupBy, columns)
       table.addData(data)
     } else {
       table.addData(rows)
     }
 
-  // }, [facetObj, rows, groupBy])
-  }, [rows, groupBy])
+  }, [rows, cols, groupBy])
 
   // currentId changed from parent app
   // eg when click New btn, add a newRow to the rows list,
