@@ -112,9 +112,11 @@ export default function App() {
   // initial query
   // this is for the nav view
   React.useEffect(() => {
-    console.log('initial query');
+    console.log('initial query')
+    const ui = {} //. make this
+    ;
     (async () => {
-      const items = await source.list() // recursive //. pass ui
+      const items = await source.list({ ui }) // recursive
       // items.sort((a, b) => a.name.localeCompare(b.name))
       setNavRows(items) // this will force dependent views to redraw
     })()
@@ -179,10 +181,15 @@ export default function App() {
     // const params = facetObj.params || {}
     // const query = lib.substituteQueryParams(queryTemplate, params)
     // if (!query) return;
-    
+    const ui = {}
+    const words = ['']
+    const maxDepth = 2
+    ;
     (async () => {
+      console.log('path', path)
       // const rows = await getChildren(query, params) // recursive query
-      const rows = await source.list() // recursive query
+      const rows = await source.list(ui, words, maxDepth, path) // recursive query
+      console.log(rows)
       setRows(rows) // this will force dependent views to redraw
     })()
     
