@@ -1,5 +1,6 @@
 // neomem neo4j datasource
 
+//. merge all this code into neomem-source-neo4j
 //. use this to evolve a universalish data api
 
 import neo4j from 'neo4j-driver'

@@ -10,6 +10,11 @@
 //   kanban: { },
 // }
 
+//. could also have Search items which would do searches, 
+// like all Project items - that would take care of some of these facets. 
+
+
+
 
 import * as cypher from './cypher'
 

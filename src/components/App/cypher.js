@@ -1,4 +1,6 @@
 
+//. merge all this into neomem-source-neo4j
+
 //. will want to design simple query objects to translate to these cypher commands
 
 
