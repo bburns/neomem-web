@@ -1,8 +1,5 @@
 
 //. will want to design simple query objects to translate to these cypher commands
-// wait till these are more solidified
-
-
 
 
 // do a union query to include the project item at the top of the results

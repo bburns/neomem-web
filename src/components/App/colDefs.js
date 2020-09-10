@@ -1,14 +1,15 @@
 
-//. put this all into db eventually
 
 
+//. move these into tableview - pass in callbacks as needed
 const headerContextMenu = [
   {
     label: "Insert Column",
     action: function(e, column) {
       console.log(e, column)
       // alert('kjnkjn')
-      //. bring up dialog with list of columns to choose from, with button for New Column...
+      //. bring up dialog with list of columns to choose from, 
+      // with button for New Column...
     }
   },
   {
@@ -58,6 +59,8 @@ const colDef = {
 }
 
 
+//. put this all into db as Propdef items? _Property items?
+// SystemProperty items? then have other System__ items?
 const colDefs = {
 
   id: { 
