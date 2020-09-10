@@ -70,6 +70,7 @@ export default function TableView({
   changeSort,
   clickNew,
   currentId,
+  clickItem,
 }) {
 
   const [columns, setColumns] = React.useState([])
@@ -134,11 +135,18 @@ export default function TableView({
   function dataTreeRowExpanded(row, level) {
   }
 
+  function rowClick(e, row) {
+    console.log(row)
+    const data = row.getData()
+    clickItem(data)
+  }
+
   const tableOptions = {
     dataTree: true, // allow grouping and hierarchies
     dataTreeStartExpanded, // nowork
     dataTreeRowExpanded, // callback on click +
     rowFormatter, // format rows as bold if group header
+    rowClick,
     selectable: 1, // only 1 row is selectable at a time
     movableRows: true, // drag and drop rows
     rowContextMenu, // right click on row context menu

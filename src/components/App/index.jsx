@@ -15,8 +15,8 @@ import { Button } from 'semantic-ui-react'
 
 //. these will eventually be plugin packages eg neomem-view-table
 import TableView from "../../plugins/views/table"
+import HeaderView from "../../plugins/views/header"
 // import DocumentView from "../../plugins/views/document"
-// import HeaderView from "../../plugins/views/header"
 // import NavigatorView from "../../plugins/views/navigator"
 // import getItem from '../getItem' // get item dialog
 // import GetItem2 from '../getItem2'
@@ -90,6 +90,7 @@ export default function App() {
   const [rows, setRows] = React.useState([]) // for table/doc views
   const [navRows, setNavRows] = React.useState([]) // for nav view
   const [focusId, setFocusId] = React.useState(-2) // ~ facet
+  const [path, setPath] = React.useState('') // navview
   const [focusItem, setFocusItem] = React.useState({})
   const [currentId, setCurrentId] = React.useState() // eg row in table
 
@@ -140,26 +141,26 @@ export default function App() {
   // }, [focusId])
 
 
-  // on change facet
-  React.useEffect(() => {
+  // // on change facet
+  // React.useEffect(() => {
 
-    facetRef.current = facet
-    const facetObj = facetObjs[facet]
-    console.log(facetObj)
-    setFacetObj(facetObj) // pass to dependent views
+  //   facetRef.current = facet
+  //   const facetObj = facetObjs[facet]
+  //   console.log(facetObj)
+  //   setFacetObj(facetObj) // pass to dependent views
 
-    const queryTemplate = facetObj.query
-    const params = facetObj.params || {}
-    const query = lib.substituteQueryParams(queryTemplate, params)
-    if (!query) return;
+  //   const queryTemplate = facetObj.query
+  //   const params = facetObj.params || {}
+  //   const query = lib.substituteQueryParams(queryTemplate, params)
+  //   if (!query) return;
     
-    (async () => {
-      // const rows = await getChildren(query, params) // recursive query
-      const rows = await source.list() // recursive query
-      setRows(rows) // this will force dependent views to redraw
-    })()
+  //   (async () => {
+  //     // const rows = await getChildren(query, params) // recursive query
+  //     const rows = await source.list() // recursive query
+  //     setRows(rows) // this will force dependent views to redraw
+  //   })()
     
-  }, [facet])
+  // }, [facet])
 
   // on change sort
   React.useEffect(() => {
@@ -179,10 +180,10 @@ export default function App() {
   }, [sortBy]) // react gives warning that needs rows here, but causes infinite loop!
 
 
-  function changeFacet(e) {
-    const facet = e.currentTarget.value
-    setFacet(facet)
-  }
+  // function changeFacet(e) {
+  //   const facet = e.currentTarget.value
+  //   setFacet(facet)
+  // }
 
   // function changeFilter(e) {
   //   const filterBy = e.currentTarget.value
@@ -255,11 +256,12 @@ export default function App() {
   //   alert('lkmlkm')
   // }
 
-  //. set focus to an item - callback for nav view
-  function clickItem(e) {
-    const ct = e.currentTarget
-    const id = Number(ct.dataset.id)
-    setFocusId(id)
+  // set focus to an item - callback for nav view
+  function clickItem(path) {
+    // const id = Number(e.currentTarget.dataset.id)
+    // console.log(id)
+    // setFocusId(id)
+    setPath(path)
   }
 
 
@@ -273,13 +275,13 @@ export default function App() {
           <span>Neomem</span>
         </div>
 
-        {/* <div className="header-view">
+        <div className="header-view">
           <HeaderView item={focusItem} />
-        </div> */}
+        </div>
         
         {showControls && <div className="app-controls">
 
-          <span className="app-controls-facet">
+          {/* <span className="app-controls-facet">
             <span>Facet:&nbsp;</span>
             <select
               name="facet"
@@ -293,7 +295,7 @@ export default function App() {
                 </option>
               ))}
             </select>
-          </span>
+          </span> */}
 
           {/* <span className="app-controls-filterby">
             <span>Filter:&nbsp;</span>
@@ -377,15 +379,15 @@ export default function App() {
       
       <div className="app-contents">
 
-        {/* //. nav view */}
-        {/* <NavigatorView items={items} clickItem={clickItem} focusId={focusId} /> */}
+        {/* nav view */}
         <TableView
           visible
           rows={navRows}
           colDefs={colDefs}
           cols={['name','type']}
           clickItem={clickItem}
-          focusId={focusId}
+          // focusId={focusId}
+          path={path}
         />
 
         <div className="app-view">
