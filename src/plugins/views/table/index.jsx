@@ -60,10 +60,9 @@ export default function TableView({
   visible, 
   rows, 
   groupBy, 
-  // facetObj, 
   colDefs,
   cols,
-  datasource, 
+  source, 
   changeSort,
   clickNew,
   currentId,
@@ -84,14 +83,14 @@ export default function TableView({
         const ret = await getText("Edit Notes", "", data.notes)
         if (ret.ok) {
           // update db
-          if (datasource.setPropertyValue(data.id, 'notes', ret.value)) {
+          if (source.setPropertyValue(data.id, 'notes', ret.value)) {
             // update table
             const table = tableRef.current.table
             const row = { id: data.id, notes: ret.value }
             table.updateData([row])
           }
           //. should we handle all errors like this? 
-          //. what if pass a ui object to the datasource fns,
+          //. what if pass a ui object to the source fns,
           // and it could show an error message that way?
           // ie it could call ui.show(error) or sthing, and diff ui's could
           // interpret it as they needed.
@@ -115,7 +114,7 @@ export default function TableView({
         // hmm
         if (window.confirm("Are you sure you want to delete this item?")) {
           const data = row.getData()
-          if (datasource.deleteItem(data.id)) {
+          if (source.deleteItem(data.id)) {
             row.delete()
           }
           //  else {
@@ -205,11 +204,11 @@ export default function TableView({
 
     // create new item if edited the blank 'new' row
     if (id===newRow.id) {
-      const row = await datasource.addItem()
+      const row = await source.addItem()
       //. make link to inbox a separate call to setRelation
       // MATCH (f:Folder {name:'inbox'})
       // CREATE (n)<-[r:CHILD]-(f)
-      // await datasource.setRelation(row.id, 'childOf', 'Folder:inbox')
+      // await source.setRelation(row.id, 'childOf', 'Folder:inbox')
       if (row) {
         id = row.id
         // delete the blank 'new' row
@@ -224,7 +223,7 @@ export default function TableView({
 
     // update string value
     if (editor==='input') {
-      if (await datasource.setPropertyValue(id, field, value)) {
+      if (await source.setPropertyValue(id, field, value)) {
         const row = { id, [field]: value }
         table.updateData([row])
       }
@@ -232,7 +231,7 @@ export default function TableView({
 
     // update type
     else if (editor==='select' && field==='type') {
-      if (await datasource.setType(id, value, oldvalue)) {
+      if (await source.setType(id, value, oldvalue)) {
         const row = { id, [field]: value }
         table.updateData([row])
       }
@@ -241,14 +240,14 @@ export default function TableView({
     // update timeframe
     else if (editor==='select' && field==='timeframe') {
       // timeframes are objects, so get oldvalue from { name }
-      await datasource.setRelation(id, field, value, oldvalue.name)
+      await source.setRelation(id, field, value, oldvalue.name)
     }
 
     // update project
     else if (editor==='select' && field==='project') {
       // eg data.type is eg 'View' - want to use 'VIEW' for the relntype
       const destType = data.type
-      if (!await datasource.setRelation2(id, field, value, oldvalue, destType)) {
+      if (!await source.setRelation2(id, field, value, oldvalue, destType)) {
         alert("Error writing to database")
       }
     }

@@ -396,7 +396,7 @@ export default function App() {
             groupBy={groupBy}
             facetObj={facetObj} // for columns, addquery, params
             colDefs={colDefs}
-            datasource={source}
+            source={source}
             changeSort={changeSort}
             clickNew={clickNewItem}
             currentId={currentId}
@@ -406,7 +406,6 @@ export default function App() {
             <DocumentView 
               rows={rows} 
               groupBy={groupBy} 
-              datasource={source} 
             />
           )} */}
         </div>
