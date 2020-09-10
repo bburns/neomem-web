@@ -11,6 +11,7 @@ const tooltips = false
 
 // group the rows by the groupBy field values
 function groupRows(rows, groupBy, columns) {
+  console.log('grouprows',groupBy)
   const dict = {}
   for (const row of rows) {
     let group
@@ -61,17 +62,19 @@ const newRow = { id:-1 }
 
 
 export default function TableView({ 
-  visible, 
-  rows, 
-  groupBy, 
+  visible,
+  rows,
+  groupBy,
   colDefs,
   cols,
   source, 
   changeSort,
   clickNew,
-  currentId,
   clickItem,
+  path,
 }) {
+
+  console.log('TableView()')
 
   const [columns, setColumns] = React.useState([])
   const tableRef = React.useRef(null)
@@ -136,9 +139,9 @@ export default function TableView({
   }
 
   function rowClick(e, row) {
-    console.log(row)
     const data = row.getData()
     const path = data && data.path
+    console.log('rowclick', path)
     clickItem(path)
   }
 
@@ -155,8 +158,9 @@ export default function TableView({
   }
 
   
-  // rows, groupby changed
+  // rows, cols, groupby changed
   React.useEffect(() => {
+    console.log('rows cols groupby changed')
 
     // clear tabulator rows
     const table = tableRef.current.table
@@ -178,27 +182,29 @@ export default function TableView({
     if (groupBy) {
       const data = groupRows(rows, groupBy, columns)
       table.addData(data)
+      // table.updateData(data)
     } else {
       table.addData(rows)
+      // table.updateData(rows)
     }
 
   }, [rows, cols, groupBy])
 
-  // currentId changed from parent app
-  // eg when click New btn, add a newRow to the rows list,
-  // and set currentId to newRow.id, which triggers this fn
-  React.useEffect(() => {
-    const table = tableRef.current.table
-    table.scrollToRow(currentId)
-    table.selectRow(currentId)
-    //. ?
-    // .then(() => {
-    //   table.selectRow(currentId)
-    //   //. start editing name cell?
-    //   // table.selectCell
-    //   // const row = table.getRow(currentId)  
-    // })
-  }, [currentId])
+  // // currentId changed from parent app
+  // // eg when click New btn, add a newRow to the rows list,
+  // // and set currentId to newRow.id, which triggers this fn
+  // React.useEffect(() => {
+  //   const table = tableRef.current.table
+  //   table.scrollToRow(currentId)
+  //   table.selectRow(currentId)
+  //   //. ?
+  //   // .then(() => {
+  //   //   table.selectRow(currentId)
+  //   //   //. start editing name cell?
+  //   //   // table.selectCell
+  //   //   // const row = table.getRow(currentId)  
+  //   // })
+  // }, [currentId])
 
 
   // a cell was edited

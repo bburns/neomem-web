@@ -28,7 +28,7 @@ import "./styles.css"
 const initialFacet = "all"
 const newRow = { id: -1 }
 const showControls = false
-
+const navCols = ['name','type']
 
 
 const facetOptions = Object.keys(facetObjs).map(facet => (
@@ -81,6 +81,8 @@ sortOptions[0].value = ''
 
 export default function App() {
 
+  console.log('App()')
+
   const [facet, setFacet] = React.useState(initialFacet)
   const [facetObj, setFacetObj] = React.useState({})
   const [filterBy, setFilterBy] = React.useState("")
@@ -89,9 +91,9 @@ export default function App() {
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([]) // for table/doc views
   const [navRows, setNavRows] = React.useState([]) // for nav view
-  const [focusId, setFocusId] = React.useState(-2) // ~ facet
+  // const [focusId, setFocusId] = React.useState(-2) // ~ facet
   const [path, setPath] = React.useState('') // navview
-  const [focusItem, setFocusItem] = React.useState({})
+  // const [focusItem, setFocusItem] = React.useState({})
   const [currentId, setCurrentId] = React.useState() // eg row in table
 
   const facetRef = React.useRef(facet) //. better way?
@@ -103,14 +105,16 @@ export default function App() {
   // ]
   
   React.useEffect(() => {
+    console.log('initialize data source')
     source.init()
   }, [])
 
   // initial query
   // this is for the nav view
   React.useEffect(() => {
+    console.log('initial query');
     (async () => {
-      const items = await source.list()
+      const items = await source.list() // recursive //. pass ui
       // items.sort((a, b) => a.name.localeCompare(b.name))
       setNavRows(items) // this will force dependent views to redraw
     })()
@@ -258,10 +262,7 @@ export default function App() {
 
   // set focus to an item - callback for nav view
   function clickItem(path) {
-    // const id = Number(e.currentTarget.dataset.id)
-    // console.log(id)
-    // setFocusId(id)
-    console.log(path)
+    console.log('clickitem', path)
     setPath(path)
   }
 
@@ -385,10 +386,8 @@ export default function App() {
           visible
           rows={navRows}
           colDefs={colDefs}
-          cols={['name','type']}
+          cols={navCols}
           clickItem={clickItem}
-          // focusId={focusId}
-          path={path}
         />
 
         <div className="app-view">
