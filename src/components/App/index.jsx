@@ -152,7 +152,9 @@ export default function App() {
       // eg path = "home:folder/watchlist:folder"
       //. source needs to parse this and recurse down to neo4j source, 
       // which will also recurse down to final pair
-      const rows = await source.list({ ui, words, maxDepth, path }) // recursive query
+      // const rows = await source.list({ ui, words, maxDepth, path }) // recursive query
+      // const rows = await source.list({ ui, maxDepth, path }) // recursive query
+      const rows = await source.call('list', ui, words, path, maxDepth) // list({ ui, maxDepth, path }) // recursive query
       console.log('rows', rows)
       setRows(rows) // this will force dependent views to redraw
     })()    
