@@ -1,13 +1,16 @@
 import React from 'react'
 import { ReactTabulator } from 'react-tabulator'
+import { getText } from 'react-async-dialog'
 import 'react-tabulator/css/tabulator.css'
 import './tabulator.css'
 import './styles.css'
-import { getText } from 'react-async-dialog'
 
 
+const tooltips = false
+
+
+// group the rows by the groupBy field values
 function groupRows(rows, groupBy, columns) {
-  // group the rows by the groupBy field values
   const dict = {}
   for (const row of rows) {
     let group
@@ -23,7 +26,8 @@ function groupRows(rows, groupBy, columns) {
     dict[group].push(row)
   }
 
-  // organize the data into rows with _children fields for child rows
+  // organize the data into rows with _children fields for child rows,
+  // as needed by tabulator for tree mode.
   const data = []
   const firstCol = columns[0].field // always put the group text in the first column
   for (const group of Object.keys(dict)) {
@@ -126,25 +130,26 @@ export default function TableView({
   ]
 
   // user clicked + to expand a row
-  //. use this to try to implement dynamic tree
+  //. use this to eventually implement dynamic tree
   function dataTreeRowExpanded(row, level) {
   }
 
   const tableOptions = {
     dataTree: true, // allow grouping and hierarchies
     dataTreeStartExpanded, // nowork
+    dataTreeRowExpanded, // callback on click +
     rowFormatter, // format rows as bold if group header
     selectable: 1, // only 1 row is selectable at a time
     movableRows: true, // drag and drop rows
     rowContextMenu, // right click on row context menu
     cellContext: e => e.preventDefault(), // prevent browser's rclick context menu
-    dataTreeRowExpanded, // callback on click +
   }
 
   
   // rows, groupby changed
   React.useEffect(() => {
 
+    // clear tabulator rows
     const table = tableRef.current.table
     table.clearData()
 
@@ -152,7 +157,7 @@ export default function TableView({
     // const cols = facetObj.cols || 'name' //.
     // const cols = 'name'
     // const colNames = cols.split(',')
-    const colNames = cols
+    const colNames = cols // eg ['name','type']
     let columns = colNames.map(colName => colDefs[colName])
     columns = columns.filter(column => column.field !== groupBy) // remove the groupby column, if any
     // click on column header tells parent app to resort items
@@ -262,7 +267,7 @@ export default function TableView({
         data={[]}
         columns={columns}
         options={tableOptions}
-        tooltips={false}
+        tooltips={tooltips}
         layout="fitData"
         cellEdited={cellEdited}
       />

@@ -1,10 +1,7 @@
 import React from "react"
-// import * as source from "../../plugins/source/neo4j"
 import source from 'neomem-source'
 import logo from "../../assets/logo256.png"
 import facetObjs from './facetObjs'
-import 'semantic-ui-css/semantic.min.css'
-import "./styles.css"
 import * as lib from '../../lib'
 import colDefs from './colDefs'
 import { Button } from 'semantic-ui-react'
@@ -16,13 +13,16 @@ import { Button } from 'semantic-ui-react'
 // import { Image } from 'semantic-ui-react'
 // import { Sticky } from 'semantic-ui-react'
 
-//. these will be plugin packages eg neomem-view-table
+//. these will eventually be plugin packages eg neomem-view-table
 import TableView from "../../plugins/views/table"
 // import DocumentView from "../../plugins/views/document"
 // import HeaderView from "../../plugins/views/header"
 // import NavigatorView from "../../plugins/views/navigator"
 // import getItem from '../getItem' // get item dialog
 // import GetItem2 from '../getItem2'
+
+import 'semantic-ui-css/semantic.min.css'
+import "./styles.css"
 
 
 const initialFacet = "all"
