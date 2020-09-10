@@ -107,22 +107,20 @@ export default function App() {
   //   { key: 'link', icon: 'linkify', text: 'New Link', value: 'link', onClick: clickNewLink },
   // ]
   
+  // init data source and do initial query
   React.useEffect(() => {
     console.log('initialize data source')
-    ;(async () => await source.init())()
-  }, [])
+    ;(async () => {
+      await source.init()
 
-  // initial query
-  // this is for the nav view
-  React.useEffect(() => {
-    console.log('initial query')
-    const words = ['']
-    const path = ''
-    const maxDepth = 2
-    ;
-    (async () => {
-      // const navRows = await source.list({ ui, path, maxDepth: 2 }) // recursive
-      const navRows = await source.call('list', ui, words, path, maxDepth) // list({ ui, path, maxDepth: 2 }) // recursive
+      // this is for the nav view
+      console.log('initial query')
+      console.log(source) // ok here
+      const words = ['']
+      const path = ''
+      const maxDepth = 2
+      const navRows = await source.call('list', ui, words, path, maxDepth) // recurse
+      // const navRows = [{name:'foo'}]
       // navRows.sort((a, b) => a.name.localeCompare(b.name))
       setNavRows(navRows) // this will force dependent views to redraw
     })()
