@@ -141,20 +141,23 @@ export default function App() {
   // }, [facet])
 
 
-  // on change path
+  // on path change
   React.useEffect(() => {
     const ui = {}
     const words = ['']
     const maxDepth = 2
     ;(async () => {
-      console.log('path', path)
-      const rows = await source.list(ui, words, maxDepth, path) // recursive query
-      console.log(rows)
+      console.log('list', path)
+      // eg path = "home:folder/watchlist:folder"
+      //. source needs to parse this and recurse down to neo4j source, 
+      // which will also recurse down to final pair
+      const rows = await source.list({ ui, words, maxDepth, path }) // recursive query
+      console.log('rows', rows)
       setRows(rows) // this will force dependent views to redraw
     })()    
   }, [path])
 
-  // on change sort
+  // on sort change
   React.useEffect(() => {
     const rowsCopy = [...rows]
     console.log('sortby', sortBy, rows)
@@ -170,6 +173,7 @@ export default function App() {
     }
     setRows(rowsCopy)
   }, [sortBy]) // react gives warning that needs rows here, but causes infinite loop!
+
 
 
   // function changeFacet(e) {
