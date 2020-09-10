@@ -63,12 +63,11 @@ sortOptions[0].value = ''
 //         row[key] = row[key][0]
 //           ? row[key][0].properties // this includes { name, order, notes, ... }
 //           : { name: "", order: 10 } //.
-//       } else if (Array.isArray(row[key])) {
+//       } else if (Array.isArray(row[key])) { // eg type
 //         row[key] = row[key].join(", ")
 //       }
 //     })
 //     // recurse if item has children
-//     //. generalize more
 //     if (row.hasChildren) {
 //       row._children = await getChildren(query, {parentId:row.id})
 //     }
@@ -144,28 +143,15 @@ export default function App() {
 
   // on change path
   React.useEffect(() => {
-
-    // facetRef.current = facet
-    // const facetObj = facetObjs[facet]
-    // console.log(facetObj)
-    // setFacetObj(facetObj) // pass to dependent views
-
-    // const queryTemplate = facetObj.query
-    // const params = facetObj.params || {}
-    // const query = lib.substituteQueryParams(queryTemplate, params)
-    // if (!query) return;
     const ui = {}
     const words = ['']
     const maxDepth = 2
-    ;
-    (async () => {
+    ;(async () => {
       console.log('path', path)
-      // const rows = await getChildren(query, params) // recursive query
       const rows = await source.list(ui, words, maxDepth, path) // recursive query
       console.log(rows)
       setRows(rows) // this will force dependent views to redraw
-    })()
-    
+    })()    
   }, [path])
 
   // on change sort
