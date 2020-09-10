@@ -160,7 +160,7 @@ export default function TableView({
   
   // rows, cols, groupby changed
   React.useEffect(() => {
-    console.log('rows cols groupby changed')
+    console.log('rows cols groupby changed', rows)
 
     // clear tabulator rows
     const table = tableRef.current.table

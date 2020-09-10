@@ -112,11 +112,15 @@ export default function App() {
   React.useEffect(() => {
     console.log('initial query')
     const ui = {} //. make this
+    const words = ['']
+    const path = ''
+    const maxDepth = 2
     ;
     (async () => {
-      const items = await source.list({ ui }) // recursive
-      // items.sort((a, b) => a.name.localeCompare(b.name))
-      setNavRows(items) // this will force dependent views to redraw
+      // const navRows = await source.list({ ui, path, maxDepth: 2 }) // recursive
+      const navRows = await source.call('list', ui, words, path, maxDepth) // list({ ui, path, maxDepth: 2 }) // recursive
+      // navRows.sort((a, b) => a.name.localeCompare(b.name))
+      setNavRows(navRows) // this will force dependent views to redraw
     })()
   }, [])
 
@@ -154,7 +158,7 @@ export default function App() {
       // which will also recurse down to final pair
       // const rows = await source.list({ ui, words, maxDepth, path }) // recursive query
       // const rows = await source.list({ ui, maxDepth, path }) // recursive query
-      const rows = await source.call('list', ui, words, path, maxDepth) // list({ ui, maxDepth, path }) // recursive query
+      const rows = await source.call('list', ui, words, path, maxDepth) // recursive query
       console.log('rows', rows)
       setRows(rows) // this will force dependent views to redraw
     })()    

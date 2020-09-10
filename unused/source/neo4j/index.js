@@ -30,7 +30,7 @@ export function getSession({ readOnly=false }={}) {
 
 // run a query with error handling and logging
 export async function run(query, params) {
-  // console.log('run', query, params)
+  console.log('run', query, params)
   const session = getSession()
   try {
     //. handle recursion here?
