@@ -109,7 +109,7 @@ export default function App() {
   
   React.useEffect(() => {
     console.log('initialize data source')
-    source.init()
+    ;(async () => await source.init())()
   }, [])
 
   // initial query
@@ -150,22 +150,18 @@ export default function App() {
   // }, [facet])
 
 
-  // on path change
-  React.useEffect(() => {
-    const words = ['']
-    const maxDepth = 2
-    ;(async () => {
-      console.log('list', path)
-      // eg path = "home:folder/watchlist:folder"
-      //. source needs to parse this and recurse down to neo4j source, 
-      // which will also recurse down to final pair
-      // const rows = await source.list({ ui, words, maxDepth, path }) // recursive query
-      // const rows = await source.list({ ui, maxDepth, path }) // recursive query
-      const rows = await source.call('list', ui, words, path, maxDepth) // recursive query
-      console.log('rows', rows)
-      setRows(rows) // this will force dependent views to redraw
-    })()    
-  }, [path])
+  // // on path change
+  // React.useEffect(() => {
+  //   const words = ['']
+  //   const maxDepth = 2
+  //   ;(async () => {
+  //     console.log('list', path)
+  //     // eg path = "home:folder/watchlist:folder"
+  //     const rows = await source.call('list', ui, words, path, maxDepth) // recursive query
+  //     console.log('rows', rows)
+  //     setRows(rows) // this will force dependent views to redraw
+  //   })()    
+  // }, [path])
 
   // on sort change
   React.useEffect(() => {
