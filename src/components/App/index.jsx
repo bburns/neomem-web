@@ -91,9 +91,7 @@ export default function App() {
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([]) // for table/doc views
   const [navRows, setNavRows] = React.useState([]) // for nav view
-  // const [focusId, setFocusId] = React.useState(-2) // ~ facet
   const [path, setPath] = React.useState('') // navview
-  // const [focusItem, setFocusItem] = React.useState({})
   const [currentId, setCurrentId] = React.useState() // eg row in table
 
   const facetRef = React.useRef(facet) //. better way?
@@ -121,31 +119,6 @@ export default function App() {
       setNavRows(items) // this will force dependent views to redraw
     })()
   }, [])
-
-  // // on change focusId
-  // // for the header view when nav focus changes
-  // React.useEffect(() => {
-  //   (async () => {
-  //     const query = `
-  //     MATCH (n)
-  //     WHERE id(n)=$id
-  //     RETURN n
-  //     `
-  //     const params = { id: focusId }
-  //     const session = source.getSession({ readOnly: true })
-  //     const items = []
-  //     console.log(query, params)
-  //     const result = await session.run(query, params)
-  //     for (const record of result.records) {
-  //       const item = record.get("n") // { identity, labels, properties }
-  //       items.push(item)
-  //     }
-  //     const item = items[0]
-  //     session.close()
-  //     setFocusItem(item) // this will force dependent views to redraw
-  //   })()
-  // }, [focusId])
-
 
   // // on change facet
   // React.useEffect(() => {
@@ -290,6 +263,7 @@ export default function App() {
   // }
 
   // set focus to an item - callback for nav view
+  //. maybe have focusPath vs selectedPath ? facetPath ?
   function clickItem(path) {
     console.log('clickitem', path)
     setPath(path)
