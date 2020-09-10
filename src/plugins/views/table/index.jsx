@@ -13,10 +13,10 @@ function dataTreeStartExpanded(row, level) {
 
 // format row bold if group header or has children
 function rowFormatter(row) {
-  const data = row.getData()
-  if (data.id===undefined || data.hasChildren) {
-    row.getElement().style.fontWeight = 'bold'
-  }
+  // const data = row.getData()
+  // if (data.id===undefined || data.hasChildren) {
+  //   row.getElement().style.fontWeight = 'bold'
+  // }
 }
 
 
