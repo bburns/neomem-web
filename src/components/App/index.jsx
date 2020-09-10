@@ -28,7 +28,7 @@ import "./styles.css"
 const initialFacet = "all"
 const newRow = { id: -1 }
 const showControls = false
-const showContents = false
+const showContents = true
 const navCols = ['name','type']
 
 
@@ -79,6 +79,11 @@ sortOptions[0].value = ''
 // }
 
 
+const ui = {
+  display: console.log,
+}
+
+
 export default function App() {
 
   console.log('App()')
@@ -111,7 +116,6 @@ export default function App() {
   // this is for the nav view
   React.useEffect(() => {
     console.log('initial query')
-    const ui = {} //. make this
     const words = ['']
     const path = ''
     const maxDepth = 2
@@ -148,7 +152,6 @@ export default function App() {
 
   // on path change
   React.useEffect(() => {
-    const ui = {}
     const words = ['']
     const maxDepth = 2
     ;(async () => {
@@ -263,6 +266,8 @@ export default function App() {
   //. maybe have focusPath vs selectedPath ? facetPath ?
   function clickItem(path) {
     console.log('clickitem', path)
+    const words = ['']
+    source.call('go', ui, words, path)
     setPath(path)
   }
 
