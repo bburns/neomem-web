@@ -261,6 +261,7 @@ export default function App() {
     // const id = Number(e.currentTarget.dataset.id)
     // console.log(id)
     // setFocusId(id)
+    console.log(path)
     setPath(path)
   }
 
@@ -276,7 +277,7 @@ export default function App() {
         </div>
 
         <div className="header-view">
-          <HeaderView item={focusItem} />
+          <HeaderView path={path} />
         </div>
         
         {showControls && <div className="app-controls">

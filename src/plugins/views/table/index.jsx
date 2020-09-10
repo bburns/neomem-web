@@ -138,7 +138,8 @@ export default function TableView({
   function rowClick(e, row) {
     console.log(row)
     const data = row.getData()
-    clickItem(data)
+    const path = data && data.path
+    clickItem(path)
   }
 
   const tableOptions = {
