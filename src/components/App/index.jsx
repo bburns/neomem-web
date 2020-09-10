@@ -28,6 +28,7 @@ import "./styles.css"
 const initialFacet = "all"
 const newRow = { id: -1 }
 const showControls = false
+const showContents = false
 const navCols = ['name','type']
 
 
@@ -383,7 +384,7 @@ export default function App() {
           clickItem={clickItem}
         />
 
-        <div className="app-view">
+        {showContents && <div className="app-view">
           {/* {view==="table" && //. react-tabulator doesn't like turning off and on like this */}
           <TableView
             visible={view === "table"}
@@ -404,7 +405,7 @@ export default function App() {
               groupBy={groupBy} 
             />
           )} */}
-        </div>
+        </div>}
       </div>
     </div>
   )
