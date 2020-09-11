@@ -71,6 +71,7 @@ export default function TableView({
   changeSort,
   clickNew,
   clickItem,
+  item,
   path,
 }) {
 
@@ -140,9 +141,11 @@ export default function TableView({
 
   function rowClick(e, row) {
     const data = row.getData()
-    const path = data && data.path
-    console.log('rowclick', path)
-    clickItem(path)
+    // const path = data && data.path
+    // console.log('rowclick', path)
+    // clickItem(path)
+    const item = data
+    clickItem(item)
   }
 
   const tableOptions = {

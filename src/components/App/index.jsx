@@ -27,6 +27,7 @@ import "./styles.css"
 
 const initialFacet = "all"
 const newRow = { id: -1 }
+const showHeader = false
 const showControls = false
 const showContents = true
 const navCols = ['name','type']
@@ -96,7 +97,8 @@ export default function App() {
   const [view, setView] = React.useState("table")
   const [rows, setRows] = React.useState([]) // for table/doc views
   const [navRows, setNavRows] = React.useState([]) // for nav view
-  const [path, setPath] = React.useState('') // navview
+  // const [path, setPath] = React.useState('') // navview
+  const [item, setItem] = React.useState() // navview
   const [currentId, setCurrentId] = React.useState() // eg row in table
 
   const facetRef = React.useRef(facet) //. better way?
@@ -258,11 +260,19 @@ export default function App() {
 
   // set focus to an item - callback for nav view
   //. maybe have focusPath vs selectedPath ? facetPath ?
-  function clickItem(path) {
-    console.log('clickitem', path)
+  // function clickItem(path) {
+  //   console.log('clickitem', path)
+  //   const words = ['']
+  //   source.call('go', ui, words, path)
+  //   setPath(path)
+  // }
+  function clickItem(item) {
+    console.log('clickitem', item)
     const words = ['']
-    source.call('go', ui, words, path)
-    setPath(path)
+    // source.call('go', ui, words, item)
+    item.source.go({ ui, item })
+    // setPath(item)
+    setItem(item)
   }
 
 
@@ -276,9 +286,9 @@ export default function App() {
           <span>Neomem</span>
         </div>
 
-        <div className="header-view">
-          <HeaderView path={path} />
-        </div>
+        {showHeader && <div className="header-view">
+          <HeaderView item={item} />
+        </div>}
         
         {showControls && <div className="app-controls">
 
@@ -386,6 +396,7 @@ export default function App() {
           rows={navRows}
           colDefs={colDefs}
           cols={navCols}
+          item={item}
           clickItem={clickItem}
         />
 
